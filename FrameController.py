@@ -3,6 +3,7 @@ import pygame as pg
 import shared
 from IFrame import IFrame
 from Signals import *
+from utilities import terminate
 
 
 class FrameController:
@@ -44,6 +45,7 @@ class FrameController:
     def handle_kill_entire_app(self):
         for frame in self.frames:
             frame.end()
+        terminate()
 
 
 def apply_global_settings():

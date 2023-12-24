@@ -11,9 +11,8 @@ __all__ = (
     'clock',
 )
 
-FPS: int
 WIDTH: int
 HEIGHT: int
 display: pg.Surface
 clock: pg.time.Clock
-
+FPS: int
