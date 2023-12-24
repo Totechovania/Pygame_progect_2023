@@ -1,7 +1,7 @@
 # файл, который содержит переменные, используемые во всем проекте
 # изменять только преднозначенными для этого функциями
 
-import pygame
+import pygame as pg
 
 __all__ = (
     'WIDTH',
@@ -14,6 +14,6 @@ __all__ = (
 FPS: int
 WIDTH: int
 HEIGHT: int
-display: pygame.Surface
-clock: pygame.time.Clock
+display: pg.Surface
+clock: pg.time.Clock
 

@@ -1,10 +1,9 @@
 # файл вспомогательных функций
 import sys
 
-import pygame
+import pygame as pg
 
 
 def terminate():
-    pygame.quit()
+    pg.quit()
     sys.exit()
-
