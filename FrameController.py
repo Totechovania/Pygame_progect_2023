@@ -3,7 +3,6 @@ import pygame as pg
 import shared
 from IFrame import IFrame
 from Signals import *
-from utilities import terminate
 
 
 class FrameController:
@@ -22,8 +21,6 @@ class FrameController:
                 self.frames[-1].update()
             except Signal as e:
                 self.handle_signal(e)
-
-        terminate()
 
     def handle_signal(self, signal: Signal):
         if isinstance(signal, NewFrame):
@@ -62,3 +59,4 @@ def set_shared_variables():
     shared.display = pg.display.set_mode((shared.WIDTH, shared.HEIGHT))
 
     shared.clock = pg.time.Clock()
+    shared.FPS = 60
