@@ -3,13 +3,6 @@
 
 import pygame as pg
 
-__all__ = (
-    'WIDTH',
-    'HEIGHT',
-    'FPS',
-    'screen',
-    'clock',
-)
 
 WIDTH: int
 HEIGHT: int

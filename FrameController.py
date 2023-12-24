@@ -15,9 +15,10 @@ class FrameController:
         set_shared_variables()
 
         clock = shared.clock
+        fps = shared.FPS
 
         while self.frames:
-            clock.tick(shared.FPS)
+            clock.tick(fps)
             try:
                 self.frames[-1].update()
             except Signal as e:
@@ -58,7 +59,7 @@ def set_shared_variables():
     shared.WIDTH = display_info.current_w
     shared.HEIGHT = display_info.current_h
 
-    shared.sceen = pg.display.set_mode((shared.WIDTH, shared.HEIGHT))
+    shared.screen = pg.display.set_mode((shared.WIDTH, shared.HEIGHT))
 
     shared.clock = pg.time.Clock()
     shared.FPS = 60
