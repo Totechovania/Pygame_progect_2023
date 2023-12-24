@@ -58,7 +58,7 @@ def set_shared_variables():
     shared.WIDTH = display_info.current_w
     shared.HEIGHT = display_info.current_h
 
-    shared.display = pg.display.set_mode((shared.WIDTH, shared.HEIGHT))
+    shared.sceen = pg.display.set_mode((shared.WIDTH, shared.HEIGHT))
 
     shared.clock = pg.time.Clock()
     shared.FPS = 60

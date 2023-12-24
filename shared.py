@@ -7,12 +7,12 @@ __all__ = (
     'WIDTH',
     'HEIGHT',
     'FPS',
-    'display',
+    'screen',
     'clock',
 )
 
 WIDTH: int
 HEIGHT: int
-display: pg.Surface
+screen: pg.Surface
 clock: pg.time.Clock
 FPS: int
