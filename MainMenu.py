@@ -1,128 +1,130 @@
-import pygame
-import shared
 import pygame as pg
-import sys
-import os
 from IFrame import IFrame
 from Signals import KillEntireApp
-from FrameController import set_shared_variables
+from utilities import load_image
 
-
-def load_image(name, colorkey=None):
-    fullname = os.path.join('data', name)
-    if not os.path.isfile(fullname):
-        print(f"Файл с изображением '{fullname}' не найден")
-        sys.exit()
-    image = pg.image.load(fullname)
-    if colorkey is not None:
-        pg.init()
-        set_shared_variables()
-        image = image.convert()
-        if colorkey == -1:
-            colorkey = image.get_at((0, 0))
-        image.set_colorkey(colorkey)
-    else:
-        image = image.convert_alpha()
-    return image
+pg.init()
+info = pg.display.Info()
+w = info.current_w
+h = info.current_h - 50
+screen = pg.display.set_mode((w, h))
+all_buttons_cords = []
+event = ''
 
 
 class MainMenu(IFrame):
     def __init__(self):
-        pg.init()
-        pg.display.set_caption('Game')
-        set_shared_variables()
-        self.main()
-        self.main_button = True
-        self.leave_button = True
-        self.fight_button = True
-        self.redactor_button = True
-        self.campany_button = True
-        self.settings_button = True
-        self.back_button = False
+        self.all_sprites = pg.sprite.Group()
+        screen.fill(pg.Color('white'))
+        self.start_window()
 
     def update(self):
-        pg.display.flip()
+        global event
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 raise KillEntireApp
             if event.type == pg.MOUSEBUTTONDOWN:
                 x, y = event.pos
-                if 1620 < x < 1800 and 620 < y < 850 and self.main_button:
-                    self.main_button = False
-                    self.leave_button = False
-                    self.settings_button = False
-                    self.back_button = True
-                    self.fight_menu()
-                if 3280 < x < 3440 and 0 < y < 150 and self.leave_button:
-                    raise KillEntireApp
-                if 0 < x < 150 and 0 < y < 150 and self.settings_button:
-                    self.main_button = False
-                    self.leave_button = False
-                    self.settings_button = False
-                    self.back_button = True
-                    self.settings()
-                if 0 < x < 150 and 0 < y < 150 and self.back_button:
-                    self.main_button = True
-                    self.leave_button = True
-                    self.settings_button = True
-                    self.back_button = False
-                    self.main()
+                for x_start, x_end, y_start, y_end, name in all_buttons_cords:
+                    if x_start < x < x_end and y_start < y < y_end:
+                        all_buttons_cords.clear()
+                        self.all_sprites.empty()
+                        if name == 'leave':
+                            raise KillEntireApp
+                        if name == 'settings':
+                            self.draw_settings()
+                        if name == 'back':
+                            self.start_window()
+                        if name == 'game':
+                            self.draw_game()
+                        if name == 'fight':
+                            self.draw_fight_menu()
+                        if name == 'redactor':
+                            self.draw_redactor_menu()
+                        if name == 'campany':
+                            self.draw_campany_menu()
+                        if name == 'download':
+                            self.draw_download_menu()
+                        break
+        self.all_sprites.draw(screen)
+        self.all_sprites.update()
+        pg.display.flip()
 
-    def fight_menu(self):
+    def draw_redactor_menu(self):
+        self.draw_fon()
+
+        Button(self.all_sprites, 'back.png', 0, 0, int(0.04 * w), int(0.04 * w), 'back')
+        Button(self.all_sprites, 'leave_button.png', w * 0.96, 0, int(0.04 * w), int(0.04 * w), 'leave')
+
+    def draw_campany_menu(self):
+        self.draw_fon()
+
+        Button(self.all_sprites, 'back.png', 0, 0, int(0.04 * w), int(0.04 * w), 'back')
+        Button(self.all_sprites, 'leave_button.png', w * 0.96, 0, int(0.04 * w), int(0.04 * w), 'leave')
+
+    def draw_download_menu(self):
+        self.draw_fon()
+
+        Button(self.all_sprites, 'back.png', 0, 0, int(0.04 * w), int(0.04 * w), 'back')
+        Button(self.all_sprites, 'leave_button.png', w * 0.96, 0, int(0.04 * w), int(0.04 * w), 'leave')
+
+    def draw_fight_menu(self):
+        self.draw_fon()
+
+        Button(self.all_sprites, 'back.png', 0, 0, int(0.04 * w), int(0.04 * w), 'back')
+        Button(self.all_sprites, 'leave_button.png', w * 0.96, 0, int(0.04 * w), int(0.04 * w), 'leave')
+
+    def draw_game(self):
+        self.draw_fon()
+
+        Button(self.all_sprites, 'back.png', 0, 0, int(0.04 * w), int(0.04 * w), 'back')
+        Button(self.all_sprites, 'leave_button.png', w * 0.96, 0, int(0.04 * w), int(0.04 * w), 'leave')
+
+        Button(self.all_sprites, 'rectangle.png', w * 0.4, h * 0.1, int(w * 0.2), int(w * 0.08), 'fight')
+        self.draw_text('Сражение', w // 2.35, h // 6.3, '#08E8DE', 155)
+        Button(self.all_sprites, 'rectangle.png', w * 0.4, h * 0.25, int(w * 0.2), int(w * 0.08), 'redactor')
+        self.draw_text('Редактор', w // 2.35, h // 3.25, '#08E8DE', 155)
+        Button(self.all_sprites, 'rectangle.png', w * 0.4, h * 0.4, int(w * 0.2), int(w * 0.08), 'campany')
+        self.draw_text('Кампания', w // 2.35, h // 2.15, '#08E8DE', 155)
+        Button(self.all_sprites, 'rectangle.png', w * 0.4, h * 0.55, int(w * 0.2), int(w * 0.08), 'download')
+        self.draw_text('Загрузить', w // 2.35, h // 1.62, '#08E8DE', 155)
+
+    def draw_settings(self):
+        self.draw_fon()
+
+        Button(self.all_sprites, 'back.png', 0, 0, int(0.04 * w), int(0.04 * w), 'back')
+        Button(self.all_sprites, 'leave_button.png', w * 0.96, 0, int(0.04 * w), int(0.04 * w), 'leave')
+
+    def start_window(self):
+        self.draw_fon()
+
+        self.draw_text('MyAntiyoy', w // 2.58, h // 4.25, '#00FF7F', 200)
+
+        Button(self.all_sprites, 'game_start_button.png', w * 0.46, h * 0.5, int(0.08 * w), int(0.08 * w), 'game')
+        Button(self.all_sprites, 'settings_button.png', 0, 0, int(0.04 * w), int(0.04 * w), 'settings')
+        Button(self.all_sprites, 'leave_button.png', w * 0.96, 0, int(0.04 * w), int(0.04 * w), 'leave')
+
+    def draw_text(self, text, x, y, color, size=50):
+        font = pg.font.Font(None, size)
+        to_print = font.render(text, True, pg.Color(color))
+        screen.blit(to_print, (x, y))
+
+    def draw_fon(self):
         image = load_image('fon_menu.png')
-        image = pygame.transform.scale(image, (shared.WIDTH, shared.HEIGHT))
-        shared.screen.blit(image, (0, 0))
+        image = pg.transform.scale(image, (w, h))
+        screen.blit(image, (0, 0))
 
-        font = pygame.font.Font(None, 200)
-        text = font.render("Сражение", True, pg.Color('#00FF7F'))
-        shared.screen.blit(text, (self.text_x - 150, self.text_y - 230))
-        text_w = text.get_width()
-        text_h = text.get_height()
-        pygame.draw.rect(shared.screen, (0, 255, 0), (self.text_x - 150, self.text_y - 230,
-                                                      text_w, text_h), 1)
 
-        font = pygame.font.Font(None, 200)
-        text = font.render("Редактор", True, pg.Color('#00FF7F'))
-        shared.screen.blit(text, (self.text_x - 150, self.text_y + 100))
-        text_h = text.get_height()
-        pygame.draw.rect(shared.screen, (0, 255, 0), (self.text_x - 150, self.text_y + 100,
-                                                      text_w, text_h), 1)
+class Button(pg.sprite.Sprite):
+    def __init__(self, group, filename, x, y, new_size_w=500, new_size_h=500, name=''):
+        super().__init__(group)
+        image = load_image(filename)
+        image = pg.transform.scale(image, (new_size_w, new_size_h))
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        all_buttons_cords.append((x, x + new_size_w, y, y + new_size_h, name))
 
-        font = pygame.font.Font(None, 200)
-        text = font.render("Кампания", True, pg.Color('#00FF7F'))
-        shared.screen.blit(text, (self.text_x - 150, self.text_y + 400))
-        text_h = text.get_height()
-        pygame.draw.rect(shared.screen, (0, 255, 0), (self.text_x - 150, self.text_y + 400,
-                                                      text_w, text_h), 1)
-
-        image_back = load_image('back.png')
-        image_back = pygame.transform.scale(image_back, (150, 150))
-        shared.screen.blit(image_back, (0, 0, 150, 150))
-
-    def settings(self):
-        image = load_image('fon_menu.png')
-        image = pygame.transform.scale(image, (shared.WIDTH, shared.HEIGHT))
-        shared.screen.blit(image, (0, 0))
-
-        image_back = load_image('back.png')
-        image_back = pygame.transform.scale(image_back, (150, 150))
-        shared.screen.blit(image_back, (0, 0, 150, 150))
-
-    def main(self):
-        image = load_image('fon_menu.png')
-        image = pygame.transform.scale(image, (shared.WIDTH, shared.HEIGHT))
-        shared.screen.blit(image, (0, 0))
-        font = pygame.font.Font(None, 100)
-        text = font.render("MyAntiyoy", True, pg.Color('#00FF7F'))
-        self.text_x = shared.WIDTH // 2 - text.get_width() // 2
-        self.text_y = shared.HEIGHT // 2 - text.get_height() // 2 - 300
-        shared.screen.blit(text, (self.text_x, self.text_y))
-        pg.draw.polygon(shared.screen, pygame.Color('#30D5C8'),
-                        [(self.text_x + 100, self.text_y + 270), (self.text_x + 250, self.text_y + 380),
-                         (self.text_x + 100, self.text_y + 490)], 0)
-        image_leave = load_image('leave_button.png')
-        image_leave = pygame.transform.scale(image_leave, (150, 150))
-        shared.screen.blit(image_leave, (shared.WIDTH - 150, 0))
-        image_settings = load_image('settings_button.png')
-        image_settings = pygame.transform.scale(image_settings, (150, 150))
-        shared.screen.blit(image_settings, (0, 0, 150, 150))
+    def update(self, *args):
+        pass
