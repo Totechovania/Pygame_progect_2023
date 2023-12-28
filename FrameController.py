@@ -5,6 +5,7 @@ from Signals import *
 
 class FrameController:
     def __init__(self, zero_frame: IFrame):
+        zero_frame.begin()
         self.frames = [zero_frame]
 
     def run(self):
