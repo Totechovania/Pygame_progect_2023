@@ -1,7 +1,6 @@
 import shared
 from IFrame import IFrame
 from Signals import *
-from utilities import terminate
 
 
 class FrameController:
@@ -18,7 +17,6 @@ class FrameController:
                 self.frames[-1].update()
             except Signal as e:
                 self.handle_signal(e)
-        terminate()
 
     def handle_signal(self, signal: Signal):
         if isinstance(signal, NewFrame):

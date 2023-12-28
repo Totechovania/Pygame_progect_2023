@@ -1,5 +1,5 @@
 from FrameController import FrameController
-from utilities import apply_global_settings, set_shared_variables
+from utilities import apply_global_settings, set_shared_variables, terminate
 from Frames.MainMenu import MainMenu
 
 
@@ -12,3 +12,4 @@ if __name__ == '__main__':
     controller = FrameController(main_menu)
     controller.run()
 
+    terminate()
