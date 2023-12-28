@@ -1,6 +1,6 @@
 from FrameController import FrameController
 from utilities import apply_global_settings, set_shared_variables
-from MainMenu import MainMenu
+from Frames.MainMenu import MainMenu
 
 
 if __name__ == '__main__':

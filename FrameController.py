@@ -1,5 +1,3 @@
-import pygame as pg
-
 import shared
 from IFrame import IFrame
 from Signals import *
