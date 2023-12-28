@@ -17,8 +17,8 @@ def apply_global_settings():
 
 def set_shared_variables():
     display_info = pg.display.Info()
-    shared.WIDTH = display_info.current_w
-    shared.HEIGHT = display_info.current_h
+    shared.WIDTH = round(display_info.current_w * 0.8)
+    shared.HEIGHT = round(display_info.current_h * 0.8)
 
     shared.screen = pg.display.set_mode((shared.WIDTH, shared.HEIGHT))
 
