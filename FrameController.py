@@ -18,6 +18,7 @@ class FrameController:
                 self.frames[-1].update()
             except Signal as e:
                 self.handle_signal(e)
+        terminate()
 
     def handle_signal(self, signal: Signal):
         if isinstance(signal, NewFrame):
@@ -39,6 +40,6 @@ class FrameController:
             self.frames[-1].resume()
 
     def handle_kill_entire_app(self):
-        for frame in self.frames:
-            frame.end()
-        terminate()
+        while self.frames:
+            self.frames[-1].end()
+            self.frames.pop()
