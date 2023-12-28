@@ -11,7 +11,7 @@ class TestFrame(IFrame):
     annotation_text = None
     history_text = None
 
-    def __init__(self, previous: str = 'None', n=0):
+    def __init__(self, previous: str = 'None', n=0, supposed_to_be: str = ''):
         if TestFrame.font_size is None:
             TestFrame.font_size = round(shared.HEIGHT / 20)
         if TestFrame.font is None:
@@ -21,6 +21,7 @@ class TestFrame(IFrame):
         if TestFrame.history_text is None:
             TestFrame.history_text = self.font.render('History:', True, pg.Color('white'))
 
+        self.supposed_to_be_text = self.font.render(supposed_to_be, True, pg.Color('white'))
         self.n = n
         self.previous = previous
         self.history = []
@@ -42,7 +43,8 @@ class TestFrame(IFrame):
                 if event.key == pg.K_ESCAPE:
                     raise KillTopFrame
                 if event.key == pg.K_n:
-                    raise NewFrame(TestFrame(f'TestFrame{self.n}', n=self.n + 1))
+                    raise NewFrame(TestFrame(f'TestFrame{self.n}', n=self.n + 1,
+                                   supposed_to_be='Пример создания фреймов.'))
 
         previous_text = self.font.render(f'Previous: {self.previous}', True, pg.Color('white'))
         shared.screen.blit(previous_text, (0, 0))
@@ -52,6 +54,10 @@ class TestFrame(IFrame):
         for i, event in enumerate(self.history[-15:]):
             text = self.font.render(event, True, pg.Color('white'))
             shared.screen.blit(text, (history_width, self.font_size * (i + 1)))
+
+        text = self.font.render(f'Supposed to be:', True, pg.Color('white'))
+        shared.screen.blit(text, (round(shared.WIDTH * 3 / 5), 0))
+        shared.screen.blit(self.supposed_to_be_text, (round(shared.WIDTH * 3 / 5), self.font_size))
 
         shared.screen.blit(self.annotation_text, (0, shared.HEIGHT - self.font_size))
 
