@@ -46,6 +46,11 @@ class TestFrame(IFrame):
                     raise NewFrame(TestFrame(f'TestFrame{self.n}', n=self.n + 1,
                                    supposed_to_be='Пример создания фреймов.'))
 
+        self.draw_text()
+
+        pg.display.flip()
+
+    def draw_text(self):
         previous_text = self.font.render(f'Previous: {self.previous}', True, pg.Color('white'))
         shared.screen.blit(previous_text, (0, 0))
 
@@ -60,8 +65,6 @@ class TestFrame(IFrame):
         shared.screen.blit(self.supposed_to_be_text, (round(shared.WIDTH * 3 / 5), self.font_size))
 
         shared.screen.blit(self.annotation_text, (0, shared.HEIGHT - self.font_size))
-
-        pg.display.flip()
 
     def pause(self):
         self.history.append(f'{time.strftime("%H:%M:%S")} - pause')
