@@ -17,8 +17,12 @@ def apply_global_settings():
 
 def set_shared_variables():
     display_info = pg.display.Info()
-    shared.WIDTH = round(display_info.current_w * 0.8)
-    shared.HEIGHT = round(display_info.current_h * 0.8)
+    shared.WIDTH = display_info.current_w
+    shared.HEIGHT = display_info.current_h
+    shared.all_buttons_cords = []
+    shared.sound = True
+    shared.music = True
+    shared.language = True
 
     shared.screen = pg.display.set_mode((shared.WIDTH, shared.HEIGHT))
 
@@ -41,3 +45,15 @@ def load_image(name, colorkey=None):
     else:
         image = image.convert_alpha()
     return image
+
+
+def draw_text(text, x, y, color, size=50):
+    font = pg.font.Font(None, size)
+    to_print = font.render(text, True, pg.Color(color))
+    shared.screen.blit(to_print, (x, y))
+
+
+def draw_fon(filename, w, h):
+    image = load_image(filename)
+    image = pg.transform.scale(image, (w, h))
+    shared.screen.blit(image, (0, 0))
