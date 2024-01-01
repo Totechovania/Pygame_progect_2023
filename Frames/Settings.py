@@ -1,6 +1,6 @@
 from IFrame import IFrame
 from Button import Button
-from RadioButton import RadioButton
+#from RadioButton import RadioButton
 from utilities import draw_fon, draw_text
 import pygame as pg
 import shared
@@ -19,7 +19,7 @@ class Settings(IFrame):
 
         pg.draw.rect(shared.screen, pg.Color('#F0FFF0'), (self.w * 0.28, self.h * 0.1, self.w * 0.42, self.h * 0.8), 0)
         draw_text('Звук', self.w * 0.3, self.h * 0.2, '#000000', 100)
-        RadioButton(self.all_sprites, 'rectangle.png', int(self.w * 0.65), int(self.h * 0.2), )
+        #RadioButton(self.all_sprites, 'rectangle.png', int(self.w * 0.65), int(self.h * 0.2), )
         pg.draw.rect(shared.screen, pg.Color('#000000'), (self.w * 0.65, self.h * 0.2, self.w * 0.022, self.h * 0.05),
                      1)
 
