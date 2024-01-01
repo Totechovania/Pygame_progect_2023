@@ -22,10 +22,7 @@ def set_shared_variables():
     shared.all_buttons_cords = []
     shared.sound = True
     shared.music = True
-    shared.language = True
-
     shared.screen = pg.display.set_mode((shared.WIDTH, shared.HEIGHT))
-
     shared.clock = pg.time.Clock()
     shared.FPS = 60
 
@@ -53,7 +50,15 @@ def draw_text(text, x, y, color, size=50):
     shared.screen.blit(to_print, (x, y))
 
 
-def draw_fon(filename, w, h):
-    image = load_image(filename)
-    image = pg.transform.scale(image, (w, h))
-    shared.screen.blit(image, (0, 0))
+def change_volume_settings():
+    if shared.sound:
+        shared.sound = False
+    else:
+        shared.sound = True
+
+
+def change_music_settings():
+    if shared.music:
+        shared.music = False
+    else:
+        shared.music = True
