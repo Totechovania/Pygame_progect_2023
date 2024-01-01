@@ -6,7 +6,7 @@ import shared
 from Signals import KillEntireApp, KillTopFrame
 
 
-class FightMenuWindow(IFrame):
+class Download(IFrame):
     def __init__(self):
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
