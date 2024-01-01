@@ -1,11 +1,10 @@
 import pygame as pg
-import shared
 from utilities import load_image
 
 
 class Button(pg.sprite.Sprite):
     def __init__(self,
-                 rect: tuple | list | pg.Rect,
+                 rect: tuple or list or pg.Rect,
                  image_path: str,
                  *groups: pg.sprite.Group):
         super().__init__(*groups)
@@ -25,5 +24,3 @@ class Button(pg.sprite.Sprite):
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
-
-
