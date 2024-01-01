@@ -5,7 +5,7 @@ from utilities import load_image
 
 class Button(pg.sprite.Sprite):
     def __init__(self,
-                 rect: tuple[int, int, int, int] | pg.Rect,
+                 rect: tuple | list | pg.Rect,
                  image_path: str,
                  *groups: pg.sprite.Group):
         super().__init__(*groups)
