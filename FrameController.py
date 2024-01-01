@@ -1,6 +1,7 @@
 import shared
 from IFrame import IFrame
 from Signals import *
+import pygame as pg
 
 
 class FrameController:
@@ -14,10 +15,13 @@ class FrameController:
 
         while self.frames:
             clock.tick(fps)
+
             try:
                 self.frames[-1].update()
             except Signal as e:
                 self.handle_signal(e)
+
+            pg.display.flip()
 
     def handle_signal(self, signal: Signal):
         if isinstance(signal, NewFrame):
