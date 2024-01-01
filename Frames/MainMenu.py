@@ -13,6 +13,8 @@ class MainMenu(IFrame):
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
         self.all_sprites = pg.sprite.Group()
+
+
         shared.screen.fill(pg.Color('white'))
 
     def update(self):
