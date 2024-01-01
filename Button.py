@@ -4,11 +4,14 @@ from utilities import load_image
 
 
 class Button(pg.sprite.Sprite):
-    def __init__(self, group, image_path):
-        super().__init__(group)
+    def __init__(self,
+                 rect: tuple[int, int, int, int] | pg.Rect,
+                 image_path: str,
+                 *groups: pg.sprite.Group):
+        super().__init__(*groups)
         self.func = None
-        self.image = load_image(image_path)
-        self.rect = self.image.get_rect()
+        self.image = pg.transform.scale(load_image(image_path), (rect[2], rect[3]))
+        self.rect = pg.Rect(rect)
 
     def connect(self, func: callable):
         self.func = func
@@ -17,7 +20,10 @@ class Button(pg.sprite.Sprite):
         for event in events:
             if event.type == pg.MOUSEBUTTONDOWN:
                 if self.rect.collidepoint(event.pos):
-                    self.func()
+                    if self.func is not None:
+                        self.func()
 
+    def draw(self, surface):
+        surface.blit(self.image, self.rect)
 
 
