@@ -6,6 +6,7 @@ import os
 from PIL import Image, ImageFilter
 from pyautogui import screenshot
 from Signals import NewFrame, KillTopFrame
+from math import cos, sin, pi
 
 
 def terminate():
@@ -82,3 +83,17 @@ def exit():
 
 def back():
     raise KillTopFrame
+
+
+def hexagon_from_center(center_x: float, center_y: float, radius: float) -> list[tuple[int, int]]:
+    vertices = []
+    start_x = 0
+    start_y = radius
+    for i in range(6):
+        angle = pi / 3 * i
+        x = start_x * cos(angle) - start_y * sin(angle)
+        y = start_x * sin(angle) + start_y * cos(angle)
+        vertices.append((round(x + center_x),
+                         round(y + center_y)))
+
+    return vertices

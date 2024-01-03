@@ -23,7 +23,7 @@ class HexGrid:
             self.grid.append([])
             for j in range(w):
                 x, y = self.get_tile_coords(i, j)
-                tile = EmptyTile(x, y,  radius, (i, j), self.surface)
+                tile = EmptyTile(x, y,  radius, (i, j))
                 self.grid[i].append(tile)
 
         self.scale = 1
@@ -55,10 +55,10 @@ class HexGrid:
     def draw_tiles(self):
         self.surface.fill((0, 0, 0))
         for tile in self:
-            tile.draw()
+            tile.draw(self.surface)
 
         if self.chosen is not None:
-            self.chosen.draw_stroke()
+            self.chosen.draw_stroke(self.surface)
 
     def update(self):
         x, y = pg.mouse.get_pos()
@@ -104,9 +104,9 @@ class HexGrid:
 
     def set_empty(self, i, j):
         x, y = self.get_tile_coords(i, j)
-        self[i, j] = EmptyTile(x, y,  self.radius, (i, j), self.surface)
+        self[i, j] = EmptyTile(x, y,  self.radius, (i, j))
 
     def set_tile(self, i, j):
         x, y = self.get_tile_coords(i, j)
-        self[i, j] = HexTile(x, y,  self.radius, (i, j), self.surface)
+        self[i, j] = HexTile(x, y,  self.radius, (i, j))
 

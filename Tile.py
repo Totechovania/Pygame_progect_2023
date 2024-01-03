@@ -5,7 +5,7 @@ from utilities import hexagon_from_center
 
 
 class HexTile:
-    def __init__(self, x: float, y: float, radius: float, indexes: tuple[int, int], surface: pg.Surface,  color=None,):
+    def __init__(self, x: float, y: float, radius: float, indexes: tuple[int, int],  color=None,):
         if color is not None:
             self.color = color
         else:
@@ -22,8 +22,6 @@ class HexTile:
 
         self.indexes = indexes
 
-        self.surface = surface
-
     def collide_point(self, x: float, y: float):
         return self.rect.collidepoint(x, y)
 
@@ -33,20 +31,20 @@ class HexTile:
     def distance(self, x: float, y: float):
         return ((self.center_x - x) ** 2 + (self.center_y - y) ** 2) ** 0.5
 
-    def draw(self):
+    def draw(self, surface: pg.Surface):
         hexagon = hexagon_from_center(self.center_x, self.center_y, self.radius)
-        pg.draw.polygon(self.surface, self.color, hexagon,)
+        pg.draw.polygon(surface, self.color, hexagon,)
 
-    def draw_stroke(self, color=(255, 255, 255)):
+    def draw_stroke(self, surface: pg.Surface, color=(255, 255, 255)):
         hexagon = hexagon_from_center(self.center_x, self.center_y, self.radius)
-        pg.draw.polygon(self.surface, color, hexagon, round(self.radius / 12))
+        pg.draw.polygon(surface, color, hexagon, round(self.radius / 12))
 
 
 class EmptyTile(HexTile):
-    def draw_stroke(self, color=(255, 255, 255)):
+    def draw_stroke(self, surface: pg.Surface, color=(255, 255, 255)):
         pass
 
-    def draw(self):
+    def draw(self, surface: pg.Surface):
         pass
 
 
