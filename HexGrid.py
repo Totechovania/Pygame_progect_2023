@@ -23,10 +23,7 @@ class HexGrid:
             self.grid.append([])
             for j in range(w):
                 x, y = self.get_tile_coords(i, j)
-                if random.randint(0, 3) == 0:
-                    tile = HexTile(x, y,  radius, (i, j), self.surface)
-                else:
-                    tile = EmptyTile(x, y,  radius, (i, j), self.surface)
+                tile = EmptyTile(x, y,  radius, (i, j), self.surface)
                 self.grid[i].append(tile)
 
         self.scale = 1
