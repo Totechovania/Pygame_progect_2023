@@ -1,24 +1,35 @@
 from IFrame import IFrame
 from Signals import *
 import shared
-from Tile import HexTile, HexGroup
+from Tile import HexGrid
 import pygame as pg
 
 
 class TileTestFrame(IFrame):
     def __init__(self):
-        self.tiles = HexGroup()
-        r = 100
-        for x in range(10):
-            for y in range(10):
-                self.tiles.add_tile(HexTile(x * r * 3 ** 0.5 + 100 + (y % 2) * r / 2 * 3 ** 0.5, 100 + y * r * 1.5, r,))
+        self.grid = HexGrid(40, 40, 20, (100, 100))
+        self.flag = False
 
     def update(self):
-        shared.screen.fill(pg.Color('black'))
+
+        shared.screen.fill((255, 255, 255))
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 raise KillEntireApp
+            if event.type == pg.MOUSEWHEEL:
+                x, y = pg.mouse.get_pos()
+                if event.y < 0:
+                    self.grid.relative_scale(x, y, self.grid.scale * 0.9)
+                else:
+                    self.grid.relative_scale(x, y, self.grid.scale * 1.1)
 
-        self.tiles.update()
-        self.tiles.draw(shared.screen)
-        pg.display.flip()
+        if pg.mouse.get_pressed()[1]:
+            dx, dy = pg.mouse.get_rel()
+            if self.flag:
+                self.grid.move(dx, dy)
+            else:
+                self.flag = True
+        else:
+            self.flag = False
+        self.grid.update()
+        self.grid.draw(shared.screen)

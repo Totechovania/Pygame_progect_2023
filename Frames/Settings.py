@@ -54,6 +54,7 @@ class Settings(IFrame):
         pg.draw.rect(shared.screen, pg.Color('#F0FFF0'), (self.w * 0.28, self.h * 0.1, self.w * 0.42, self.h * 0.8), 0)
         draw_text('Звук', self.w * 0.3, self.h * 0.2, '#000000', 100)
         draw_text('Музыка', self.w * 0.3, self.h * 0.4, '#000000', 100)
+
         if shared.sound:
             shared.screen.blit(self.image_check, (self.w * 0.6549, self.h * 0.208))
         if shared.music:
