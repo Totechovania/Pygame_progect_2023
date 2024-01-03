@@ -4,7 +4,24 @@ import pygame as pg
 from utilities import hexagon_from_center
 
 
-class HexTile:
+class EmptyTile:
+    def draw_stroke(self, color=(255, 255, 255)):
+        pass
+
+    def collide_point(self, x: float, y: float):
+        return False
+
+    def collide_rect(self, rect):
+        return False
+
+    def draw(self):
+        pass
+
+    def distance(self, x: float, y: float):
+        return NotImplemented
+
+
+class HexTile(EmptyTile):
     def __init__(self, x: float, y: float, radius: float, indexes: tuple[int, int], surface: pg.Surface,  color=None, ):
         if color is not None:
             self.color = color
