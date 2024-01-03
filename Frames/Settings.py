@@ -1,9 +1,9 @@
 from IFrame import IFrame
 from Button import Button
-from utilities import draw_text, load_image, change_music_settings, change_volume_settings
+from utilities import draw_text, load_image, change_music_settings, change_volume_settings, back, exit
 import pygame as pg
 import shared
-from Signals import KillEntireApp, KillTopFrame
+from Signals import KillEntireApp
 
 
 class Settings(IFrame):
@@ -22,7 +22,7 @@ class Settings(IFrame):
                 raise KillEntireApp
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    raise KillTopFrame
+                    back()
         self.draw_fon()
         self.buttons.update(events)
         self.buttons.draw(shared.screen)
@@ -30,10 +30,10 @@ class Settings(IFrame):
     def generate_buttons(self):
         exit_button = Button(
             (self.w * 0.958, 0, int(0.04 * self.w), int(0.04 * self.w)), 'leave_button.png', self.buttons)
-        exit_button.connect(self.exit)
+        exit_button.connect(exit)
 
         back_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'back.png', self.buttons)
-        back_button.connect(self.back)
+        back_button.connect(back)
 
         sound_check_box = Button((self.w * 0.65, self.h * 0.2, self.w * 0.022, self.h * 0.05), 'check_box.png',
                                  self.buttons)
@@ -43,18 +43,11 @@ class Settings(IFrame):
                                  self.buttons)
         music_check_box.connect(change_music_settings)
 
-    def exit(self):
-        raise KillEntireApp
-
-    def back(self):
-        raise KillTopFrame
-
     def draw_fon(self):
         shared.screen.blit(self.image_fon, (0, 0))
         pg.draw.rect(shared.screen, pg.Color('#F0FFF0'), (self.w * 0.28, self.h * 0.1, self.w * 0.42, self.h * 0.8), 0)
         draw_text('Звук', self.w * 0.3, self.h * 0.2, '#000000', 100)
         draw_text('Музыка', self.w * 0.3, self.h * 0.4, '#000000', 100)
-
         if shared.sound:
             shared.screen.blit(self.image_check, (self.w * 0.6549, self.h * 0.208))
         if shared.music:
