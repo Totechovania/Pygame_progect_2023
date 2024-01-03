@@ -1,5 +1,5 @@
 import pygame as pg
-from EmptyTile import HexTile
+from Tile import HexTile
 
 
 class HexGrid:
