@@ -3,7 +3,9 @@ import sys
 import shared
 import pygame as pg
 import os
-from math import pi, sin, cos
+from PIL import Image, ImageFilter
+from pyautogui import screenshot
+from Signals import NewFrame, KillTopFrame
 
 
 def terminate():
@@ -65,15 +67,18 @@ def change_music_settings():
         shared.music = True
 
 
-def hexagon_from_center(center_x: float, center_y: float, radius: float) -> list[tuple[int, int]]:
-    vertices = []
-    start_x = 0
-    start_y = radius
-    for i in range(6):
-        angle = pi / 3 * i
-        x = start_x * cos(angle) - start_y * sin(angle)
-        y = start_x * sin(angle) + start_y * cos(angle)
-        vertices.append((round(x + center_x),
-                         round(y + center_y)))
+def convert_image(filename):
+    with Image.open('data/' + filename) as img:
+        img.load()
+        img = img.filter(ImageFilter.GaussianBlur(20))
+        img.save('data/' + filename)
 
-    return vertices
+
+def exit():
+    from Frames.PopUpWindow import PopUpWindow
+    screenshot('data/screenshot.png')
+    raise NewFrame(PopUpWindow('screenshot.png'))
+
+
+def back():
+    raise KillTopFrame
