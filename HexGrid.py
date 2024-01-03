@@ -8,7 +8,6 @@ class HexGrid:
         self.h = h
         self.radius = radius
         self.grid = []
-        self.all_tiles = []
 
         self.rect = pg.Rect(rect)
 
@@ -24,7 +23,6 @@ class HexGrid:
                 tile = HexTile(j * radius * 3 ** 0.5 + i % 2 * radius * 3 ** 0.5 / 2,
                                i * radius * 1.5, radius, (i, j), self.surface)
                 self.grid[i].append(tile)
-                self.all_tiles.append(tile)
 
         self.scale = 1
         self.delta_pos = [0, 0]
@@ -40,7 +38,7 @@ class HexGrid:
     def draw(self, surface: pg.Surface):
         self.surface.fill((0, 0, 0))
 
-        for tile in self.all_tiles:
+        for tile in self:
             tile.draw()
 
         if self.chosen is not None:
@@ -82,7 +80,18 @@ class HexGrid:
 
     def collide_point(self, x: float, y: float):
         x, y = self.relative_pos(x, y)
-        collided = tuple(filter(lambda tile: tile.collide_point(x, y), self.all_tiles))
+        collided = tuple(filter(lambda tile: tile.collide_point(x, y), self))
         if collided:
             return min(collided, key=lambda tile: tile.distance(x, y))
         return None
+
+    def __getitem__(self, i, j):
+        return self.grid[i][j]
+
+    def __setitem__(self, key, value):
+        self.grid[key[0]][key[1]] = value
+
+    def __iter__(self):
+        for i in self.grid:
+            for j in i:
+                yield j
