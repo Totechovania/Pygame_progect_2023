@@ -1,7 +1,7 @@
 import pygame as pg
 from IFrame import IFrame
-from Signals import KillEntireApp, NewFrame, KillTopFrame
-from utilities import draw_text, load_image
+from Signals import KillEntireApp, NewFrame
+from utilities import draw_text, load_image, exit, back
 from Button import Button
 from Frames.Settings import Settings
 from Frames.ChooseMode import ChooseMode
@@ -23,13 +23,10 @@ class MainMenu(IFrame):
                 raise KillEntireApp
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    raise KillTopFrame
+                    back()
         self.draw_fon()
         self.buttons.update(events)
         self.buttons.draw(shared.screen)
-
-    def exit(self):
-        raise KillEntireApp
 
     def settings(self):
         raise NewFrame(Settings())
@@ -44,7 +41,7 @@ class MainMenu(IFrame):
     def generate_buttons(self):
         exit_button = Button(
             (self.w * 0.958, 0, int(0.04 * self.w), int(0.04 * self.w)), 'leave_button.png', self.buttons)
-        exit_button.connect(self.exit)
+        exit_button.connect(exit)
 
         settings_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'settings_button.png', self.buttons)
         settings_button.connect(self.settings)
