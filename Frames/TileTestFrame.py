@@ -1,21 +1,25 @@
 from IFrame import IFrame
 from Signals import *
 import shared
-from Tile import HexGrid
+from HexGrid import HexGrid
 import pygame as pg
 
 
 class TileTestFrame(IFrame):
     def __init__(self):
-        self.grid = HexGrid(40, 40, 20, (100, 100))
+        self.grid = HexGrid(100, 50, 40, (20, 20, round(shared.WIDTH * 0.8), round(shared.HEIGHT * 0.8)))
         self.flag = False
 
     def update(self):
-
         shared.screen.fill((255, 255, 255))
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 raise KillEntireApp
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    clicked = self.grid.collide_point(*event.pos)
+                    if clicked:
+                        clicked.color = (0, 0, 0)
             if event.type == pg.MOUSEWHEEL:
                 x, y = pg.mouse.get_pos()
                 if event.y < 0:
