@@ -3,6 +3,7 @@ from Signals import *
 import shared
 from HexGrid import HexGrid
 import pygame as pg
+from Tile import HexTile, EmptyTile
 
 
 class TileTestFrame(IFrame):
@@ -18,8 +19,11 @@ class TileTestFrame(IFrame):
             if event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     clicked = self.grid.collide_point(*event.pos)
-                    if clicked:
-                        clicked.color = (0, 0, 0)
+                    if isinstance(clicked, EmptyTile):
+                        self.grid.set_tile(*clicked.indexes)
+                    elif isinstance(clicked, HexTile):
+                        self.grid.set_empty(*clicked.indexes)
+
             if event.type == pg.MOUSEWHEEL:
                 x, y = pg.mouse.get_pos()
                 if event.y < 0:

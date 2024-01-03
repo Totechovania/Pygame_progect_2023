@@ -1,5 +1,7 @@
+import random
+
 import pygame as pg
-from Tile import HexTile
+from Tile import HexTile, EmptyTile
 
 
 class HexGrid:
@@ -20,8 +22,11 @@ class HexGrid:
         for i in range(h):
             self.grid.append([])
             for j in range(w):
-                tile = HexTile(j * radius * 3 ** 0.5 + i % 2 * radius * 3 ** 0.5 / 2,
-                               i * radius * 1.5, radius, (i, j), self.surface)
+                x, y = self.get_tile_coords(i, j)
+                if random.randint(0, 3) == 0:
+                    tile = HexTile(x, y,  radius, (i, j), self.surface)
+                else:
+                    tile = EmptyTile(x, y,  radius, (i, j), self.surface)
                 self.grid[i].append(tile)
 
         self.scale = 1
@@ -34,6 +39,9 @@ class HexGrid:
         self.MIN_SCALE = min(self.rect.bottom/(surf_h * 1.1), self.rect.right/(surf_w * 1.1))
 
         self.chosen = None
+
+    def get_tile_coords(self, i, j):
+        return j * self.radius * 3 ** 0.5 + i % 2 * self.radius * 3 ** 0.5 / 2, i * self.radius * 1.5
 
     def draw(self, surface: pg.Surface):
 
@@ -96,3 +104,12 @@ class HexGrid:
         for i in self.grid:
             for j in i:
                 yield j
+
+    def set_empty(self, i, j):
+        x, y = self.get_tile_coords(i, j)
+        self[i, j] = EmptyTile(x, y,  self.radius, (i, j), self.surface)
+
+    def set_tile(self, i, j):
+        x, y = self.get_tile_coords(i, j)
+        self[i, j] = HexTile(x, y,  self.radius, (i, j), self.surface)
+
