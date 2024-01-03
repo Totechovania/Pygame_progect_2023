@@ -1,9 +1,9 @@
 from IFrame import IFrame
 from Button import Button
-from utilities import draw_text, load_image
+from utilities import draw_text, load_image, back, exit
 import pygame as pg
 import shared
-from Signals import KillEntireApp, KillTopFrame, NewFrame
+from Signals import KillEntireApp, NewFrame
 from Frames.FightMenuWindow import FightMenuWindow
 from Frames.Download import Download
 from Frames.Campany import Campany
@@ -25,16 +25,10 @@ class ChooseMode(IFrame):
                 raise KillEntireApp
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    raise KillTopFrame
+                    back()
         self.draw_fon()
         self.buttons.update(events)
         self.buttons.draw(shared.screen)
-
-    def exit(self):
-        raise KillEntireApp
-
-    def back(self):
-        raise KillTopFrame
 
     def fight(self):
         raise NewFrame(FightMenuWindow())
@@ -51,10 +45,10 @@ class ChooseMode(IFrame):
     def generate_buttons(self):
         exit_button = Button(
             (self.w * 0.958, 0, int(0.04 * self.w), int(0.04 * self.w)), 'leave_button.png', self.buttons)
-        exit_button.connect(self.exit)
+        exit_button.connect(exit)
 
         back_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'back.png', self.buttons)
-        back_button.connect(self.back)
+        back_button.connect(back)
 
         fight_button = Button((self.w * 0.4, self.h * 0.1, int(self.w * 0.2), int(self.w * 0.08)), 'rectangle.png',
                               self.buttons)
