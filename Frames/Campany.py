@@ -1,6 +1,6 @@
 from IFrame import IFrame
 from Button import Button
-from utilities import load_image
+from utilities import load_image, back, exit
 import pygame as pg
 import shared
 from Signals import KillEntireApp, KillTopFrame
@@ -29,16 +29,10 @@ class Campany(IFrame):
     def generate_buttons(self):
         exit_button = Button(
             (self.w * 0.958, 0, int(0.04 * self.w), int(0.04 * self.w)), 'leave_button.png', self.buttons)
-        exit_button.connect(self.exit)
+        exit_button.connect(exit)
 
         back_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'back.png', self.buttons)
-        back_button.connect(self.back)
-
-    def exit(self):
-        raise KillEntireApp
-
-    def back(self):
-        raise KillTopFrame
+        back_button.connect(back)
 
     def draw_fon(self):
         shared.screen.blit(self.image_fon, (0, 0))
