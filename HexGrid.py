@@ -3,7 +3,7 @@ from Tile import HexTile
 
 
 class HexGrid:
-    def __init__(self, w: int, h: int, radius: float, rect: tuple[int, int, int, int]|pg.Rect):
+    def __init__(self, w: int, h: int, radius: float, rect: tuple[int, int, int, int] | pg.Rect):
         self.w = w
         self.h = h
         self.radius = radius
@@ -36,13 +36,6 @@ class HexGrid:
         self.chosen = None
 
     def draw(self, surface: pg.Surface):
-        self.surface.fill((0, 0, 0))
-
-        for tile in self:
-            tile.draw()
-
-        if self.chosen is not None:
-            self.chosen.draw_stroke()
 
         self.image.fill((0, 0, 0))
 
@@ -53,6 +46,14 @@ class HexGrid:
         self.image.blit(scaled, (0, 0))
 
         surface.blit(self.image, (self.rect.x, self.rect.y))
+
+    def draw_tiles(self):
+        self.surface.fill((0, 0, 0))
+        for tile in self:
+            tile.draw()
+
+        if self.chosen is not None:
+            self.chosen.draw_stroke()
 
     def update(self):
         x, y = pg.mouse.get_pos()

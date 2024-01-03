@@ -28,6 +28,7 @@ class TileTestFrame(IFrame):
                     self.grid.relative_scale(x, y, self.grid.scale * 1.1)
 
         if pg.mouse.get_pressed()[1]:
+
             dx, dy = pg.mouse.get_rel()
             if self.flag:
                 self.grid.move(dx, dy)
@@ -36,4 +37,7 @@ class TileTestFrame(IFrame):
         else:
             self.flag = False
         self.grid.update()
+
+        self.grid.draw_tiles()
         self.grid.draw(shared.screen)
+
