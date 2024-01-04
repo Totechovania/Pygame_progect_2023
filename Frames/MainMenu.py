@@ -1,12 +1,11 @@
 import pygame as pg
-
-from Frames.PopUpWindow import PopUpWindow
 from IFrame import IFrame
-from Signals import *
-from utilities import draw_text, load_image, play_sound
+from Signals import KillEntireApp, NewFrame
+from utilities import draw_text, load_image, open_pop_window, back, create_particles
 from Button import Button
 from Frames.Settings import Settings
 from Frames.ChooseMode import ChooseMode
+# from AnimatedFon import AnimatedSprite
 import shared
 
 
@@ -16,6 +15,8 @@ class MainMenu(IFrame):
         self.h = shared.HEIGHT
         self.image_fon = pg.transform.scale(load_image('fon_menu.png'), (self.w, self.h))
         self.buttons = pg.sprite.Group()
+        self.particles = pg.sprite.Group()
+        self.fon = pg.sprite.Group()
         self.generate_buttons()
 
     def update(self):
@@ -25,20 +26,21 @@ class MainMenu(IFrame):
                 raise KillEntireApp
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    raise KillTopFrame
-        self.buttons.update(events)
-
+                    back()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                create_particles(pg.mouse.get_pos(), self.particles, 'coin.png')
         self.draw_fon()
+        self.fon.update()
+        self.fon.draw(shared.screen)
+        self.particles.update()
+        self.buttons.update(events)
+        self.particles.draw(shared.screen)
         self.buttons.draw(shared.screen)
 
     def settings(self):
-        play_sound('button_press.mp3')
         raise NewFrame(Settings())
 
-
-
     def start_button(self):
-        play_sound('button_press.mp3')
         raise NewFrame(ChooseMode())
 
     def draw_fon(self):
@@ -46,9 +48,10 @@ class MainMenu(IFrame):
         draw_text('MyAntiyoy', self.w // 2.58, self.h // 4.25, '#00FF7F', int(self.w * 0.058))
 
     def generate_buttons(self):
+        # AnimatedSprite(load_image("dragon.png", -1), 8, 2, self.fon)
         exit_button = Button(
             (self.w * 0.958, 0, int(0.04 * self.w), int(0.04 * self.w)), 'leave_button.png', self.buttons)
-        exit_button.connect(self.open_pop_up_window)
+        exit_button.connect(open_pop_window)
 
         settings_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'settings_button.png', self.buttons)
         settings_button.connect(self.settings)
@@ -56,17 +59,3 @@ class MainMenu(IFrame):
         game_start_button = Button((self.w * 0.46, self.h * 0.5, int(0.08 * self.w), int(0.08 * self.w)),
                                    'game_start_button.png', self.buttons)
         game_start_button.connect(self.start_button)
-
-    def close_app(self):
-        play_sound('button_press.mp3')
-        raise KillEntireApp
-
-    def back(self):
-        play_sound('button_press.mp3')
-        raise KillTopFrame
-
-    def open_pop_up_window(self):
-        self.draw_fon()
-        play_sound('button_press.mp3')
-        self.buttons.draw(shared.screen)
-        raise NewFrame(PopUpWindow(shared.screen.copy()))
