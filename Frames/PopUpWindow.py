@@ -1,17 +1,18 @@
 from IFrame import IFrame
 from Button import Button
-from utilities import draw_text, blur_image, play_sound
+from utilities import draw_text, blur_image, back, create_particles
 import pygame as pg
 import shared
-from Signals import KillEntireApp, KillTopFrame
+from Signals import KillEntireApp
 
 
 class PopUpWindow(IFrame):
-    def __init__(self, image):
+    def __init__(self):
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
-        self.img = blur_image(image)
+        self.img = blur_image(shared.screen)
         self.buttons = pg.sprite.Group()
+        self.particles = pg.sprite.Group()
         self.generate_buttons()
 
     def update(self):
@@ -21,9 +22,13 @@ class PopUpWindow(IFrame):
                 raise KillEntireApp
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    raise KillTopFrame
+                    back()
+            if event.type == pg.MOUSEBUTTONDOWN:
+                create_particles(pg.mouse.get_pos(), self.particles, 'coin.png')
+        self.particles.update()
         self.draw_fon()
         self.buttons.update(events)
+        self.particles.draw(shared.screen)
         self.buttons.draw(shared.screen)
 
     def generate_buttons(self):
@@ -33,7 +38,7 @@ class PopUpWindow(IFrame):
 
         back_button = Button((self.w * 0.335, self.h * 0.55, self.w * 0.13, self.h * 0.15), 'rectangle.png',
                              self.buttons)
-        back_button.connect(self.back)
+        back_button.connect(back)
 
     def draw_fon(self):
         shared.screen.blit(self.img, (0, 0))
@@ -42,10 +47,4 @@ class PopUpWindow(IFrame):
         draw_text('Вернуться', self.w * 0.35, self.h * 0.6, '#000000', int(self.h * 0.07))
 
     def close_app(self):
-        play_sound('button_press.mp3')
         raise KillEntireApp
-
-    def back(self):
-        play_sound('button_press.mp3')
-        raise KillTopFrame
-
