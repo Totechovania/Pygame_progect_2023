@@ -30,7 +30,7 @@ class Settings(IFrame):
                 raise KillEntireApp
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    back()
+                    raise KillTopFrame
                 if self.flag_width:
                     if len(str(self.width)) < 10:
                         if event.key == pg.K_0:
