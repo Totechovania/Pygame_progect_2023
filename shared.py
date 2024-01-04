@@ -9,7 +9,9 @@ __all__ = (
     'FPS',
     'screen',
     'clock',
+    'fullscreen'
 )
+
 
 FPS: int
 WIDTH: int
@@ -18,3 +20,4 @@ screen: pg.Surface
 clock: pg.time.Clock
 sound: bool
 music: bool
+fullscreen: bool
