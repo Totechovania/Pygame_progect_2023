@@ -119,6 +119,7 @@ def open_pop_window():
 
 
 def back():
+    play_sound('button_press.mp3')
     raise KillTopFrame
 
 
@@ -132,6 +133,7 @@ def hexagon_from_center(center_x: float, center_y: float, radius: float) -> list
         y = start_x * sin(angle) + start_y * cos(angle)
         vertices.append((round(x + center_x),
                          round(y + center_y)))
+
     return vertices
 
 
@@ -155,3 +157,15 @@ def create_particles(position, groop, name):
 def get_size():
     data = load_json_file()
     return data['WIDTH'], data['HEIGHT']
+
+
+def play_sound(sound_name: str) -> None:
+    if shared.sound:
+        sound = pg.mixer.Sound(os.path.join("data/", sound_name))
+        sound.play(loops=0)
+
+
+def play_background_music(music_name: str) -> None:
+    if shared.music:
+        pg.mixer.music.load(os.path.join("data/", music_name))
+        pg.mixer.music.play(loops=-1)

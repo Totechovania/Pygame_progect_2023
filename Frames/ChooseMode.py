@@ -1,7 +1,7 @@
 from Frames.PopUpWindow import PopUpWindow
 from IFrame import IFrame
 from Button import Button
-from utilities import draw_text, load_image
+from utilities import draw_text, load_image, play_sound
 import pygame as pg
 import shared
 from Signals import *
@@ -32,15 +32,19 @@ class ChooseMode(IFrame):
         self.buttons.draw(shared.screen)
 
     def fight(self):
+        play_sound('button_press.mp3')
         raise NewFrame(FightMenuWindow())
 
     def redactor(self):
+        play_sound('button_press.mp3')
         raise NewFrame(Redactor())
 
     def download(self):
+        play_sound('button_press.mp3')
         raise NewFrame(Download())
 
     def campany(self):
+        play_sound('button_press.mp3')
         raise NewFrame(Campany())
 
     def generate_buttons(self):
@@ -75,9 +79,11 @@ class ChooseMode(IFrame):
         draw_text('Загрузить', self.w // 2.35, self.h // 1.62, '#08E8DE', int(self.w * 0.045))
 
     def back(self):
+        play_sound('button_press.mp3')
         raise KillTopFrame
 
     def open_pop_up_window(self):
         self.draw_fon()
         self.buttons.draw(shared.screen)
+        play_sound('button_press.mp3')
         raise NewFrame(PopUpWindow(shared.screen.copy()))

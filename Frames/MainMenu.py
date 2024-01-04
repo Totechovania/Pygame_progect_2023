@@ -3,7 +3,7 @@ import pygame as pg
 from Frames.PopUpWindow import PopUpWindow
 from IFrame import IFrame
 from Signals import *
-from utilities import draw_text, load_image
+from utilities import draw_text, load_image, play_sound
 from Button import Button
 from Frames.Settings import Settings
 from Frames.ChooseMode import ChooseMode
@@ -32,9 +32,13 @@ class MainMenu(IFrame):
         self.buttons.draw(shared.screen)
 
     def settings(self):
+        play_sound('button_press.mp3')
         raise NewFrame(Settings())
 
+
+
     def start_button(self):
+        play_sound('button_press.mp3')
         raise NewFrame(ChooseMode())
 
     def draw_fon(self):
@@ -54,12 +58,15 @@ class MainMenu(IFrame):
         game_start_button.connect(self.start_button)
 
     def close_app(self):
+        play_sound('button_press.mp3')
         raise KillEntireApp
 
     def back(self):
+        play_sound('button_press.mp3')
         raise KillTopFrame
 
     def open_pop_up_window(self):
         self.draw_fon()
+        play_sound('button_press.mp3')
         self.buttons.draw(shared.screen)
         raise NewFrame(PopUpWindow(shared.screen.copy()))

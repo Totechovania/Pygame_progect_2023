@@ -1,6 +1,6 @@
 from IFrame import IFrame
 from Button import Button
-from utilities import draw_text, load_image, load_json_file, change_json_file, set_default_settings
+from utilities import draw_text, load_image, load_json_file, change_json_file, set_default_settings, play_sound
 import pygame as pg
 import shared
 from Signals import *
@@ -150,26 +150,31 @@ class Settings(IFrame):
             shared.screen.blit(self.image_check, (self.w * 0.6549, self.h * 0.38))
 
     def change_width(self):
+        play_sound('button_press.mp3')
         self.flag_width = True
         self.flag_height = False
 
     def change_height(self):
+        play_sound('button_press.mp3')
         self.flag_height = True
         self.flag_width = False
 
     def change_fullscreen_settings(self):
+        play_sound('button_press.mp3')
         if self.fullscreen:
             self.fullscreen = False
         else:
             self.fullscreen = True
 
     def change_volume_settings(self):
+        play_sound('button_press.mp3')
         if self.sound:
             self.sound = False
         else:
             self.sound = True
 
     def change_music_settings(self):
+        play_sound('button_press.mp3')
         if self.music:
             self.music = False
         else:
@@ -183,11 +188,14 @@ class Settings(IFrame):
         data['WIDTH'] = self.width
         data['FULLSCREEN'] = self.fullscreen
         change_json_file(data)
+        play_sound('button_press.mp3')
         raise KillEntireApp
 
     def back(self):
+        play_sound('button_press.mp3')
         raise KillTopFrame
 
     def open_pop_up_window(self):
+        play_sound('button_press.mp3')
         raise NewFrame(PopUpWindow(shared.screen.copy()))
 
