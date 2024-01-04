@@ -4,7 +4,6 @@ import shared
 import pygame as pg
 import os
 from PIL import Image, ImageFilter
-from pyautogui import screenshot
 from Signals import NewFrame, KillTopFrame, KillEntireApp
 from math import cos, sin, pi
 import json
