@@ -27,7 +27,8 @@ def set_shared_variables():
     h = info.current_h
     if not os.path.exists('settings.json'):
         with open('settings.json', 'w') as f:
-            json.dump({"FULLSCREEN": True, "WIDTH": w * 0.581, "HEIGHT": h * 0.55, "SOUND": True, "MUSIC": True}, f)
+            json.dump(
+                {"FULLSCREEN": True, "WIDTH": int(w * 0.581), "HEIGHT": int(h * 0.55), "SOUND": True, "MUSIC": True}, f)
 
     with open('settings.json', 'r') as f:
         f_data = json.load(f)
@@ -45,11 +46,11 @@ def set_shared_variables():
                 shared.screen = pg.display.set_mode((shared.WIDTH, shared.HEIGHT))
         except Exception:
             data = load_json_file()
-            data['HEIGHT'] = 800
-            data['WIDTH'] = 2000
+            data['HEIGHT'] = int(h * 0.55)
+            data['WIDTH'] = int(w * 0.581)
             change_json_file(data)
-            shared.WIDTH = f_data['WIDTH']
-            shared.HEIGHT = f_data['HEIGHT']
+            shared.WIDTH = data['WIDTH']
+            shared.HEIGHT = data['HEIGHT']
             if shared.fullscreen:
                 shared.screen = pg.display.set_mode((shared.WIDTH, shared.HEIGHT), pg.FULLSCREEN)
             else:
@@ -98,8 +99,8 @@ def set_default_settings():
     h = info.current_h
     data['SOUND'] = True
     data['MUSIC'] = True
-    data['HEIGHT'] = h * 0.55
-    data['WIDTH'] = w * 0.581
+    data['HEIGHT'] = int(h * 0.55)
+    data['WIDTH'] = int(w * 0.581)
     data['FULLSCREEN'] = True
     change_json_file(data)
     raise KillEntireApp
@@ -119,7 +120,6 @@ def open_pop_window():
 
 
 def back():
-    play_sound('button_press.mp3')
     raise KillTopFrame
 
 
@@ -133,7 +133,6 @@ def hexagon_from_center(center_x: float, center_y: float, radius: float) -> list
         y = start_x * sin(angle) + start_y * cos(angle)
         vertices.append((round(x + center_x),
                          round(y + center_y)))
-
     return vertices
 
 
@@ -157,15 +156,3 @@ def create_particles(position, groop, name):
 def get_size():
     data = load_json_file()
     return data['WIDTH'], data['HEIGHT']
-
-
-def play_sound(sound_name: str) -> None:
-    if shared.sound:
-        sound = pg.mixer.Sound(os.path.join("data/", sound_name))
-        sound.play(loops=0)
-
-
-def play_background_music(music_name: str) -> None:
-    if shared.music:
-        pg.mixer.music.load(os.path.join("data/", music_name))
-        pg.mixer.music.play(loops=-1)
