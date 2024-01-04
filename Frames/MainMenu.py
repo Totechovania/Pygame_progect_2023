@@ -1,7 +1,9 @@
 import pygame as pg
+
+from Frames.PopUpWindow import PopUpWindow
 from IFrame import IFrame
-from Signals import KillEntireApp, NewFrame
-from utilities import draw_text, load_image, exit, back
+from Signals import *
+from utilities import draw_text, load_image
 from Button import Button
 from Frames.Settings import Settings
 from Frames.ChooseMode import ChooseMode
@@ -23,9 +25,10 @@ class MainMenu(IFrame):
                 raise KillEntireApp
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    back()
-        self.draw_fon()
+                    raise KillTopFrame
         self.buttons.update(events)
+
+        self.draw_fon()
         self.buttons.draw(shared.screen)
 
     def settings(self):
@@ -41,7 +44,7 @@ class MainMenu(IFrame):
     def generate_buttons(self):
         exit_button = Button(
             (self.w * 0.958, 0, int(0.04 * self.w), int(0.04 * self.w)), 'leave_button.png', self.buttons)
-        exit_button.connect(exit)
+        exit_button.connect(self.open_pop_up_window)
 
         settings_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'settings_button.png', self.buttons)
         settings_button.connect(self.settings)
@@ -49,3 +52,14 @@ class MainMenu(IFrame):
         game_start_button = Button((self.w * 0.46, self.h * 0.5, int(0.08 * self.w), int(0.08 * self.w)),
                                    'game_start_button.png', self.buttons)
         game_start_button.connect(self.start_button)
+
+    def close_app(self):
+        raise KillEntireApp
+
+    def back(self):
+        raise KillTopFrame
+
+    def open_pop_up_window(self):
+        self.draw_fon()
+        self.buttons.draw(shared.screen)
+        raise NewFrame(PopUpWindow(shared.screen.copy()))

@@ -4,8 +4,7 @@ import shared
 import pygame as pg
 import os
 from PIL import Image, ImageFilter
-from pyautogui import screenshot
-from Signals import NewFrame, KillTopFrame
+from Signals import *
 from math import cos, sin, pi
 
 
@@ -21,8 +20,8 @@ def apply_global_settings():
 
 def set_shared_variables():
     display_info = pg.display.Info()
-    shared.WIDTH = display_info.current_w
-    shared.HEIGHT = display_info.current_h
+    shared.WIDTH = display_info.current_w * 0.8
+    shared.HEIGHT = display_info.current_h * 0.8
     shared.all_buttons_cords = []
     shared.sound = True
     shared.music = True
@@ -68,21 +67,13 @@ def change_music_settings():
         shared.music = True
 
 
-def convert_image(filename):
-    with Image.open('data/' + filename) as img:
-        img.load()
-        img = img.filter(ImageFilter.GaussianBlur(20))
-        img.save('data/' + filename)
-
-
-def exit():
-    from Frames.PopUpWindow import PopUpWindow
-    screenshot('data/screenshot.png')
-    raise NewFrame(PopUpWindow('screenshot.png'))
-
-
-def back():
-    raise KillTopFrame
+def blur_image(img, amt=10):
+    raw_str = pg.image.tostring(img, 'RGBA', False)
+    img = Image.frombytes('RGBA', img.get_size(), raw_str)
+    img = img.filter(ImageFilter.GaussianBlur(amt))
+    raw_str = img.tobytes('raw', 'RGBA')
+    surf = pg.image.fromstring(raw_str, img.size, 'RGBA')
+    return surf
 
 
 def hexagon_from_center(center_x: float, center_y: float, radius: float) -> list[tuple[int, int]]:

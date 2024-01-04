@@ -3,6 +3,7 @@ import pygame as pg
 from Signals import *
 import shared
 import time
+from Frames.BlurTestFrame import BlurTestFrame
 
 
 class TestFrame(IFrame):
@@ -43,8 +44,8 @@ class TestFrame(IFrame):
                 if event.key == pg.K_ESCAPE:
                     raise KillTopFrame
                 if event.key == pg.K_n:
-                    raise NewFrame(TestFrame(f'TestFrame{self.n}', n=self.n + 1,
-                                   supposed_to_be='Пример создания фреймов.'))
+                    self.draw_text()
+                    raise NewFrame(BlurTestFrame(shared.screen.copy()))
 
         self.draw_text()
 
