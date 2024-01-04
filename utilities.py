@@ -79,21 +79,13 @@ def set_default_settings():
     raise KillEntireApp
 
 
-def convert_image(filename):
-    with Image.open('data/' + filename) as img:
-        img.load()
-        img = img.filter(ImageFilter.GaussianBlur(20))
-        img.save('data/' + filename)
-
-
-def open_pop_window():
-    from Frames.PopUpWindow import PopUpWindow
-    screenshot('data/screenshot.png')
-    raise NewFrame(PopUpWindow('screenshot.png'))
-
-
-def back():
-    raise KillTopFrame
+def blur_image(img, amt=10):
+    raw_str = pg.image.tostring(img, 'RGBA', False)
+    img = Image.frombytes('RGBA', img.get_size(), raw_str)
+    img = img.filter(ImageFilter.GaussianBlur(amt))
+    raw_str = img.tobytes('raw', 'RGBA')
+    surf = pg.image.fromstring(raw_str, img.size, 'RGBA')
+    return surf
 
 
 def hexagon_from_center(center_x: float, center_y: float, radius: float) -> list[tuple[int, int]]:
@@ -106,4 +98,5 @@ def hexagon_from_center(center_x: float, center_y: float, radius: float) -> list
         y = start_x * sin(angle) + start_y * cos(angle)
         vertices.append((round(x + center_x),
                          round(y + center_y)))
+
     return vertices
