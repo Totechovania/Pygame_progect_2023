@@ -1,10 +1,10 @@
 from IFrame import IFrame
 from Button import Button
-from utilities import draw_text, load_image, load_json_file, change_json_file, set_default_settings, play_sound
+from utilities import draw_text, load_image, back, open_pop_window, load_json_file, change_json_file, \
+    set_default_settings, create_particles, get_size
 import pygame as pg
 import shared
-from Signals import *
-from Frames.PopUpWindow import PopUpWindow
+from Signals import KillEntireApp
 
 
 class Settings(IFrame):
@@ -17,10 +17,12 @@ class Settings(IFrame):
         self.flag_height = False
         self.sound = shared.sound
         self.music = shared.music
-        self.height = shared.HEIGHT
-        self.width = shared.WIDTH
+        size = get_size()
+        self.height = size[1]
+        self.width = size[0]
         self.fullscreen = shared.fullscreen
         self.buttons = pg.sprite.Group()
+        self.particles = pg.sprite.Group()
         self.generate_buttons()
 
     def update(self):
@@ -30,7 +32,7 @@ class Settings(IFrame):
                 raise KillEntireApp
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    raise KillTopFrame
+                    back()
                 if self.flag_width:
                     if len(str(self.width)) < 10:
                         if event.key == pg.K_0:
@@ -53,11 +55,11 @@ class Settings(IFrame):
                             self.width = int(str(self.width) + '8')
                         if event.key == pg.K_9:
                             self.width = int(str(self.width) + '9')
-                        if event.key == pg.K_BACKSPACE:
-                            try:
-                                self.width = int(str(self.width)[:-1])
-                            except Exception:
-                                self.width = ''
+                    if event.key == pg.K_BACKSPACE:
+                        try:
+                            self.width = int(str(self.width)[:-1])
+                        except Exception:
+                            self.width = ''
                 if self.flag_height:
                     if len(str(self.height)) < 10:
                         if event.key == pg.K_0:
@@ -80,26 +82,30 @@ class Settings(IFrame):
                             self.height = int(str(self.height) + '8')
                         if event.key == pg.K_9:
                             self.height = int(str(self.height) + '9')
-                        if event.key == pg.K_BACKSPACE:
-                            try:
-                                self.height = int(str(self.height)[:-1])
-                            except Exception:
-                                self.height = ''
+                    if event.key == pg.K_BACKSPACE:
+                        try:
+                            self.height = int(str(self.height)[:-1])
+                        except Exception:
+                            self.height = ''
             if event.type == pg.KEYUP:
                 if event.key == pg.K_RETURN:
                     self.flag_width = False
                     self.flag_height = False
+            if event.type == pg.MOUSEBUTTONDOWN:
+                create_particles(pg.mouse.get_pos(), self.particles, 'coin.png')
+        self.particles.update()
         self.draw_fon()
+        self.particles.draw(shared.screen)
         self.buttons.update(events)
         self.buttons.draw(shared.screen)
 
     def generate_buttons(self):
         exit_button = Button(
             (self.w * 0.958, 0, int(0.04 * self.w), int(0.04 * self.w)), 'leave_button.png', self.buttons)
-        exit_button.connect(self.open_pop_up_window)
+        exit_button.connect(open_pop_window)
 
         back_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'back.png', self.buttons)
-        back_button.connect(self.back)
+        back_button.connect(back)
 
         sound_check_box = Button((self.w * 0.65, self.h * 0.175, self.w * 0.022, self.h * 0.05), 'check_box.png',
                                  self.buttons)
@@ -123,8 +129,7 @@ class Settings(IFrame):
 
         set_new_settings_button = Button((self.w * 0.375, self.h * 0.68, self.w * 0.26, self.h * 0.09),
                                          'set_default.png', self.buttons)
-        set_new_settings_button.connect(
-            self.set_new_settings)
+        set_new_settings_button.connect(self.set_new_settings)
 
         set_default_settings_button = Button((self.w * 0.375, self.h * 0.78, self.w * 0.26, self.h * 0.09),
                                              'set_default.png', self.buttons)
@@ -150,31 +155,26 @@ class Settings(IFrame):
             shared.screen.blit(self.image_check, (self.w * 0.6549, self.h * 0.38))
 
     def change_width(self):
-        play_sound('button_press.mp3')
         self.flag_width = True
         self.flag_height = False
 
     def change_height(self):
-        play_sound('button_press.mp3')
         self.flag_height = True
         self.flag_width = False
 
     def change_fullscreen_settings(self):
-        play_sound('button_press.mp3')
         if self.fullscreen:
             self.fullscreen = False
         else:
             self.fullscreen = True
 
     def change_volume_settings(self):
-        play_sound('button_press.mp3')
         if self.sound:
             self.sound = False
         else:
             self.sound = True
 
     def change_music_settings(self):
-        play_sound('button_press.mp3')
         if self.music:
             self.music = False
         else:
@@ -188,14 +188,4 @@ class Settings(IFrame):
         data['WIDTH'] = self.width
         data['FULLSCREEN'] = self.fullscreen
         change_json_file(data)
-        play_sound('button_press.mp3')
         raise KillEntireApp
-
-    def back(self):
-        play_sound('button_press.mp3')
-        raise KillTopFrame
-
-    def open_pop_up_window(self):
-        play_sound('button_press.mp3')
-        raise NewFrame(PopUpWindow(shared.screen.copy()))
-
