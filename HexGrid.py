@@ -89,9 +89,9 @@ class HexGrid:
         x, y = get_tile_coords(i, j, self.radius)
         self[i, j] = EmptyTile(x, y,  self.radius, (i, j))
 
-    def set_tile(self, i, j):
+    def set_tile(self, i, j,  color=None, owner: str | None = None, game_unit: GameUnit | None = None,):
         x, y = get_tile_coords(i, j, self.radius)
-        self[i, j] = HexTile(x, y,  self.radius, (i, j))
+        self[i, j] = HexTile(x, y,  self.radius, (i, j), color, owner, game_unit)
 
     def get_adjacent_indices(self, i, j):
         relevant = [[-1, 0], [0, -1], [1, 0], [0, 1]]

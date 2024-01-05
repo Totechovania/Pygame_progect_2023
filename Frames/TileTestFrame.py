@@ -52,6 +52,7 @@ class TileTestFrame(IFrame):
         self.chosen = self.grid.collide_point(*pg.mouse.get_pos())
 
         self.grid.draw_tiles()
+
         if self.chosen is not None:
             self.chosen.draw_stroke(self.grid.surface)
             indexes = self.chosen.indexes

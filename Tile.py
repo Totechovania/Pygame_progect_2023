@@ -6,7 +6,8 @@ from GameUnit import GameUnit
 
 
 class HexTile:
-    def __init__(self, x: float, y: float, radius: float, indexes: tuple[int, int],  color=None,):
+    def __init__(self, x: float, y: float, radius: float, indexes: tuple[int, int],
+                 color=None, owner=None, game_unit=None):
         if color is not None:
             self.color = color
         else:
@@ -22,8 +23,8 @@ class HexTile:
 
         self.indexes = indexes
 
-        self.owner = None
-        self.game_unit = None
+        self.owner = owner
+        self.game_unit = game_unit
 
     def collide_point(self, x: float, y: float):
         return self.rect.collidepoint(x, y)
