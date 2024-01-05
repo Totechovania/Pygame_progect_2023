@@ -31,10 +31,7 @@ class HexGrid:
         self.MAX_SCALE = min(self.rect.size) / (3 * radius)
         self.MIN_SCALE = min(self.rect.bottom/(surf_h * 1.1), self.rect.right/(surf_w * 1.1))
 
-
-
     def draw(self, surface: pg.Surface):
-
         self.image.fill((0, 0, 0, 0))
 
         scaled = pg.transform.scale_by(self.image, 1 / self.scale)
