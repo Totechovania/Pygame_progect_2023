@@ -1,4 +1,4 @@
-from GameUnits.GameUnit import GameUnit
+from GameEngine.GameUnits.GameUnit import GameUnit
 from Frames.IFrame import IFrame
 from Signals import *
 import shared

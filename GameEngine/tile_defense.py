@@ -1,6 +1,6 @@
-from Tile import HexTile, EmptyTile
-from GameUnits.Units import Unit
-from GameUnits.Buildings import Building
+from Tile import EmptyTile
+from GameEngine.GameUnits.Units import Unit
+from GameEngine.GameUnits.Buildings import Building
 
 
 def tile_defense(grid, x, y, owner) -> int:
