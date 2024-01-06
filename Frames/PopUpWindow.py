@@ -1,5 +1,5 @@
 from Frames.IFrame import IFrame
-from Button import Button
+from utilities.Button import Button
 from utilities.image import blur_image, draw_text
 import pygame as pg
 import shared

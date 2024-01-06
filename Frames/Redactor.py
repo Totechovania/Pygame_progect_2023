@@ -1,6 +1,6 @@
 from Frames.PopUpWindow import PopUpWindow
 from Frames.IFrame import IFrame
-from Button import Button
+from utilities.Button import Button
 #from utilities.utilities import play_sound
 from utilities.image import load_image
 import pygame as pg
