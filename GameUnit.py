@@ -1,5 +1,5 @@
 import pygame as pg
-from utilities import load_image
+from utilities.image import load_image
 
 
 class GameUnit(pg.sprite.Sprite):

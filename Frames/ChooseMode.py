@@ -6,6 +6,7 @@ import pygame as pg
 import shared
 from Signals import *
 from Frames.FightMenuWindow import FightMenuWindow
+from Frames.PopUpWindow import PopUpWindow
 from Frames.Download import Download
 from Frames.Campany import Campany
 from Frames.Redactor import Redactor

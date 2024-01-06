@@ -1,7 +1,7 @@
 import random
 
 import pygame as pg
-from utilities import hexagon_from_center
+from utilities.hexagons import hexagon_from_center
 from GameUnit import GameUnit
 
 

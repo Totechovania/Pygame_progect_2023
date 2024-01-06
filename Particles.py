@@ -1,5 +1,5 @@
 import pygame
-from utilities import load_image
+from utilities.image import load_image
 import random
 import shared
 
