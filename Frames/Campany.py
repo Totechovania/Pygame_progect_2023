@@ -1,5 +1,5 @@
 from Frames.PopUpWindow import PopUpWindow
-from IFrame import IFrame
+from Frames.IFrame import IFrame
 from Button import Button
 from utilities.Particles import create_particles
 from utilities.image import draw_text, load_image

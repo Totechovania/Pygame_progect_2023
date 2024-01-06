@@ -1,5 +1,5 @@
 from GameUnit import GameUnit
-from IFrame import IFrame
+from Frames.IFrame import IFrame
 from Signals import *
 import shared
 from HexGrid import HexGrid

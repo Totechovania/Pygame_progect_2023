@@ -1,5 +1,5 @@
 import shared
-from IFrame import IFrame
+from Frames.IFrame import IFrame
 from Signals import *
 import pygame as pg
 

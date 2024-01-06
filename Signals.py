@@ -1,4 +1,4 @@
-from IFrame import IFrame
+from Frames.IFrame import IFrame
 
 __all__ = (
     'Signal',
