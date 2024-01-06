@@ -30,6 +30,8 @@ class FrameController:
             self.handle_kill_top_frame()
         elif isinstance(signal, KillEntireApp):
             self.handle_kill_entire_app()
+        elif isinstance(signal, ApplySettings):
+            self.handle_apply_settings()
 
     def handle_new_frame(self, frame: IFrame):
         self.frames[-1].pause()
@@ -46,3 +48,7 @@ class FrameController:
         while self.frames:
             self.frames[-1].end()
             self.frames.pop()
+
+    def handle_apply_settings(self):
+        for frame in self.frames:
+            frame.apply_settings()

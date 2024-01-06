@@ -14,3 +14,5 @@ class IFrame:
     def resume(self):
         pass
 
+    def apply_settings(self):
+        pass

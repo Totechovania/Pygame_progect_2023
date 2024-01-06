@@ -5,6 +5,7 @@ __all__ = (
     'NewFrame',
     'KillTopFrame',
     'KillEntireApp',
+    'ApplySettings',
 )
 
 
@@ -22,4 +23,8 @@ class KillTopFrame(Signal):
 
 
 class KillEntireApp(Signal):
+    pass
+
+
+class ApplySettings(Signal):
     pass
