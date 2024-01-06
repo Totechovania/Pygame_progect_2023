@@ -1,10 +1,10 @@
 from Frames.PopUpWindow import PopUpWindow
 from Frames.IFrame import IFrame
 from utilities.Button import Button
-from utilities.change_settings import load_json_file, change_json_file, \
-    set_default_settings, get_size
+from utilities.change_settings import load_json_file, change_json_file, get_size
 from utilities.Particles import create_particles
 from utilities.image import draw_text, load_image
+from utilities.music import play_sound, play_background_music
 import pygame as pg
 import shared
 from Signals import *
@@ -30,6 +30,14 @@ class Settings(IFrame):
 
     def apply_settings(self):
         self.buttons.empty()
+        self.fullscreen = shared.fullscreen
+
+        if shared.fullscreen:
+            shared.screen = pg.display.set_mode((shared.fullscreen_w, shared.fullscreen_h), pg.FULLSCREEN)
+            shared.WIDTH = shared.fullscreen_w
+            shared.HEIGHT = shared.fullscreen_h
+        else:
+            shared.screen = pg.display.set_mode((shared.WIDTH, shared.HEIGHT))
 
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
@@ -39,7 +47,7 @@ class Settings(IFrame):
         self.flag_height = False
         self.sound = shared.sound
         self.music = shared.music
-        self.fullscreen = shared.fullscreen
+        play_background_music("music.mp3")
         self.generate_buttons()
 
     def update(self):
@@ -150,7 +158,7 @@ class Settings(IFrame):
 
         set_default_settings_button = Button((self.w * 0.375, self.h * 0.78, self.w * 0.26, self.h * 0.09),
                                              'set_default.png', self.buttons)
-        set_default_settings_button.connect(set_default_settings)
+        set_default_settings_button.connect(self.set_default_settings)
 
     def draw_fon(self):
         shared.screen.blit(self.image_fon, (0, 0))
@@ -172,43 +180,82 @@ class Settings(IFrame):
             shared.screen.blit(self.image_check, (self.w * 0.6549, self.h * 0.38))
 
     def change_width(self):
+        play_sound('button_press.mp3')
         self.flag_width = True
         self.flag_height = False
 
     def change_height(self):
+        play_sound('button_press.mp3')
         self.flag_height = True
         self.flag_width = False
 
     def change_fullscreen_settings(self):
+        play_sound('button_press.mp3')
         if self.fullscreen:
             self.fullscreen = False
         else:
             self.fullscreen = True
 
+
     def change_volume_settings(self):
+        play_sound('button_press.mp3')
         if self.sound:
             self.sound = False
         else:
             self.sound = True
 
     def change_music_settings(self):
+        play_sound('button_press.mp3')
         if self.music:
             self.music = False
         else:
             self.music = True
 
     def set_new_settings(self):
+        play_sound('button_press.mp3')
         data = load_json_file()
+        if not (500 < self.width < shared.fullscreen_w):
+            self.width = int(shared.fullscreen_w * 0.55)
+        if not (300 < self.height < shared.fullscreen_h):
+            self.height = int(shared.fullscreen_h * 0.581)
         data['SOUND'] = self.sound
         data['MUSIC'] = self.music
         data['HEIGHT'] = self.height
         data['WIDTH'] = self.width
         data['FULLSCREEN'] = self.fullscreen
         change_json_file(data)
+        shared.WIDTH = self.width
+        shared.HEIGHT = self.height
+        shared.music = self.music
+        shared.sound = self.sound
+        shared.fullscreen = self.fullscreen
+        raise ApplySettings
+
+    def set_default_settings(self):
+        play_sound('button_press.mp3')
+        data = load_json_file()
+        data['SOUND'] = True
+        data['MUSIC'] = True
+        data['HEIGHT'] = int(shared.fullscreen_h * 0.55)
+        data['WIDTH'] = int(shared.fullscreen_w * 0.581)
+        data['FULLSCREEN'] = True
+        change_json_file(data)
+        shared.WIDTH = int(shared.fullscreen_w * 0.581)
+        shared.HEIGHT = int(shared.fullscreen_h * 0.55)
+        shared.music = True
+        shared.sound = True
+        shared.fullscreen = True
+        self.sound = True
+        self.music = True
+        self.fullscreen = True
+        self.width = int(shared.fullscreen_w * 0.581)
+        self.height = int(shared.fullscreen_h * 0.55)
         raise ApplySettings
 
     def back(self):
+        play_sound('button_press.mp3')
         raise KillTopFrame
 
     def open_pop_up_window(self):
+        play_sound('button_press.mp3')
         raise NewFrame(PopUpWindow(shared.screen.copy()))
