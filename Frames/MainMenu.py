@@ -5,6 +5,7 @@ from Signals import *
 from utilities.Particles import create_particles
 from utilities.image import draw_text, load_image
 from utilities.Button import Button
+from utilities.music import play_sound
 from Frames.Settings import Settings
 from Frames.ChooseMode import ChooseMode
 # from AnimatedFon import AnimatedSprite
@@ -19,6 +20,19 @@ class MainMenu(IFrame):
         self.buttons = pg.sprite.Group()
         self.particles = pg.sprite.Group()
         self.fon = pg.sprite.Group()
+        self.generate_buttons()
+
+    def apply_settings(self):
+        self.buttons.empty()
+        if shared.fullscreen:
+            shared.screen = pg.display.set_mode((shared.fullscreen_w, shared.fullscreen_h), pg.FULLSCREEN)
+            shared.WIDTH = shared.fullscreen_w
+            shared.HEIGHT = shared.fullscreen_h
+        else:
+            shared.screen = pg.display.set_mode((shared.WIDTH, shared.HEIGHT))
+        self.w = shared.WIDTH
+        self.h = shared.HEIGHT
+        self.image_fon = pg.transform.scale(load_image('fon_menu.png'), (self.w, self.h))
         self.generate_buttons()
 
     def update(self):
@@ -40,9 +54,11 @@ class MainMenu(IFrame):
         self.buttons.draw(shared.screen)
 
     def settings(self):
+        play_sound('button_press.mp3')
         raise NewFrame(Settings())
 
     def start_button(self):
+        play_sound('button_press.mp3')
         raise NewFrame(ChooseMode())
 
     def draw_fon(self):
@@ -63,12 +79,15 @@ class MainMenu(IFrame):
         game_start_button.connect(self.start_button)
 
     def close_app(self):
+        play_sound('button_press.mp3')
         raise KillEntireApp
 
     def back(self):
+        play_sound('button_press.mp3')
         raise KillTopFrame
 
     def open_pop_up_window(self):
+        play_sound('button_press.mp3')
         self.draw_fon()
         self.buttons.draw(shared.screen)
         raise NewFrame(PopUpWindow(shared.screen.copy()))
