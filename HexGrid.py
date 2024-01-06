@@ -2,29 +2,25 @@ import random
 
 import pygame as pg
 from Tile import HexTile, EmptyTile
+from GameUnit import GameUnit
 
 
 class HexGrid:
-    def __init__(self, w: int, h: int, radius: float, rect: tuple[int, int, int, int] | pg.Rect):
+    def __init__(self, w: int, h: int, radius: float,
+                 rect: tuple[int, int, int, int] | pg.Rect,
+                 grid: list[list[HexTile | EmptyTile]]):
         self.w = w
         self.h = h
         self.radius = radius
-        self.grid = []
 
         self.rect = pg.Rect(rect)
 
+        self.grid = grid
+
         surf_w = round((w + (0.5 if h != 1 else 0)) * radius * 3 ** 0.5)
         surf_h = round((1.5 * h + 0.5) * radius)
-        self.surface = pg.Surface((surf_w, surf_h))
-
-        self.image = pg.Surface(self.rect.size)
-
-        for i in range(h):
-            self.grid.append([])
-            for j in range(w):
-                x, y = self.get_tile_coords(i, j)
-                tile = EmptyTile(x, y,  radius, (i, j))
-                self.grid[i].append(tile)
+        self.surface = pg.Surface((surf_w, surf_h), pg.SRCALPHA)
+        self.image = pg.Surface(self.rect.size, pg.SRCALPHA)
 
         self.scale = 1
         self.delta_pos = [0, 0]
@@ -35,14 +31,8 @@ class HexGrid:
         self.MAX_SCALE = min(self.rect.size) / (3 * radius)
         self.MIN_SCALE = min(self.rect.bottom/(surf_h * 1.1), self.rect.right/(surf_w * 1.1))
 
-        self.chosen = None
-
-    def get_tile_coords(self, i, j):
-        return j * self.radius * 3 ** 0.5 + i % 2 * self.radius * 3 ** 0.5 / 2, i * self.radius * 1.5
-
     def draw(self, surface: pg.Surface):
-
-        self.image.fill((0, 0, 0))
+        self.image.fill((0, 0, 0, 0))
 
         scaled = pg.transform.scale_by(self.image, 1 / self.scale)
         scaled.blit(self.surface, (self.delta_pos[0] / self.scale, self.delta_pos[1] / self.scale))
@@ -53,16 +43,9 @@ class HexGrid:
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
     def draw_tiles(self):
-        self.surface.fill((0, 0, 0))
+        self.surface.fill((0, 0, 0, 0))
         for tile in self:
             tile.draw(self.surface)
-
-        if self.chosen is not None:
-            self.chosen.draw_stroke(self.surface)
-
-    def update(self):
-        x, y = pg.mouse.get_pos()
-        self.chosen = self.collide_point(x, y)
 
     def move(self, dx, dy):
         self.delta_pos[0] += dx
@@ -91,8 +74,8 @@ class HexGrid:
             return min(collided, key=lambda tile: tile.distance(x, y))
         return None
 
-    def __getitem__(self, i, j):
-        return self.grid[i][j]
+    def __getitem__(self, key) -> HexTile:
+        return self.grid[key[0]][key[1]]
 
     def __setitem__(self, key, value):
         self.grid[key[0]][key[1]] = value
@@ -103,10 +86,55 @@ class HexGrid:
                 yield j
 
     def set_empty(self, i, j):
-        x, y = self.get_tile_coords(i, j)
+        x, y = get_tile_coords(i, j, self.radius)
         self[i, j] = EmptyTile(x, y,  self.radius, (i, j))
 
-    def set_tile(self, i, j):
-        x, y = self.get_tile_coords(i, j)
-        self[i, j] = HexTile(x, y,  self.radius, (i, j))
+    def set_tile(self, i, j,  color=None, owner: str | None = None, game_unit: GameUnit | None = None,):
+        x, y = get_tile_coords(i, j, self.radius)
+        self[i, j] = HexTile(x, y,  self.radius, (i, j), color, owner, game_unit)
 
+    def get_adjacent_indices(self, i, j):
+        relevant = [[-1, 0], [0, -1], [1, 0], [0, 1]]
+        if i % 2 == 0:
+            other = [[-1, -1], [1, -1]]
+        else:
+            other = [[-1, 1], [1, 1]]
+        relevant.extend(other)
+
+        adjacent = [(i + d[0], j + d[1]) for d in relevant]
+        adjacent = filter(lambda x: (0 <= x[0] < self.h) and (0 <= x[1] < self.w), adjacent)
+
+        return adjacent
+
+    def get_adjacent_tiles(self, i, j, empty_tiles=False):
+        return filter(lambda tile: empty_tiles or not isinstance(tile, EmptyTile),
+                      (self[i, j] for i, j in self.get_adjacent_indices(i, j)))
+
+    @classmethod
+    def empty(cls, w, h, radius, rect):
+        grid = []
+
+        for i in range(h):
+            grid.append([])
+            for j in range(w):
+                x, y = get_tile_coords(i, j, radius)
+                tile = EmptyTile(x, y, radius, (i, j))
+                grid[i].append(tile)
+
+        return cls(w, h, radius, rect, grid)
+
+    @classmethod
+    def filled(cls, w, h, radius, rect):
+        grid = []
+        for i in range(h):
+            grid.append([])
+            for j in range(w):
+                x, y = get_tile_coords(i, j, radius)
+                tile = HexTile(x, y, radius, (i, j))
+                grid[i].append(tile)
+
+        return cls(w, h, radius, rect, grid)
+
+
+def get_tile_coords(i, j, radius):
+    return j * radius * 3 ** 0.5 + i % 2 * radius * 3 ** 0.5 / 2, i * radius * 1.5

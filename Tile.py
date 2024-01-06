@@ -2,15 +2,16 @@ import random
 
 import pygame as pg
 from utilities import hexagon_from_center
+from GameUnit import GameUnit
 
 
 class HexTile:
-    def __init__(self, x: float, y: float, radius: float, indexes: tuple[int, int],  color=None,):
+    def __init__(self, x: float, y: float, radius: float, indexes: tuple[int, int],
+                 color=None, owner=None, game_unit=None):
         if color is not None:
             self.color = color
         else:
-            self.color = tuple(random.randint(0, 255) for _ in range(3))
-
+            self.color = (125, 125, 125)
         self.radius = radius
 
         width = round(3 ** 0.5 * self.radius)
@@ -21,6 +22,9 @@ class HexTile:
         self.center_y = y + height / 2
 
         self.indexes = indexes
+
+        self.owner = owner
+        self.game_unit = game_unit
 
     def collide_point(self, x: float, y: float):
         return self.rect.collidepoint(x, y)
@@ -34,10 +38,19 @@ class HexTile:
     def draw(self, surface: pg.Surface):
         hexagon = hexagon_from_center(self.center_x, self.center_y, self.radius)
         pg.draw.polygon(surface, self.color, hexagon,)
+        pg.draw.polygon(surface, (0, 0, 0), hexagon, round(self.radius / 20))
+        if self.game_unit is not None:
+            self.game_unit.draw(surface)
 
     def draw_stroke(self, surface: pg.Surface, color=(255, 255, 255)):
         hexagon = hexagon_from_center(self.center_x, self.center_y, self.radius)
         pg.draw.polygon(surface, color, hexagon, round(self.radius / 12))
+
+    def set_game_unit(self, game_unit: GameUnit):
+        if self.game_unit is not None:
+            raise ValueError("Tile already has a game unit")
+        self.game_unit = game_unit
+        self.game_unit.adjust_to_tile(self)
 
 
 class EmptyTile(HexTile):
@@ -45,6 +58,9 @@ class EmptyTile(HexTile):
         pass
 
     def draw(self, surface: pg.Surface):
+        pass
+
+    def set_game_unit(self, game_unit: GameUnit):
         pass
 
 
