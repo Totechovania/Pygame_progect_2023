@@ -1,4 +1,3 @@
-from random import randint
 from GameEngine.HexGrid import HexGrid
 from GameEngine.Tile import EmptyTile
 from GameEngine.GameUnits.Obstacles import Rock, Tree
@@ -9,7 +8,7 @@ from random import randint, choice, shuffle
 from numpy import floor
 
 
-# from GameEngine.avalible import
+from GameEngine.available_tiles import available_tiles
 
 
 def perlin_noise(size):
@@ -35,12 +34,10 @@ def map_generator(scale):
     height = randint(10, 20) * scale
     obstacles = randint(5, 10) * scale
     enemy = randint(2, 5) * scale
-    enemy_list = [['yellow', (255, 190, 11)], ['pink', (255, 0, 110)], ['orange', (251, 86, 7)],
-                  ['violet', (131, 56, 236)], ['blue', (58, 134, 255)]]
-    shuffle(enemy_list)
     grid = HexGrid.filled(width, height, 40,
                           (20, 20, round(shared.WIDTH * 0.8), round(shared.HEIGHT * 0.8)))
     noise = perlin_noise(max(width, height))
+
     for i in range(width):
         for j in range(height):
             if not noise[i][j]:
@@ -51,24 +48,27 @@ def map_generator(scale):
             grid[y, x].set_game_unit(choice([Tree(2), Tree(2), Tree(2), Rock(2)]))
             obstacles -= 1
     while enemy != 0:
-
+        flag = False
         x, y = randint(0, width - 1), randint(0, height - 1)
         if not isinstance(grid[y, x], EmptyTile) and not grid[y, x].game_unit and not grid[y, x].owner:
-            owner = enemy_list[0][0]
-            color = enemy_list[0][1]
+            owner = enemy
+            color = (randint(0, 255), randint(0, 255), randint(0, 255))
+            for tile in available_tiles(grid, grid[y, x], 5, 5, owner):
+                print(tile.owner)
+                if tile.owner:
+                    flag = True
+            if flag:
+                continue
             grid[y, x].owner = owner
             grid[y, x].color = color
             grid[y, x].set_game_unit(Guildhall(2))
-            del enemy_list[0]
             enemy -= 1
             tiles = 4
-            print(grid[y, x].owner, grid[y, x].indexes)
             while tiles != 0:
                 for tile in grid.get_adjacent_tiles(y, x):
                     if not isinstance(tile, EmptyTile) and not tile.owner:
                         tile.owner = owner
                         tile.color = color
-                        print(tile.owner, tile.indexes)
                         tiles -= 1
                         if tiles == 0:
                             break
