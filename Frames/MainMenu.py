@@ -2,7 +2,7 @@ import pygame as pg
 from Frames.PopUpWindow import PopUpWindow
 from IFrame import IFrame
 from Signals import *
-from utilities.utilities import create_particles
+from utilities.Particles import create_particles
 from utilities.image import draw_text, load_image
 from Button import Button
 from Frames.Settings import Settings

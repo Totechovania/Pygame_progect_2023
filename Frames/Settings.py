@@ -2,7 +2,8 @@ from Frames.PopUpWindow import PopUpWindow
 from IFrame import IFrame
 from Button import Button
 from utilities.utilities import load_json_file, change_json_file, \
-    set_default_settings, create_particles, get_size
+    set_default_settings, get_size
+from utilities.Particles import create_particles
 from utilities.image import draw_text, load_image
 import pygame as pg
 import shared

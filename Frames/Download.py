@@ -1,7 +1,7 @@
 from Frames.PopUpWindow import PopUpWindow
 from IFrame import IFrame
 from Button import Button
-from utilities.utilities import create_particles
+from utilities.Particles import create_particles
 from utilities.image import load_image
 import pygame as pg
 import shared

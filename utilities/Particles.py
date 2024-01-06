@@ -19,3 +19,10 @@ class Particle(pygame.sprite.Sprite):
         self.rect.y += self.velocity[1]
         if not self.rect.colliderect((0, 0, shared.WIDTH, shared.HEIGHT)):
             self.kill()
+
+
+def create_particles(position, groop, name):
+    particle_count = 5
+    numbers = [-6, -5, -4, -3, 3, 4, 5, 6]
+    for _ in range(particle_count):
+        Particle(position, random.choice(numbers), random.choice(numbers), name, groop)

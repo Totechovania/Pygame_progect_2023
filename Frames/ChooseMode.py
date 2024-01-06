@@ -1,6 +1,6 @@
 from IFrame import IFrame
 from Button import Button
-from utilities.utilities import create_particles
+from utilities.Particles import create_particles
 from utilities.image import draw_text, load_image
 import pygame as pg
 import shared

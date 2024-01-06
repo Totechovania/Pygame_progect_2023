@@ -4,7 +4,6 @@ import pygame as pg
 import os
 from Signals import *
 import json
-import random
 
 
 def set_shared_variables():
@@ -67,14 +66,6 @@ def set_default_settings():
     data['FULLSCREEN'] = True
     change_json_file(data)
     raise KillEntireApp
-
-
-def create_particles(position, groop, name):
-    from Particles import Particle
-    particle_count = 5
-    numbers = [-6, -5, -4, -3, 3, 4, 5, 6]
-    for _ in range(particle_count):
-        Particle(position, random.choice(numbers), random.choice(numbers), name, groop)
 
 
 def get_size():
