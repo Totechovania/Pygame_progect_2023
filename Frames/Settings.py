@@ -1,7 +1,7 @@
 from Frames.PopUpWindow import PopUpWindow
 from IFrame import IFrame
 from Button import Button
-from utilities.utilities import load_json_file, change_json_file, \
+from utilities.change_settings import load_json_file, change_json_file, \
     set_default_settings, get_size
 from utilities.Particles import create_particles
 from utilities.image import draw_text, load_image
