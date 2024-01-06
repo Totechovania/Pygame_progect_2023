@@ -1,4 +1,4 @@
-from GameUnit import GameUnit
+from GameUnits.GameUnit import GameUnit
 
 
 class Unit(GameUnit):

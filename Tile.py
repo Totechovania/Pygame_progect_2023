@@ -1,8 +1,6 @@
-import random
-
 import pygame as pg
 from utilities.hexagons import hexagon_from_center
-from GameUnit import GameUnit
+from GameUnits.GameUnit import GameUnit
 
 
 class HexTile:
