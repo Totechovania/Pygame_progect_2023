@@ -6,10 +6,12 @@ from GameEngine.HexGrid import HexGrid
 import pygame as pg
 from GameEngine.Tile import HexTile, EmptyTile
 
+from utilities.image import draw_text
+
 
 class TileTestFrame(IFrame):
     def __init__(self):
-        self.grid = HexGrid.filled(100, 50, 40,
+        self.grid = HexGrid.filled(3, 5, 40,
                                    (20, 20, round(shared.WIDTH * 0.8), round(shared.HEIGHT * 0.8)))
         self.flag = False
         self.chosen = None
@@ -52,6 +54,11 @@ class TileTestFrame(IFrame):
         self.chosen = self.grid.collide_point(*pg.mouse.get_pos())
 
         self.grid.draw_tiles()
+        if self.chosen is not None:
+            tile = self.chosen
+            text = f'({tile.indexes[0]}, {tile.indexes[1]})'
+            x, y = tile.center_x, tile.center_y
+            draw_text(text, 0, 0, (0, 0, 0))
 
         if self.chosen is not None:
             self.chosen.draw_stroke(self.grid.surface)
