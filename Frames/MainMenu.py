@@ -1,7 +1,8 @@
 import pygame as pg
+from Frames.PopUpWindow import PopUpWindow
 from IFrame import IFrame
-from Signals import KillEntireApp, NewFrame
-from utilities import draw_text, load_image, open_pop_window, back, create_particles
+from Signals import *
+from utilities import draw_text, load_image, create_particles
 from Button import Button
 from Frames.Settings import Settings
 from Frames.ChooseMode import ChooseMode
@@ -26,7 +27,7 @@ class MainMenu(IFrame):
                 raise KillEntireApp
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    back()
+                    raise KillTopFrame
             if event.type == pg.MOUSEBUTTONDOWN:
                 create_particles(pg.mouse.get_pos(), self.particles, 'coin.png')
         self.draw_fon()
@@ -51,7 +52,7 @@ class MainMenu(IFrame):
         # AnimatedSprite(load_image("dragon.png", -1), 8, 2, self.fon)
         exit_button = Button(
             (self.w * 0.958, 0, int(0.04 * self.w), int(0.04 * self.w)), 'leave_button.png', self.buttons)
-        exit_button.connect(open_pop_window)
+        exit_button.connect(self.open_pop_up_window)
 
         settings_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'settings_button.png', self.buttons)
         settings_button.connect(self.settings)
@@ -59,3 +60,14 @@ class MainMenu(IFrame):
         game_start_button = Button((self.w * 0.46, self.h * 0.5, int(0.08 * self.w), int(0.08 * self.w)),
                                    'game_start_button.png', self.buttons)
         game_start_button.connect(self.start_button)
+
+    def close_app(self):
+        raise KillEntireApp
+
+    def back(self):
+        raise KillTopFrame
+
+    def open_pop_up_window(self):
+        self.draw_fon()
+        self.buttons.draw(shared.screen)
+        raise NewFrame(PopUpWindow(shared.screen.copy()))

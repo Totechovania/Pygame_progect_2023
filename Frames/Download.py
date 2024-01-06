@@ -1,9 +1,9 @@
 from IFrame import IFrame
 from Button import Button
-from utilities import load_image, back, open_pop_window, create_particles
+from utilities import load_image, create_particles
 import pygame as pg
 import shared
-from Signals import KillEntireApp
+from Signals import *
 
 
 class Download(IFrame):
@@ -22,7 +22,7 @@ class Download(IFrame):
                 raise KillEntireApp
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    back()
+                    raise KillTopFrame
             if event.type == pg.MOUSEBUTTONDOWN:
                 create_particles(pg.mouse.get_pos(), self.particles, 'coin.png')
         self.particles.update()
@@ -34,10 +34,18 @@ class Download(IFrame):
     def generate_buttons(self):
         exit_button = Button(
             (self.w * 0.958, 0, int(0.04 * self.w), int(0.04 * self.w)), 'leave_button.png', self.buttons)
-        exit_button.connect(open_pop_window)
+        exit_button.connect(self.open_pop_up_window)
 
         back_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'back.png', self.buttons)
-        back_button.connect(back)
+        back_button.connect(self.back)
 
     def draw_fon(self):
         shared.screen.blit(self.image_fon, (0, 0))
+
+    def back(self):
+        raise KillTopFrame
+
+    def open_pop_up_window(self):
+        self.draw_fon()
+        self.buttons.draw(shared.screen)
+        raise NewFrame(PopUpWindow(shared.screen.copy()))

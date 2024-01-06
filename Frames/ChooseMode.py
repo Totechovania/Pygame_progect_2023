@@ -1,9 +1,9 @@
 from IFrame import IFrame
 from Button import Button
-from utilities import draw_text, load_image, back, open_pop_window, create_particles
+from utilities import draw_text, load_image, create_particles
 import pygame as pg
 import shared
-from Signals import KillEntireApp, NewFrame
+from Signals import *
 from Frames.FightMenuWindow import FightMenuWindow
 from Frames.Download import Download
 from Frames.Campany import Campany
@@ -26,7 +26,7 @@ class ChooseMode(IFrame):
                 raise KillEntireApp
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    back()
+                    raise KillTopFrame
             if event.type == pg.MOUSEBUTTONDOWN:
                 create_particles(pg.mouse.get_pos(), self.particles, 'coin.png')
         self.particles.update()
@@ -50,10 +50,10 @@ class ChooseMode(IFrame):
     def generate_buttons(self):
         exit_button = Button(
             (self.w * 0.958, 0, int(0.04 * self.w), int(0.04 * self.w)), 'leave_button.png', self.buttons)
-        exit_button.connect(open_pop_window)
+        exit_button.connect(self.open_pop_up_window)
 
         back_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'back.png', self.buttons)
-        back_button.connect(back)
+        back_button.connect(self.back)
 
         fight_button = Button((self.w * 0.4, self.h * 0.1, int(self.w * 0.2), int(self.h * 0.19)), 'rectangle.png',
                               self.buttons)
@@ -77,3 +77,11 @@ class ChooseMode(IFrame):
         draw_text('Редактор', self.w // 2.35, self.h // 3.25, '#08E8DE', int(self.w * 0.045))
         draw_text('Кампания', self.w // 2.35, self.h // 2.15, '#08E8DE', int(self.w * 0.045))
         draw_text('Загрузить', self.w // 2.35, self.h // 1.62, '#08E8DE', int(self.w * 0.045))
+
+    def back(self):
+        raise KillTopFrame
+
+    def open_pop_up_window(self):
+        self.draw_fon()
+        self.buttons.draw(shared.screen)
+        raise NewFrame(PopUpWindow(shared.screen.copy()))

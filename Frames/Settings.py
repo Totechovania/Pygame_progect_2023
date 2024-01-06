@@ -1,10 +1,11 @@
+from Frames.PopUpWindow import PopUpWindow
 from IFrame import IFrame
 from Button import Button
-from utilities import draw_text, load_image, back, open_pop_window, load_json_file, change_json_file, \
+from utilities import draw_text, load_image, load_json_file, change_json_file, \
     set_default_settings, create_particles, get_size
 import pygame as pg
 import shared
-from Signals import KillEntireApp
+from Signals import *
 
 
 class Settings(IFrame):
@@ -32,7 +33,7 @@ class Settings(IFrame):
                 raise KillEntireApp
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    back()
+                    raise KillTopFrame
                 if self.flag_width:
                     if len(str(self.width)) < 10:
                         if event.key == pg.K_0:
@@ -102,10 +103,10 @@ class Settings(IFrame):
     def generate_buttons(self):
         exit_button = Button(
             (self.w * 0.958, 0, int(0.04 * self.w), int(0.04 * self.w)), 'leave_button.png', self.buttons)
-        exit_button.connect(open_pop_window)
+        exit_button.connect(self.open_pop_up_window)
 
         back_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'back.png', self.buttons)
-        back_button.connect(back)
+        back_button.connect(self.back)
 
         sound_check_box = Button((self.w * 0.65, self.h * 0.175, self.w * 0.022, self.h * 0.05), 'check_box.png',
                                  self.buttons)
@@ -189,3 +190,9 @@ class Settings(IFrame):
         data['FULLSCREEN'] = self.fullscreen
         change_json_file(data)
         raise KillEntireApp
+
+    def back(self):
+        raise KillTopFrame
+
+    def open_pop_up_window(self):
+        raise NewFrame(PopUpWindow(shared.screen.copy()))

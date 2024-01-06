@@ -1,18 +1,17 @@
 from IFrame import IFrame
 from Button import Button
-from utilities import load_image, back, open_pop_window, create_particles
+from utilities import draw_text, blur_image
 import pygame as pg
 import shared
-from Signals import KillEntireApp
+from Signals import KillEntireApp, KillTopFrame
 
 
-class Redactor(IFrame):
-    def __init__(self):
+class PopUpWindow(IFrame):
+    def __init__(self, image):
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
-        self.image_fon = pg.transform.scale(load_image('fon_menu.png'), (self.w, self.h))
+        self.img = blur_image(image)
         self.buttons = pg.sprite.Group()
-        self.particles = pg.sprite.Group()
         self.generate_buttons()
 
     def update(self):
@@ -22,22 +21,29 @@ class Redactor(IFrame):
                 raise KillEntireApp
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    back()
-            if event.type == pg.MOUSEBUTTONDOWN:
-                create_particles(pg.mouse.get_pos(), self.particles, 'coin.png')
-        self.particles.update()
+                    raise KillTopFrame
         self.draw_fon()
-        self.particles.draw(shared.screen)
         self.buttons.update(events)
         self.buttons.draw(shared.screen)
 
     def generate_buttons(self):
-        exit_button = Button(
-            (self.w * 0.958, 0, int(0.04 * self.w), int(0.04 * self.w)), 'leave_button.png', self.buttons)
-        exit_button.connect(open_pop_window)
+        confirm_button = Button(
+            (self.w * 0.518, self.h * 0.55, self.w * 0.13, self.h * 0.15), 'rectangle.png', self.buttons)
+        confirm_button.connect(self.close_app)
 
-        back_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'back.png', self.buttons)
-        back_button.connect(back)
+        back_button = Button((self.w * 0.335, self.h * 0.55, self.w * 0.13, self.h * 0.15), 'rectangle.png',
+                             self.buttons)
+        back_button.connect(self.back)
 
     def draw_fon(self):
-        shared.screen.blit(self.image_fon, (0, 0))
+        shared.screen.blit(self.img, (0, 0))
+        draw_text('Выйти ?', self.w * 0.42, self.h * 0.2, '#000000', int(self.h * 0.14))
+        draw_text('Выйти', self.w * 0.55, self.h * 0.6, '#000000', int(self.h * 0.07))
+        draw_text('Вернуться', self.w * 0.35, self.h * 0.6, '#000000', int(self.h * 0.07))
+
+    def close_app(self):
+        raise KillEntireApp
+
+    def back(self):
+        raise KillTopFrame
+

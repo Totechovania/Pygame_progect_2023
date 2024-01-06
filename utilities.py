@@ -4,8 +4,7 @@ import shared
 import pygame as pg
 import os
 from PIL import Image, ImageFilter
-from pyautogui import screenshot
-from Signals import NewFrame, KillTopFrame, KillEntireApp
+from Signals import *
 from math import cos, sin, pi
 import json
 import random
@@ -104,23 +103,6 @@ def set_default_settings():
     data['FULLSCREEN'] = True
     change_json_file(data)
     raise KillEntireApp
-
-
-def convert_image(filename):
-    with Image.open('data/' + filename) as img:
-        img.load()
-        img = img.filter(ImageFilter.GaussianBlur(20))
-        img.save('data/' + filename)
-
-
-def open_pop_window():
-    from Frames.PopUpWindow import PopUpWindow
-    screenshot('data/screenshot.png')
-    raise NewFrame(PopUpWindow())
-
-
-def back():
-    raise KillTopFrame
 
 
 def hexagon_from_center(center_x: float, center_y: float, radius: float) -> list[tuple[int, int]]:

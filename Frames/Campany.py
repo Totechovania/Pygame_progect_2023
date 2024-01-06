@@ -1,9 +1,10 @@
+from Frames.PopUpWindow import PopUpWindow
 from IFrame import IFrame
 from Button import Button
-from utilities import load_image, back, open_pop_window, create_particles, draw_text
+from utilities import load_image, create_particles, draw_text
 import pygame as pg
 import shared
-from Signals import KillEntireApp, KillTopFrame
+from Signals import *
 
 
 class Campany(IFrame):
@@ -49,10 +50,10 @@ class Campany(IFrame):
     def generate_buttons(self):
         exit_button = Button(
             (self.w * 0.958, 0, int(0.04 * self.w), int(0.04 * self.w)), 'leave_button.png', self.buttons)
-        exit_button.connect(open_pop_window)
+        exit_button.connect(self.open_pop_up_window)
 
         back_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'back.png', self.buttons)
-        back_button.connect(back)
+        back_button.connect(self.back)
 
         first_level_button = Button((self.w * 0.075, self.h * 0.25, int(0.08 * self.w), int(0.08 * self.w)),
                                     'square.png', self.buttons)
@@ -91,3 +92,11 @@ class Campany(IFrame):
         pg.draw.rect(shared.screen, pg.Color('#FF4500'),
                      (self.w * 0.875, self.h * 0.25, int(0.08 * self.w), int(0.08 * self.w)), 0)
         draw_text('5', self.w * 0.911, self.h * 0.33, int(self.w * 0.06))
+
+    def back(self):
+        raise KillTopFrame
+
+    def open_pop_up_window(self):
+        self.draw_fon()
+        self.buttons.draw(shared.screen)
+        raise NewFrame(PopUpWindow(shared.screen.copy()))
