@@ -4,9 +4,8 @@ from GameEngine.GameUnits.Obstacles import Rock, Tree
 from GameEngine.GameUnits.Buildings import Guildhall
 import shared
 from perlin_noise import PerlinNoise
-from random import randint, choice, shuffle
+from random import randint, choice
 from numpy import floor
-
 
 from GameEngine.available_tiles import available_tiles
 
@@ -16,7 +15,7 @@ def perlin_noise(size):
     amp = 10
     period = 24
     terrain_width = size
-    landscale = [[0 for i in range(terrain_width)] for i in range(terrain_width)]
+    landscale = [[0 for _ in range(terrain_width)] for _ in range(terrain_width)]
 
     for position in range(terrain_width ** 2):
         x = floor(position / terrain_width)
@@ -54,7 +53,6 @@ def map_generator(scale):
             owner = enemy
             color = (randint(0, 255), randint(0, 255), randint(0, 255))
             for tile in available_tiles(grid, grid[y, x], 5, 5, owner):
-                print(tile.owner)
                 if tile.owner:
                     flag = True
             if flag:
@@ -84,7 +82,4 @@ def map_generator(scale):
                             pass
                     else:
                         break
-
-
-
     return grid

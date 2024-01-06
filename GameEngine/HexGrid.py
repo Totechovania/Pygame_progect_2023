@@ -6,8 +6,8 @@ from utilities.hexagons import get_tile_coords
 
 class HexGrid:
     def __init__(self, w: int, h: int, radius: float,
-                 rect: tuple[int, int, int, int] | pg.Rect,
-                 grid: list[list[HexTile | EmptyTile]]):
+                 rect: tuple[int, int, int, int] or pg.Rect,
+                 grid: list[list[HexTile or EmptyTile]]):
         self.w = w
         self.h = h
         self.radius = radius
@@ -28,7 +28,7 @@ class HexGrid:
         self.MAX_DELTA_Y = surf_h
 
         self.MAX_SCALE = min(self.rect.size) / (3 * radius)
-        self.MIN_SCALE = min(self.rect.bottom/(surf_h * 1.1), self.rect.right/(surf_w * 1.1))
+        self.MIN_SCALE = min(self.rect.bottom / (surf_h * 1.1), self.rect.right / (surf_w * 1.1))
 
     def draw(self, surface: pg.Surface):
         self.image.fill((0, 0, 0, 0))
@@ -73,7 +73,7 @@ class HexGrid:
             return min(collided, key=lambda tile: tile.distance(x, y))
         return None
 
-    def __getitem__(self, key) -> HexTile:
+    def __getitem__(self, key):
         return self.grid[key[0]][key[1]]
 
     def __setitem__(self, key, value):
@@ -86,11 +86,11 @@ class HexGrid:
 
     def set_empty(self, i, j):
         x, y = get_tile_coords(i, j, self.radius)
-        self[i, j] = EmptyTile(x, y,  self.radius, (i, j))
+        self[i, j] = EmptyTile(x, y, self.radius, (i, j))
 
-    def set_tile(self, i, j,  color=None, owner: str | None = None, game_unit: GameUnit | None = None,):
+    def set_tile(self, i, j, color=None, owner: str or None = None, game_unit: GameUnit or None = None, ):
         x, y = get_tile_coords(i, j, self.radius)
-        self[i, j] = HexTile(x, y,  self.radius, (i, j), color, owner, game_unit)
+        self[i, j] = HexTile(x, y, self.radius, (i, j), color, owner, game_unit)
 
     def get_adjacent_indices(self, i, j):
         relevant = [[-1, 0], [0, -1], [1, 0], [0, 1]]
@@ -133,5 +133,3 @@ class HexGrid:
                 grid[i].append(tile)
 
         return cls(w, h, radius, rect, grid)
-
-

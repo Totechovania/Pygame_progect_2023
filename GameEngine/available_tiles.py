@@ -1,12 +1,10 @@
-import copy
-
 from GameEngine.HexGrid import HexGrid
 from GameEngine.Tile import HexTile
 from GameEngine.tile_defense import tile_defense
 from GameEngine.GameUnits.Obstacles import Obstacles
 
 
-def available_tiles(grid: HexGrid, cur_tile: HexTile, power, step: int, owner, checked: list[HexTile] | None = None):
+def available_tiles(grid: HexGrid, cur_tile: HexTile, power, step: int, owner, checked: list[HexTile] or None = None):
     if checked is None:
         checked = []
     res = []

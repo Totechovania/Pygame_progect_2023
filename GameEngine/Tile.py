@@ -35,7 +35,7 @@ class HexTile:
 
     def draw(self, surface: pg.Surface):
         hexagon = hexagon_from_center(self.center_x, self.center_y, self.radius)
-        pg.draw.polygon(surface, self.color, hexagon,)
+        pg.draw.polygon(surface, self.color, hexagon, )
         pg.draw.polygon(surface, (0, 0, 0), hexagon, round(self.radius / 20))
         if self.game_unit is not None:
             self.game_unit.draw(surface)
@@ -60,5 +60,3 @@ class EmptyTile(HexTile):
 
     def set_game_unit(self, game_unit: GameUnit):
         pass
-
-

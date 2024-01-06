@@ -196,7 +196,6 @@ class Settings(IFrame):
         else:
             self.fullscreen = True
 
-
     def change_volume_settings(self):
         play_sound('button_press.mp3')
         if self.sound:

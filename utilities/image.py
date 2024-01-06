@@ -1,5 +1,4 @@
 import os
-import sys
 
 from PIL import Image, ImageFilter
 import pygame as pg

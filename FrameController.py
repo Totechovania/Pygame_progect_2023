@@ -2,7 +2,6 @@ import shared
 from Frames.IFrame import IFrame
 from Signals import *
 import pygame as pg
-from utilities.change_settings import set_shared_variables
 
 
 class FrameController:
@@ -51,6 +50,5 @@ class FrameController:
             self.frames.pop()
 
     def handle_apply_settings(self):
-        set_shared_variables()
         for frame in self.frames:
             frame.apply_settings()
