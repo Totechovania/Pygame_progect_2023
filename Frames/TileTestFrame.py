@@ -1,3 +1,5 @@
+import time
+
 from GameEngine.GameUnits.GameUnit import GameUnit
 from Frames.IFrame import IFrame
 from Signals import *
@@ -6,12 +8,14 @@ from GameEngine.HexGrid import HexGrid
 import pygame as pg
 from GameEngine.Tile import HexTile, EmptyTile
 
+from GameEngine.available_tiles import available_tiles
+
 from utilities.image import draw_text
 
 
 class TileTestFrame(IFrame):
     def __init__(self):
-        self.grid = HexGrid.filled(3, 5, 40,
+        self.grid = HexGrid.filled(50, 30, 40,
                                    (20, 20, round(shared.WIDTH * 0.8), round(shared.HEIGHT * 0.8)))
         self.flag = False
         self.chosen = None
@@ -54,16 +58,14 @@ class TileTestFrame(IFrame):
         self.chosen = self.grid.collide_point(*pg.mouse.get_pos())
 
         self.grid.draw_tiles()
-        if self.chosen is not None:
-            tile = self.chosen
-            text = f'({tile.indexes[0]}, {tile.indexes[1]})'
-            x, y = tile.center_x, tile.center_y
-            draw_text(text, 0, 0, (0, 0, 0))
 
         if self.chosen is not None:
-            self.chosen.draw_stroke(self.grid.surface)
-            indexes = self.chosen.indexes
-            for tile in self.grid.get_adjacent_tiles(indexes[0], indexes[1]):
-                tile.draw_stroke(self.grid.surface)
-
+            checked = []
+            start = time.time()
+            tiles = available_tiles(self.grid, self.chosen, 1, 10, 'pete', checked)
+            end = time.time()
+            for tile, step in checked:
+                tile.draw_stroke(self.grid.surface, (255, 0, 0))
+            for tile in tiles:
+                tile.draw_stroke(self.grid.surface, (0, 255, 0))
         self.grid.draw(shared.screen)
