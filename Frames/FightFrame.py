@@ -2,6 +2,7 @@ from GameEngine.GameUnits.GameUnit import GameUnit
 from Frames.IFrame import IFrame
 from Signals import *
 import shared
+from utilities.MapGenerater import map_generator
 from GameEngine.HexGrid import HexGrid
 import pygame as pg
 from GameEngine.Tile import HexTile, EmptyTile
@@ -9,14 +10,13 @@ from utilities.Button import Button
 from utilities.music import play_sound
 
 
-class TileTestFrame(IFrame):
+class FightFrame(IFrame):
     def __init__(self):
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
         self.buttons = pg.sprite.Group()
         self.generate_buttons()
-        self.grid = HexGrid.filled(100, 50, 40,
-                                   (20, 20, round(shared.WIDTH * 0.8), round(shared.HEIGHT * 0.8)))
+        self.grid = map_generator(1)
         self.flag = False
         self.chosen = None
 
@@ -30,6 +30,7 @@ class TileTestFrame(IFrame):
                 clicked = self.grid.collide_point(*event.pos)
                 if clicked is not None:
                     if event.button == 1:
+                        self.grid = map_generator(1)
                         if clicked.game_unit is None:
                             clicked.set_game_unit(GameUnit('back.png', 0.1))
                         else:
