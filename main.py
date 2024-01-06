@@ -1,6 +1,7 @@
 from FrameController import FrameController
-from utilities.change_settings import set_shared_variables  #, play_background_music
+from utilities.change_settings import set_shared_variables
 from utilities.system import terminate, apply_global_settings
+from utilities.music import play_background_music
 from Frames.MainMenu import MainMenu
 from Frames.FightFrame import FightFrame
 
@@ -9,7 +10,7 @@ if __name__ == '__main__':
     set_shared_variables()
 
     main_menu = FightFrame()
-    #play_background_music("music.mp3")
+    play_background_music("music.mp3")
     controller = FrameController(main_menu)
     controller.run()
 
