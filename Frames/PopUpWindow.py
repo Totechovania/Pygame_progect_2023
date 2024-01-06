@@ -1,6 +1,7 @@
 from Frames.IFrame import IFrame
 from utilities.Button import Button
 from utilities.image import blur_image, draw_text
+from utilities.music import play_sound
 import pygame as pg
 import shared
 from Signals import KillEntireApp, KillTopFrame
@@ -26,6 +27,18 @@ class PopUpWindow(IFrame):
         self.buttons.update(events)
         self.buttons.draw(shared.screen)
 
+    def apply_settings(self):
+        self.buttons.empty()
+        if shared.fullscreen:
+            shared.screen = pg.display.set_mode((shared.fullscreen_w, shared.fullscreen_h), pg.FULLSCREEN)
+            shared.WIDTH = shared.fullscreen_w
+            shared.HEIGHT = shared.fullscreen_h
+        else:
+            shared.screen = pg.display.set_mode((shared.WIDTH, shared.HEIGHT))
+        self.w = shared.WIDTH
+        self.h = shared.HEIGHT
+        self.generate_buttons()
+
     def generate_buttons(self):
         confirm_button = Button(
             (self.w * 0.518, self.h * 0.55, self.w * 0.13, self.h * 0.15), 'rectangle.png', self.buttons)
@@ -42,8 +55,10 @@ class PopUpWindow(IFrame):
         draw_text('Вернуться', self.w * 0.35, self.h * 0.6, '#000000', int(self.h * 0.07))
 
     def close_app(self):
+        play_sound('button_press.mp3')
         raise KillEntireApp
 
     def back(self):
+        play_sound('button_press.mp3')
         raise KillTopFrame
 
