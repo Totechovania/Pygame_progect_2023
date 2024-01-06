@@ -1,4 +1,4 @@
-from Tile import EmptyTile
+from GameEngine.Tile import EmptyTile
 from GameEngine.GameUnits.Units import Unit
 from GameEngine.GameUnits.Buildings import Building
 

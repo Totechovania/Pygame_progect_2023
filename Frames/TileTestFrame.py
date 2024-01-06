@@ -2,9 +2,9 @@ from GameEngine.GameUnits.GameUnit import GameUnit
 from Frames.IFrame import IFrame
 from Signals import *
 import shared
-from HexGrid import HexGrid
+from GameEngine.HexGrid import HexGrid
 import pygame as pg
-from Tile import HexTile, EmptyTile
+from GameEngine.Tile import HexTile, EmptyTile
 
 
 class TileTestFrame(IFrame):

@@ -1,5 +1,5 @@
 import pygame as pg
-from Tile import HexTile, EmptyTile
+from GameEngine.Tile import HexTile, EmptyTile
 from GameEngine.GameUnits.GameUnit import GameUnit
 from utilities.hexagons import get_tile_coords
 
