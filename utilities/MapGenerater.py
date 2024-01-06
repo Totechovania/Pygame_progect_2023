@@ -2,6 +2,7 @@ from random import randint
 from GameEngine.HexGrid import HexGrid
 from GameEngine.Tile import EmptyTile
 from GameEngine.GameUnits.Obstacles import Rock, Tree
+from GameEngine.GameUnits.Buildings import Guildhall
 import shared
 from perlin_noise import PerlinNoise
 from random import randint, choice, shuffle
@@ -50,12 +51,14 @@ def map_generator(scale):
             grid[y, x].set_game_unit(choice([Tree(2), Tree(2), Tree(2), Rock(2)]))
             obstacles -= 1
     while enemy != 0:
+
         x, y = randint(0, width - 1), randint(0, height - 1)
         if not isinstance(grid[y, x], EmptyTile) and not grid[y, x].game_unit and not grid[y, x].owner:
             owner = enemy_list[0][0]
             color = enemy_list[0][1]
             grid[y, x].owner = owner
             grid[y, x].color = color
+            grid[y, x].set_game_unit(Guildhall(2))
             del enemy_list[0]
             enemy -= 1
             tiles = 4
@@ -72,12 +75,16 @@ def map_generator(scale):
                 while True:
                     if tiles != 0:
                         try:
-                            x, y = choice(list(grid.get_adjacent_tiles(y, x))).indexes
-                            break
+                            y1, x1 = choice(list(grid.get_adjacent_tiles(y, x))).indexes
+                            if not isinstance(grid[y1, x1], EmptyTile) and grid[y1, x1].owner == owner:
+                                x = x1
+                                y = y1
+                                break
                         except Exception:
                             pass
                     else:
                         break
+
 
 
     return grid
