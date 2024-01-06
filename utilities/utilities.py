@@ -3,9 +3,7 @@ import sys
 import shared
 import pygame as pg
 import os
-from PIL import Image, ImageFilter
 from Signals import *
-from math import cos, sin, pi
 import json
 import random
 
@@ -24,12 +22,12 @@ def set_shared_variables():
     info = pg.display.Info()
     w = info.current_w
     h = info.current_h
-    if not os.path.exists('settings.json'):
-        with open('settings.json', 'w') as f:
+    if not os.path.exists('../settings.json'):
+        with open('../settings.json', 'w') as f:
             json.dump(
                 {"FULLSCREEN": True, "WIDTH": int(w * 0.581), "HEIGHT": int(h * 0.55), "SOUND": True, "MUSIC": True}, f)
 
-    with open('settings.json', 'r') as f:
+    with open('../settings.json', 'r') as f:
         f_data = json.load(f)
         shared.fullscreen = f_data['FULLSCREEN']
         shared.WIDTH = f_data['WIDTH']
@@ -58,36 +56,13 @@ def set_shared_variables():
         shared.FPS = 60
 
 
-def load_image(name, colorkey=None):
-    fullname = os.path.join('data', name)
-    if not os.path.isfile(fullname):
-        print(f"Файл с изображением '{fullname}' не найден")
-        sys.exit()
-    image = pg.image.load(fullname)
-    if colorkey is not None:
-        pg.init()
-        image = image.convert()
-        if colorkey == -1:
-            colorkey = image.get_at((0, 0))
-        image.set_colorkey(colorkey)
-    else:
-        image = image.convert_alpha()
-    return image
-
-
-def draw_text(text, x, y, color, size=50):
-    font = pg.font.Font(None, size)
-    to_print = font.render(text, True, pg.Color(color))
-    shared.screen.blit(to_print, (x, y))
-
-
 def load_json_file():
-    with open('settings.json') as f:
+    with open('../settings.json') as f:
         return json.load(f)
 
 
 def change_json_file(data):
-    with open('settings.json', 'w') as f:
+    with open('../settings.json', 'w') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 
@@ -103,28 +78,6 @@ def set_default_settings():
     data['FULLSCREEN'] = True
     change_json_file(data)
     raise KillEntireApp
-
-
-def hexagon_from_center(center_x: float, center_y: float, radius: float) -> list[tuple[int, int]]:
-    vertices = []
-    start_x = 0
-    start_y = radius
-    for i in range(6):
-        angle = pi / 3 * i
-        x = start_x * cos(angle) - start_y * sin(angle)
-        y = start_x * sin(angle) + start_y * cos(angle)
-        vertices.append((round(x + center_x),
-                         round(y + center_y)))
-    return vertices
-
-
-def blur_image(img, amt=10):
-    raw_str = pg.image.tostring(img, 'RGBA', False)
-    img = Image.frombytes('RGBA', img.get_size(), raw_str)
-    img = img.filter(ImageFilter.GaussianBlur(amt))
-    raw_str = img.tobytes('raw', 'RGBA')
-    surf = pg.image.fromstring(raw_str, img.size, 'RGBA')
-    return surf
 
 
 def create_particles(position, groop, name):

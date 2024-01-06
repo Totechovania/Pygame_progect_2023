@@ -1,8 +1,9 @@
 from Frames.PopUpWindow import PopUpWindow
 from IFrame import IFrame
 from Button import Button
-from utilities import draw_text, load_image, load_json_file, change_json_file, \
+from utilities.utilities import load_json_file, change_json_file, \
     set_default_settings, create_particles, get_size
+from utilities.image import draw_text, load_image
 import pygame as pg
 import shared
 from Signals import *

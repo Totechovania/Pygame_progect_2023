@@ -1,7 +1,8 @@
 from Frames.PopUpWindow import PopUpWindow
 from IFrame import IFrame
 from Button import Button
-from utilities import load_image, play_sound
+from utilities.utilities import play_sound
+from utilities.image import load_image
 import pygame as pg
 import shared
 from Signals import *

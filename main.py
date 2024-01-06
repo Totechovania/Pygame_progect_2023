@@ -1,5 +1,5 @@
 from FrameController import FrameController
-from utilities import apply_global_settings, set_shared_variables, terminate #, play_background_music
+from utilities.utilities import apply_global_settings, set_shared_variables, terminate #, play_background_music
 #from Frames.MainMenu import MainMenu
 from Frames.TileTestFrame import TileTestFrame
 

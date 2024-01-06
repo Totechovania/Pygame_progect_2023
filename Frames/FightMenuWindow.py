@@ -1,6 +1,7 @@
 from IFrame import IFrame
 from Button import Button
-from utilities import load_image, create_particles
+from utilities.utilities import create_particles
+from utilities.image import load_image
 import pygame as pg
 import shared
 from Signals import *

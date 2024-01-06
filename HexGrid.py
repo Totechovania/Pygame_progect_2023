@@ -1,8 +1,7 @@
-import random
-
 import pygame as pg
 from Tile import HexTile, EmptyTile
 from GameUnit import GameUnit
+from utilities.hexagons import get_tile_coords
 
 
 class HexGrid:
@@ -136,5 +135,3 @@ class HexGrid:
         return cls(w, h, radius, rect, grid)
 
 
-def get_tile_coords(i, j, radius):
-    return j * radius * 3 ** 0.5 + i % 2 * radius * 3 ** 0.5 / 2, i * radius * 1.5
