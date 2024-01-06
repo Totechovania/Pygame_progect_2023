@@ -65,7 +65,7 @@ def set_default_settings():
     data['WIDTH'] = int(w * 0.581)
     data['FULLSCREEN'] = True
     change_json_file(data)
-    raise KillEntireApp
+    raise ApplySettings
 
 
 def get_size():

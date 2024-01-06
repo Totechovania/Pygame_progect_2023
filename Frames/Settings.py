@@ -28,6 +28,20 @@ class Settings(IFrame):
         self.particles = pg.sprite.Group()
         self.generate_buttons()
 
+    def apply_settings(self):
+        self.buttons.empty()
+
+        self.w = shared.WIDTH
+        self.h = shared.HEIGHT
+        self.image_fon = pg.transform.scale(load_image('fon_menu.png'), (self.w, self.h))
+        self.image_check = pg.transform.scale(load_image('check.png'), (self.w * 0.0145, self.h * 0.035))
+        self.flag_width = False
+        self.flag_height = False
+        self.sound = shared.sound
+        self.music = shared.music
+        self.fullscreen = shared.fullscreen
+        self.generate_buttons()
+
     def update(self):
         events = pg.event.get()
         for event in events:
@@ -191,7 +205,7 @@ class Settings(IFrame):
         data['WIDTH'] = self.width
         data['FULLSCREEN'] = self.fullscreen
         change_json_file(data)
-        raise KillEntireApp
+        raise ApplySettings
 
     def back(self):
         raise KillTopFrame
