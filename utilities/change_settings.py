@@ -10,12 +10,12 @@ def set_shared_variables():
     info = pg.display.Info()
     w = info.current_w
     h = info.current_h
-    if not os.path.exists('../settings.json'):
-        with open('../settings.json', 'w') as f:
+    if not os.path.exists('settings.json'):
+        with open('settings.json', 'w') as f:
             json.dump(
                 {"FULLSCREEN": True, "WIDTH": int(w * 0.581), "HEIGHT": int(h * 0.55), "SOUND": True, "MUSIC": True}, f)
 
-    with open('../settings.json', 'r') as f:
+    with open('settings.json', 'r') as f:
         f_data = json.load(f)
         shared.fullscreen = f_data['FULLSCREEN']
         shared.WIDTH = f_data['WIDTH']
@@ -45,12 +45,12 @@ def set_shared_variables():
 
 
 def load_json_file():
-    with open('../settings.json') as f:
+    with open('settings.json') as f:
         return json.load(f)
 
 
 def change_json_file(data):
-    with open('../settings.json', 'w') as f:
+    with open('settings.json', 'w') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 
