@@ -1,21 +1,10 @@
 # файл вспомогательных функций
-import sys
 import shared
 import pygame as pg
 import os
 from Signals import *
 import json
 import random
-
-
-def terminate():
-    pg.quit()
-    sys.exit()
-
-
-def apply_global_settings():
-    pg.init()
-    pg.display.set_caption('Game')
 
 
 def set_shared_variables():
