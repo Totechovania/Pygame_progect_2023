@@ -10,7 +10,7 @@ from Frames.FightMenuWindow import FightMenuWindow
 from Frames.PopUpWindow import PopUpWindow
 from Frames.Download import Download
 from Frames.Campany import Campany
-from Frames.TileTestFrame import TileTestFrame
+from Frames.FightFrame import   FightFrame
 
 
 class ChooseMode(IFrame):
@@ -57,7 +57,7 @@ class ChooseMode(IFrame):
 
     def redactor(self):
         play_sound('button_press.mp3')
-        raise NewFrame(TileTestFrame())
+        raise NewFrame(FightFrame())
 
     def download(self):
         play_sound('button_press.mp3')
