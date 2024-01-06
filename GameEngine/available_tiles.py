@@ -3,7 +3,7 @@ import copy
 from GameEngine.HexGrid import HexGrid
 from GameEngine.Tile import HexTile
 from GameEngine.tile_defense import tile_defense
-from GameEngine.GameUnits.Trees import Tree
+from GameEngine.GameUnits.Obstacles import Obstacles
 
 
 def available_tiles(grid: HexGrid, cur_tile: HexTile, power, step: int, owner, checked: list[HexTile] | None = None):
@@ -27,7 +27,7 @@ def available_tiles(grid: HexGrid, cur_tile: HexTile, power, step: int, owner, c
                     if tile.game_unit is None:
                         res.append(tile)
                         res.extend(available_tiles(grid, tile, power, step - 1, owner, checked))
-                    elif isinstance(tile.game_unit, Tree):
+                    elif isinstance(tile.game_unit, Obstacles):
                         res.append(tile)
 
     return res

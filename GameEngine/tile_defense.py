@@ -1,7 +1,7 @@
 from GameEngine.Tile import EmptyTile
 from GameEngine.GameUnits.Units import Unit
 from GameEngine.GameUnits.Buildings import Building
-from GameEngine.GameUnits.Trees import Tree
+from GameEngine.GameUnits.Obstacles import Obstacles
 
 
 def tile_defense(grid, indexes, owner) -> int:
@@ -14,7 +14,7 @@ def tile_defense(grid, indexes, owner) -> int:
                 and owner != tile.owner)
 
     adjacent_tiles = list(filter(tile_aggressive, adjacent_tiles))
-    if isinstance(grid[i, j].game_unit, Tree):
+    if isinstance(grid[i, j].game_unit, Obstacles):
         adjacent_tiles.append(grid[i, j])
 
     return max(map(lambda tile: tile.game_unit.power, adjacent_tiles), default=0)
