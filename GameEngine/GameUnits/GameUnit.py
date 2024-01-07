@@ -12,7 +12,7 @@ class GameUnit(pg.sprite.Sprite):
         if (image_path, scale) in self.images.keys():
             self.image = self.images[(image_path, scale)]
         else:
-            self.image = pg.transform.scale(load_image(image_path), (shared.WIDTH * 0.01, shared.HEIGHT * 0.025))
+            self.image = load_image(image_path)
             self.image = pg.transform.scale_by(self.image, scale)
             self.images[(image_path, scale)] = self.image
         self.rect = self.image.get_rect()

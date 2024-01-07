@@ -12,19 +12,19 @@ class Unit(GameUnit):
 
 class Peasant(Unit):
     def __init__(self, scale: float):
-        super().__init__('peasant.png', scale, power=1, steps=6, cost=10, pay=1)
+        super().__init__('peasant32.png', scale, power=1, steps=6, cost=10, pay=1)
 
 
 class Spearman(Unit):
     def __init__(self, scale: float):
-        super().__init__('spearman.png', scale, power=2, steps=8, cost=15, pay=5)
+        super().__init__('spearman32.png', scale, power=2, steps=8, cost=15, pay=5)
 
 
 class Warrior(Unit):
     def __init__(self, scale: float):
-        super().__init__('warrior.png', scale, power=3, steps=10, cost=10, pay=15)
+        super().__init__('warrior32.png', scale, power=3, steps=10, cost=10, pay=15)
 
 
 class Knight(Unit):
     def __init__(self, scale: float):
-        super().__init__('knight.png', scale, power=4, steps=6, cost=10, pay=30)
+        super().__init__('knight32.png', scale, power=4, steps=6, cost=10, pay=30)

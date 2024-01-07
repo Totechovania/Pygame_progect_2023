@@ -36,6 +36,7 @@ class FightFrame(IFrame):
                         if clicked.game_unit is None:
                             if self.choose:
                                 clicked.set_game_unit(self.choose)
+                                self.choose = None
                         else:
                             clicked.game_unit = None
                     elif event.button == 3:
@@ -67,10 +68,11 @@ class FightFrame(IFrame):
             indexes = self.chosen.indexes
             for tile in self.grid.get_adjacent_tiles(indexes[0], indexes[1]):
                 tile.draw_stroke(self.grid.surface)
-        self.draw()
         self.grid.draw(shared.screen)
         self.buttons.update(events)
         self.buttons.draw(shared.screen)
+        self.draw()
+
 
     def draw(self):
         draw_text('10 $', self.w * 0.185, self.h * 0.96, int(self.h * 0.9))

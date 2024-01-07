@@ -9,9 +9,9 @@ class Obstacles(GameUnit):
 
 class Tree(Obstacles):
     def __init__(self, scale):
-        super().__init__('tree.png', scale, power=0)
+        super().__init__('tree32.png', scale, power=0)
 
 
 class Rock(Obstacles):
     def __init__(self, scale):
-        super().__init__('rock.png', scale, power=2)
+        super().__init__('rock32.png', scale, power=2)

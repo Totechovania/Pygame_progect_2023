@@ -34,7 +34,7 @@ def map_generator(scale):
     obstacles = randint(5, 10) * scale
     enemy = randint(2, 5) * scale
     grid = HexGrid.filled(width, height, 40,
-                          (20, 20, round(shared.WIDTH * 0.8), round(shared.HEIGHT * 0.8)))
+                          (20, 20, shared.WIDTH, shared.HEIGHT))
     noise = perlin_noise(max(width, height))
 
     for i in range(width):
