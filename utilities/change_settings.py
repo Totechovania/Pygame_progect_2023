@@ -15,6 +15,10 @@ def set_shared_variables():
                 {"FULLSCREEN": True, "WIDTH": int(shared.fullscreen_w * 0.581),
                  "HEIGHT": int(shared.fullscreen_h * 0.55), "SOUND": True, "MUSIC": True}, f)
 
+    if not os.path.exists('fight_settings.json'):
+        with open('fight_settings.json', 'w') as f:
+            json.dump({"DIFFICULTY": 0, "MAP_SIZE": 0, "PLAYERS": 0, "COLORS": 3}, f)
+
     with open('settings.json', 'r') as f:
         f_data = json.load(f)
         shared.fullscreen = f_data['FULLSCREEN']
@@ -36,16 +40,16 @@ def set_shared_variables():
         shared.FPS = 60
 
 
-def load_json_file():
-    with open('settings.json') as f:
+def load_json_file(filename):
+    with open(filename) as f:
         return json.load(f)
 
 
-def change_json_file(data):
-    with open('settings.json', 'w') as f:
+def change_json_file(data, filename):
+    with open(filename, 'w') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 
 def get_size():
-    data = load_json_file()
+    data = load_json_file('settings.json')
     return data['WIDTH'], data['HEIGHT']

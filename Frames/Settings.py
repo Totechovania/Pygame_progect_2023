@@ -212,7 +212,7 @@ class Settings(IFrame):
 
     def set_new_settings(self):
         play_sound('button_press.mp3')
-        data = load_json_file()
+        data = load_json_file('settings.json')
         if not (500 < self.width < shared.fullscreen_w):
             self.width = int(shared.fullscreen_w * 0.55)
         if not (300 < self.height < shared.fullscreen_h):
@@ -222,7 +222,7 @@ class Settings(IFrame):
         data['HEIGHT'] = self.height
         data['WIDTH'] = self.width
         data['FULLSCREEN'] = self.fullscreen
-        change_json_file(data)
+        change_json_file(data, 'settings.json')
         shared.WIDTH = self.width
         shared.HEIGHT = self.height
         shared.music = self.music
@@ -232,13 +232,13 @@ class Settings(IFrame):
 
     def set_default_settings(self):
         play_sound('button_press.mp3')
-        data = load_json_file()
+        data = load_json_file('settings.json')
         data['SOUND'] = True
         data['MUSIC'] = True
         data['HEIGHT'] = int(shared.fullscreen_h * 0.55)
         data['WIDTH'] = int(shared.fullscreen_w * 0.581)
         data['FULLSCREEN'] = True
-        change_json_file(data)
+        change_json_file(data, 'settings.json')
         shared.WIDTH = int(shared.fullscreen_w * 0.581)
         shared.HEIGHT = int(shared.fullscreen_h * 0.55)
         shared.music = True

@@ -1,6 +1,5 @@
 from GameEngine.GameUnits.Units import *
 from GameEngine.GameUnits.Buildings import *
-
 from Frames.IFrame import IFrame
 from Signals import *
 import shared
@@ -9,7 +8,7 @@ import pygame as pg
 from GameEngine.Tile import HexTile, EmptyTile
 from utilities.Button import Button
 from utilities.music import play_sound
-from utilities.image import draw_text
+from utilities.image import draw_text, load_image
 
 
 class FightFrame(IFrame):
@@ -22,6 +21,7 @@ class FightFrame(IFrame):
         self.flag = False
         self.chosen = None
         self.choose = None
+        self.chosen_unit = None
 
     def update(self):
         shared.screen.fill((255, 255, 255))
@@ -36,9 +36,8 @@ class FightFrame(IFrame):
                         if clicked.game_unit is None:
                             if self.choose:
                                 clicked.set_game_unit(self.choose)
+                                self.chosen_unit = None
                                 self.choose = None
-                        else:
-                            clicked.game_unit = None
                     elif event.button == 3:
                         if isinstance(clicked, EmptyTile):
                             self.grid.set_tile(clicked.indexes[0], clicked.indexes[1])
@@ -73,16 +72,21 @@ class FightFrame(IFrame):
         self.buttons.draw(shared.screen)
         self.draw()
 
-
     def draw(self):
-        draw_text('10 $', self.w * 0.185, self.h * 0.96, int(self.h * 0.9))
-        draw_text('15 $', self.w * 0.285, self.h * 0.96, int(self.h * 0.9))
-        draw_text('35 $', self.w * 0.385, self.h * 0.96, int(self.h * 0.9))
+        if self.chosen_unit:
+            shared.screen.blit(self.chosen_unit[0], (self.w * 0.46, self.h * 0.8))
+            draw_text(self.chosen_unit[1], self.w * 0.47, self.h * 0.9, int(self.h * 0.9))
+            pg.draw.line(shared.screen, pg.Color('black'), (self.w * 0.425, self.h * 0.95),
+                         (self.w * 0.535, self.h * 0.95), 5)
 
-        draw_text('10 $', self.w * 0.51, self.h * 0.96, int(self.h * 0.9))
-        draw_text('20 $', self.w * 0.61, self.h * 0.96, int(self.h * 0.9))
-        draw_text('30 $', self.w * 0.71, self.h * 0.96, int(self.h * 0.9))
-        draw_text('40 $', self.w * 0.81, self.h * 0.96, int(self.h * 0.9))
+        draw_text('10 $', self.w * 0.11, self.h * 0.96, int(self.h * 0.9))
+        draw_text('15 $', self.w * 0.21, self.h * 0.96, int(self.h * 0.9))
+        draw_text('35 $', self.w * 0.31, self.h * 0.96, int(self.h * 0.9))
+
+        draw_text('10 $', self.w * 0.61, self.h * 0.96, int(self.h * 0.9))
+        draw_text('20 $', self.w * 0.71, self.h * 0.96, int(self.h * 0.9))
+        draw_text('30 $', self.w * 0.81, self.h * 0.96, int(self.h * 0.9))
+        draw_text('40 $', self.w * 0.91, self.h * 0.96, int(self.h * 0.9))
 
     def generate_buttons(self):
         exit_button = Button(
@@ -100,63 +104,70 @@ class FightFrame(IFrame):
                                   'next_move.png', self.buttons)
         next_move_button.connect(self.next_move)
 
-        farmhouse_button = Button((shared.WIDTH * 0.175, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
+        farmhouse_button = Button((shared.WIDTH * 0.1, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
                                   'farm.png', self.buttons)
         farmhouse_button.connect(self.farm_house_chosen)
 
-        tower_level_1 = Button((shared.WIDTH * 0.275, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
+        tower_level_1 = Button((shared.WIDTH * 0.2, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
                                'towerfirst.png', self.buttons)
         tower_level_1.connect(self.tower_level_1_chosen)
 
-        tower_level_2 = Button((shared.WIDTH * 0.375, shared.HEIGHT * 0.86, int(0.04 * self.w), int(0.04 * self.w)),
+        tower_level_2 = Button((shared.WIDTH * 0.3, shared.HEIGHT * 0.86, int(0.04 * self.w), int(0.04 * self.w)),
                                'towersecond.png', self.buttons)
         tower_level_2.connect(self.tower_level_2_chosen)
 
         traveller_summon_button = Button(
-            (shared.WIDTH * 0.5, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
+            (shared.WIDTH * 0.6, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
             'peasant.png', self.buttons)
         traveller_summon_button.connect(self.traveller_chosen)
 
         spearman_summon_button = Button(
-            (shared.WIDTH * 0.6, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
+            (shared.WIDTH * 0.7, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
             'spearman.png', self.buttons)
         spearman_summon_button.connect(self.spearman_chosen)
 
         warrior_summon_button = Button(
-            (shared.WIDTH * 0.7, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
+            (shared.WIDTH * 0.8, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
             'warrior.png', self.buttons)
         warrior_summon_button.connect(self.warrior_chosen)
 
         knight_summon_button = Button(
-            (shared.WIDTH * 0.8, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
+            (shared.WIDTH * 0.9, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
             'knight.png', self.buttons)
         knight_summon_button.connect(self.knight_chosen)
 
     def back_move(self):
-        pass
+        shared.operational_list.pop()
 
     def next_move(self):
         pass
 
     def farm_house_chosen(self):
+        self.chosen_unit = (pg.transform.scale(load_image('farm.png'), (self.w * 0.04, self.w * 0.04)), '10 $')
         self.choose = Farm(2)
 
     def tower_level_1_chosen(self):
+        self.chosen_unit = (pg.transform.scale(load_image('towerfirst.png'), (self.w * 0.04, self.w * 0.04)), '15 $')
         self.choose = TowerFirst(2)
 
     def tower_level_2_chosen(self):
+        self.chosen_unit = (pg.transform.scale(load_image('towersecond.png'), (self.w * 0.04, self.w * 0.04)), '35 $')
         self.choose = TowerSecond(2)
 
     def traveller_chosen(self):
+        self.chosen_unit = (pg.transform.scale(load_image('peasant.png'), (self.w * 0.04, self.w * 0.04)), '10 $')
         self.choose = Peasant(2)
 
     def spearman_chosen(self):
+        self.chosen_unit = (pg.transform.scale(load_image('spearman.png'), (self.w * 0.04, self.w * 0.04)), '20 $')
         self.choose = Spearman(2)
 
     def warrior_chosen(self):
+        self.chosen_unit = (pg.transform.scale(load_image('warrior.png'), (self.w * 0.04, self.w * 0.04)), '30 $')
         self.choose = Warrior(2)
 
     def knight_chosen(self):
+        self.chosen_unit = (pg.transform.scale(load_image('knight.png'), (self.w * 0.04, self.w * 0.04)), '40 $')
         self.choose = Knight(2)
 
     def back(self):

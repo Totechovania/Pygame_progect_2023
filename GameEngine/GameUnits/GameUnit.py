@@ -1,6 +1,5 @@
 import pygame as pg
 
-import shared
 from utilities.image import load_image
 
 
@@ -22,5 +21,4 @@ class GameUnit(pg.sprite.Sprite):
 
     def draw(self, surface: pg.Surface):
         surface.blit(pg.transform.scale(self.image, self.rect.size), self.rect)
-
 

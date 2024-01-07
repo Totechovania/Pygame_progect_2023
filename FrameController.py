@@ -12,15 +12,12 @@ class FrameController:
     def run(self):
         clock = shared.clock
         fps = shared.FPS
-
         while self.frames:
             clock.tick(fps)
-
             try:
                 self.frames[-1].update()
             except Signal as e:
                 self.handle_signal(e)
-
             pg.display.flip()
 
     def handle_signal(self, signal: Signal):
