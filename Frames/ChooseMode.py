@@ -8,7 +8,6 @@ import shared
 from Signals import *
 from Frames.FightMenuWindow import FightMenuWindow
 from Frames.PopUpWindow import PopUpWindow
-from Frames.Download import Download
 from Frames.Campany import Campany
 from Frames.FightFrame import FightFrame
 
@@ -59,10 +58,6 @@ class ChooseMode(IFrame):
         play_sound('button_press.mp3')
         raise NewFrame(FightFrame(1, 0))
 
-    def download(self):
-        play_sound('button_press.mp3')
-        raise NewFrame(Download())
-
     def campany(self):
         play_sound('button_press.mp3')
         raise NewFrame(Campany())
@@ -83,10 +78,6 @@ class ChooseMode(IFrame):
                                  self.buttons)
         redactor_button.connect(self.redactor)
 
-        download_button = Button((self.w * 0.4, self.h * 0.55, int(self.w * 0.2), int(self.h * 0.19)), 'rectangle.png',
-                                 self.buttons)
-        download_button.connect(self.download)
-
         campany_button = Button((self.w * 0.4, self.h * 0.4, int(self.w * 0.2), int(self.h * 0.19)), 'rectangle.png',
                                 self.buttons)
         campany_button.connect(self.campany)
@@ -96,7 +87,6 @@ class ChooseMode(IFrame):
         draw_text('Сражение', self.w // 2.35, self.h // 6.3, '#08E8DE', int(self.w * 0.045))
         draw_text('Редактор', self.w // 2.35, self.h // 3.25, '#08E8DE', int(self.w * 0.045))
         draw_text('Кампания', self.w // 2.35, self.h // 2.15, '#08E8DE', int(self.w * 0.045))
-        draw_text('Загрузить', self.w // 2.35, self.h // 1.62, '#08E8DE', int(self.w * 0.045))
 
     def back(self):
         play_sound('button_press.mp3')
