@@ -57,7 +57,7 @@ class ChooseMode(IFrame):
 
     def redactor(self):
         play_sound('button_press.mp3')
-        raise NewFrame(FightFrame(2))
+        raise NewFrame(FightFrame(1, 0))
 
     def download(self):
         play_sound('button_press.mp3')

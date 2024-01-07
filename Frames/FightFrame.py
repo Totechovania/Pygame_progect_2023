@@ -12,12 +12,12 @@ from utilities.image import draw_text, load_image
 
 
 class FightFrame(IFrame):
-    def __init__(self, scale):
+    def __init__(self, scale, enemy):
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
         self.buttons = pg.sprite.Group()
         self.generate_buttons()
-        self.grid = map_generator(scale)
+        self.grid = map_generator(scale, enemy)
         self.flag = False
         self.chosen = None
         self.choose = None
@@ -137,7 +137,10 @@ class FightFrame(IFrame):
         knight_summon_button.connect(self.knight_chosen)
 
     def back_move(self):
-        shared.operational_list.pop()
+        try:
+            shared.operational_list.pop()
+        except IndexError:
+            pass
 
     def next_move(self):
         pass

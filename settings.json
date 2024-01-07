@@ -1,7 +1,7 @@
 {
-    "FULLSCREEN": false,
+    "FULLSCREEN": true,
     "WIDTH": 2000,
     "HEIGHT": 800,
-    "SOUND": false,
-    "MUSIC": false
+    "SOUND": true,
+    "MUSIC": true
 }

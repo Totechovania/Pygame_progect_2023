@@ -100,7 +100,7 @@ class FightMenuWindow(IFrame):
                      (self.w * 0.15, self.h * 0.15, int(0.08 * self.w), int(0.04 * self.w)), 0)
         draw_text(str(self.difficulty + 1), self.w * 0.185, self.h * 0.18, int(self.w * 0.05))
 
-        draw_text('Размер карты (1 - 4)', self.w * 0.065, self.h * 0.3, 'black', int(self.w * 0.04))
+        draw_text('Размер карты (1 - 3)', self.w * 0.065, self.h * 0.3, 'black', int(self.w * 0.04))
         pg.draw.rect(shared.screen, pg.Color(self.variations[self.map_size]),
                      (self.w * 0.15, self.h * 0.4, int(0.08 * self.w), int(0.04 * self.w)), 0)
         draw_text(str(self.map_size + 1), self.w * 0.185, self.h * 0.43, int(self.w * 0.05))
@@ -137,7 +137,7 @@ class FightMenuWindow(IFrame):
             self.colors = 1
 
     def start_game(self):
-        raise NewFrame(FightFrame(1))
+        raise NewFrame(FightFrame(self.map_size + 1, self.colors + 1))
 
     def save_settings(self):
         self.saved = True
