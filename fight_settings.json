@@ -1,6 +1,6 @@
 {
-    "DIFFICULTY": 4,
+    "DIFFICULTY": 0,
     "MAP_SIZE": 0,
-    "PLAYERS": 3,
-    "COLORS": 8
+    "PLAYERS": 0,
+    "COLORS": 1
 }

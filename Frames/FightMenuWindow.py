@@ -124,7 +124,7 @@ class FightMenuWindow(IFrame):
 
     def size_step(self):
         self.saved = False
-        self.map_size = (self.map_size + 1) % 4
+        self.map_size = (self.map_size + 1) % 3
 
     def players_step(self):
         self.saved = False

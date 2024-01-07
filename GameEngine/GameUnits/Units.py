@@ -8,6 +8,7 @@ class Unit(GameUnit):
         self.steps = steps
         self.pay = pay
         self.cost = cost
+        self.moved = False
 
 
 class Peasant(Unit):

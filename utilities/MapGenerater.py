@@ -1,12 +1,12 @@
 from GameEngine.HexGrid import HexGrid
+from GameEngine.game import Game
 from GameEngine.Tile import EmptyTile
 from GameEngine.GameUnits.Obstacles import Rock, Tree
 from GameEngine.GameUnits.Buildings import Guildhall
 import shared
 from perlin_noise import PerlinNoise
-from random import randint, choice
+from random import randint, choice, shuffle
 from numpy import floor
-
 from GameEngine.available_tiles import available_tiles
 
 
@@ -32,13 +32,14 @@ def map_generator(scale, enemy):
     names = ['Александр', 'Анна', 'Екатерина', 'Дмитрий', 'Сергей', 'Мария', 'Владимир', 'Ольга', 'Илья', 'Яна',
              'Андрей', 'Павел', 'Елена', 'Роман', 'Елизавета', 'Вячеслав', 'София', 'Антон', 'Виктория', 'Максим',
              'Ксения', 'Артем', 'Юлия', 'Николай', 'Татьяна', 'Денис', 'Кристина', 'Игорь', 'Евгения', 'Кирилл']
+    shuffle(names)
     width = randint(10, 20) * scale
     height = randint(10, 20) * scale
     obstacles = randint(5, 10) * scale
     grid = HexGrid.filled(width, height, 40,
                           (20, 20, shared.WIDTH, shared.HEIGHT))
     noise = perlin_noise(max(width, height))
-
+    game = Game(enemy)
     for i in range(width):
         for j in range(height):
             if not noise[i][j]:
@@ -52,7 +53,7 @@ def map_generator(scale, enemy):
         flag = False
         x, y = randint(0, width - 1), randint(0, height - 1)
         if not isinstance(grid[y, x], EmptyTile) and not grid[y, x].game_unit and not grid[y, x].owner:
-            owner = enemy
+            owner = names.pop(0)
             color = (randint(0, 255), randint(0, 255), randint(0, 255))
             for tile in available_tiles(grid, grid[y, x], 5, 5, owner):
                 if tile.owner:
@@ -84,4 +85,5 @@ def map_generator(scale, enemy):
                             pass
                     else:
                         break
-    return grid
+    game.grid = grid
+    return grid, game
