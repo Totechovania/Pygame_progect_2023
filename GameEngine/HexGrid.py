@@ -32,13 +32,10 @@ class HexGrid:
 
     def draw(self, surface: pg.Surface):
         self.image.fill((0, 0, 0, 0))
-
         scaled = pg.transform.scale_by(self.image, 1 / self.scale)
         scaled.blit(self.surface, (self.delta_pos[0] / self.scale, self.delta_pos[1] / self.scale))
         scaled = pg.transform.scale_by(scaled, self.scale)
-
         self.image.blit(scaled, (0, 0))
-
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
     def draw_tiles(self):
@@ -63,7 +60,6 @@ class HexGrid:
     def relative_pos(self, x, y):
         x = (x - self.rect.x - self.delta_pos[0]) / self.scale
         y = (y - self.rect.y - self.delta_pos[1]) / self.scale
-
         return x, y
 
     def collide_point(self, x: float, y: float):
@@ -88,7 +84,7 @@ class HexGrid:
         x, y = get_tile_coords(i, j, self.radius)
         self[i, j] = EmptyTile(x, y, self.radius, (i, j))
 
-    def set_tile(self, i, j, color=None, owner: str or None = None, game_unit: GameUnit or None = None, ):
+    def set_tile(self, i, j, color=None, owner: str or None = None, game_unit: GameUnit or None = None):
         x, y = get_tile_coords(i, j, self.radius)
         self[i, j] = HexTile(x, y, self.radius, (i, j), color, owner, game_unit)
 
@@ -112,7 +108,6 @@ class HexGrid:
     @classmethod
     def empty(cls, w, h, radius, rect):
         grid = []
-
         for i in range(h):
             grid.append([])
             for j in range(w):

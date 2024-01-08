@@ -16,7 +16,6 @@ def perlin_noise(size):
     period = 24
     terrain_width = size
     landscale = [[0 for _ in range(terrain_width)] for _ in range(terrain_width)]
-
     for position in range(terrain_width ** 2):
         x = floor(position / terrain_width)
         z = floor(position % terrain_width)
@@ -33,13 +32,13 @@ def map_generator(scale, enemy):
              'Андрей', 'Павел', 'Елена', 'Роман', 'Елизавета', 'Вячеслав', 'София', 'Антон', 'Виктория', 'Максим',
              'Ксения', 'Артем', 'Юлия', 'Николай', 'Татьяна', 'Денис', 'Кристина', 'Игорь', 'Евгения', 'Кирилл']
     shuffle(names)
+    names[0] = 'Игрок'
+    start_enemy = enemy
     width = randint(10, 20) * scale
     height = randint(10, 20) * scale
     obstacles = randint(5, 10) * scale
-    grid = HexGrid.filled(width, height, 40,
-                          (20, 20, shared.WIDTH, shared.HEIGHT))
+    grid = HexGrid.filled(width, height, 40, (20, 20, shared.WIDTH, shared.HEIGHT))
     noise = perlin_noise(max(width, height))
-    game = Game(enemy)
     for i in range(width):
         for j in range(height):
             if not noise[i][j]:
@@ -85,5 +84,5 @@ def map_generator(scale, enemy):
                             pass
                     else:
                         break
-    game.grid = grid
+    game = Game(start_enemy, grid)
     return grid, game

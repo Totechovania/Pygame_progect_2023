@@ -1,21 +1,39 @@
 from GameEngine.GameUnits.Buildings import *
 from GameEngine.GameUnits.Obstacles import *
-from GameEngine.GameUnits.Units import *
 from GameEngine.available_tiles import available_tiles
+from GameEngine.state import State
 
 
 class Game:
-    def __init__(self, players):
+    def __init__(self, players, grid):
         self.players = players
         self.states = {}
         self.states_names = []
-        self.grid = None
+        self.grid = grid
         self.current_player = None
         self.current_player_id = -1
+        self.generate_states()
+        self.add_all_players()
+        self.next_player()
 
     def add_player(self, state):
         self.states_names.append(state.owner)
-        self.states[state.owner] = {'state': state, 'tiles': 0, 'money': 0, 'captured_states': 0}
+        self.states[state.owner] = {'state': state, 'tiles': len(self.states[state.owner]), 'spent_money': 0,
+                                    'earned_money': 0, 'captured_states': 0}
+
+    def generate_states(self):
+        for i in self.grid.grid:
+            for j in i:
+                if j.owner and j.owner not in self.states:
+                    self.states[j.owner] = [j]
+                elif j.owner:
+                    self.states[j.owner].append(j)
+
+    def add_all_players(self):
+        for i in self.states:
+            self.add_player(State(i, self.states[i]))
+        self.states_names[self.states_names.index('Игрок')], self.states_names[0] = self.states_names[0], \
+            self.states_names[self.states_names.index('Игрок')]
 
     def remove_player(self, state):
         del self.states[state.owner]
@@ -36,8 +54,10 @@ class Game:
         self.current_player.money += self.current_player.earnings
         if self.current_player.money < 0:
             for tile in self.current_player.tiles:
-                if tile.game_unit:
-                    self.grid[tile.indexes].set_tile()
+                if tile.game_unit and not isinstance(tile.game_unit, Guildhall) and not\
+                        isinstance(tile.game_unit, Obstacles) and not isinstance(tile.game_unit, Building):
+                    self.grid.set_tile(*tile.indexes, color=tile.color)
+                    self.current_player.earnings = len(self.current_player.tiles) + self.current_player.farms * 4
                     tile.set_game_unit(Grave(2))
         self.current_player.set_turn()
 

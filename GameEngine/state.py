@@ -1,14 +1,14 @@
-from GameEngine.GameUnits.Units import *
+from GameEngine.GameUnits.Buildings import *
 
 
 class State:
-    def __init__(self, owner, player):
+    def __init__(self, owner, tiles):
         self.owner = owner
-        self.tiles = []
+        self.tiles = tiles
         self.money = 20
+        self.farms = 0
         self.earnings = 10
         self.turn = False
-        self.player = player
 
     def new_tile(self, tile):
         self.tiles.append(tile)

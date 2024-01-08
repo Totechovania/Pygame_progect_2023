@@ -70,23 +70,23 @@ class ChooseMode(IFrame):
         back_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'back.png', self.buttons)
         back_button.connect(self.back)
 
-        fight_button = Button((self.w * 0.4, self.h * 0.1, int(self.w * 0.2), int(self.h * 0.19)), 'rectangle.png',
+        fight_button = Button((self.w * 0.4, self.h * 0.14, int(self.w * 0.2), int(self.h * 0.19)), 'rectangle.png',
                               self.buttons)
         fight_button.connect(self.fight)
 
-        redactor_button = Button((self.w * 0.4, self.h * 0.25, int(self.w * 0.2), int(self.h * 0.19)), 'rectangle.png',
+        redactor_button = Button((self.w * 0.4, self.h * 0.44, int(self.w * 0.2), int(self.h * 0.19)), 'rectangle.png',
                                  self.buttons)
         redactor_button.connect(self.redactor)
 
-        campany_button = Button((self.w * 0.4, self.h * 0.4, int(self.w * 0.2), int(self.h * 0.19)), 'rectangle.png',
+        campany_button = Button((self.w * 0.4, self.h * 0.74, int(self.w * 0.2), int(self.h * 0.19)), 'rectangle.png',
                                 self.buttons)
         campany_button.connect(self.campany)
 
     def draw_fon(self):
         shared.screen.blit(self.image_fon, (0, 0))
-        draw_text('Сражение', self.w // 2.35, self.h // 6.3, '#08E8DE', int(self.w * 0.045))
-        draw_text('Редактор', self.w // 2.35, self.h // 3.25, '#08E8DE', int(self.w * 0.045))
-        draw_text('Кампания', self.w // 2.35, self.h // 2.15, '#08E8DE', int(self.w * 0.045))
+        draw_text('Сражение', self.w * 0.425, self.h * 0.2, '#08E8DE', int(self.w * 0.045))
+        draw_text('Редактор', self.w * 0.425, self.h * 0.5, '#08E8DE', int(self.w * 0.045))
+        draw_text('Кампания', self.w * 0.425, self.h * 0.8, '#08E8DE', int(self.w * 0.045))
 
     def back(self):
         play_sound('button_press.mp3')

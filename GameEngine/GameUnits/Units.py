@@ -23,9 +23,9 @@ class Spearman(Unit):
 
 class Warrior(Unit):
     def __init__(self, scale: float):
-        super().__init__('warrior32.png', scale, power=3, steps=10, cost=10, pay=15)
+        super().__init__('warrior32.png', scale, power=3, steps=10, cost=30, pay=15)
 
 
 class Knight(Unit):
     def __init__(self, scale: float):
-        super().__init__('knight32.png', scale, power=4, steps=6, cost=10, pay=30)
+        super().__init__('knight32.png', scale, power=4, steps=6, cost=40, pay=30)

@@ -1,18 +1,19 @@
 from GameEngine.GameUnits.Units import *
 from GameEngine.GameUnits.Buildings import *
+from GameEngine.GameUnits.Obstacles import *
 from Frames.IFrame import IFrame
 from Signals import *
 import shared
 from utilities.MapGenerater import map_generator
 import pygame as pg
-from GameEngine.Tile import HexTile, EmptyTile
 from utilities.Button import Button
 from utilities.music import play_sound
 from utilities.image import draw_text, load_image
 
 
 class FightFrame(IFrame):
-    def __init__(self, scale, enemy):
+    def __init__(self, scale, enemy, level=1):
+        self.bot_types = ['defender', 'attacker', 'farmer']
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
         self.buttons = pg.sprite.Group()
@@ -33,16 +34,24 @@ class FightFrame(IFrame):
                 clicked = self.grid.collide_point(*event.pos)
                 if clicked is not None:
                     if event.button == 1:
-                        if clicked.game_unit is None:
-                            if self.choose:
+                        if not clicked.game_unit or clicked.owner != 'Игрок':
+                            if self.choose and (self.game.available_move(clicked) or self.check_near(clicked)) and int(
+                                    self.chosen_unit[1].split(' ')[0]) <= self.game.states['Игрок']['state'].money \
+                                    and self.check_defense(clicked) and self.check_unit(clicked):
+                                unit = self.chosen_unit[2](2)
+                                if isinstance(unit, Farm):
+                                    self.game.states['Игрок']['state'].farms += 1
+                                    self.game.states['Игрок']['state'].earnings += 4
                                 clicked.set_game_unit(self.choose)
+                                clicked.color = self.game.states['Игрок']['state'].tiles[0].color
+                                clicked.owner = 'Игрок'
+                                if isinstance(unit, Unit):
+                                    self.game.states['Игрок']['state'].earnings -= unit.pay
+                                self.game.states['Игрок']['state'].new_tile(clicked)
+                                self.game.states['Игрок']['state'].money -= unit.cost
                                 self.chosen_unit = None
                                 self.choose = None
-                    elif event.button == 3:
-                        if isinstance(clicked, EmptyTile):
-                            self.grid.set_tile(clicked.indexes[0], clicked.indexes[1])
-                        elif isinstance(clicked, HexTile):
-                            self.grid.set_empty(clicked.indexes[0], clicked.indexes[1])
+
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     raise KillTopFrame
@@ -63,10 +72,14 @@ class FightFrame(IFrame):
         self.chosen = self.grid.collide_point(*pg.mouse.get_pos())
         self.grid.draw_tiles()
         if self.chosen is not None:
-            self.chosen.draw_stroke(self.grid.surface)
-            indexes = self.chosen.indexes
-            for tile in self.grid.get_adjacent_tiles(indexes[0], indexes[1]):
-                tile.draw_stroke(self.grid.surface)
+            list_of_your_state = []
+            for i in self.game.states['Игрок']['state'].tiles:
+                list_of_your_state.append(i.indexes)
+            if self.chosen.indexes in list_of_your_state:
+                for i in self.game.states['Игрок']['state'].tiles:
+                    i.draw_stroke(self.grid.surface)
+            else:
+                self.chosen.draw_stroke(self.grid.surface)
         self.grid.draw(shared.screen)
         self.buttons.update(events)
         self.buttons.draw(shared.screen)
@@ -79,6 +92,9 @@ class FightFrame(IFrame):
             pg.draw.line(shared.screen, pg.Color('black'), (self.w * 0.425, self.h * 0.95),
                          (self.w * 0.535, self.h * 0.95), 5)
 
+        shared.screen.blit(pg.transform.scale(load_image('money.png'), (self.w * 0.02, self.w * 0.02)),
+                           (self.w * 0.425, self.h * 0.01))
+
         draw_text('10 $', self.w * 0.11, self.h * 0.96, int(self.h * 0.9))
         draw_text('15 $', self.w * 0.21, self.h * 0.96, int(self.h * 0.9))
         draw_text('35 $', self.w * 0.31, self.h * 0.96, int(self.h * 0.9))
@@ -87,6 +103,16 @@ class FightFrame(IFrame):
         draw_text('20 $', self.w * 0.71, self.h * 0.96, int(self.h * 0.9))
         draw_text('30 $', self.w * 0.81, self.h * 0.96, int(self.h * 0.9))
         draw_text('40 $', self.w * 0.91, self.h * 0.96, int(self.h * 0.9))
+
+        draw_text(':  ', self.w * 0.45, self.h * 0.01, int(self.h * 0.9))
+        draw_text(str(self.game.states['Игрок']['state'].money), self.w * 0.46, self.h * 0.016, int(self.h * 0.9))
+
+        if self.game.states['Игрок']['state'].earnings > 0:
+            draw_text(f"(+{str(self.game.states['Игрок']['state'].earnings)})", self.w * 0.5, self.h * 0.01,
+                      int(self.h * 0.9))
+        else:
+            draw_text(f"({str(self.game.states['Игрок']['state'].earnings)})", self.w * 0.5, self.h * 0.01,
+                      int(self.h * 0.9))
 
     def generate_buttons(self):
         exit_button = Button(
@@ -142,35 +168,77 @@ class FightFrame(IFrame):
         except IndexError:
             pass
 
+    def check_near(self, clicked):
+        indexes = clicked.indexes
+        access = False
+        for tile in self.grid.get_adjacent_tiles(indexes[0], indexes[1]):
+            if tile.owner == 'Игрок':
+                access = True
+        return access
+
+    def check_defense(self, clicked):
+        unit = self.chosen_unit[2](2)
+        if clicked.game_unit:
+            if clicked.game_unit.power < unit.power:
+                indexes = clicked.indexes
+                access = True
+                for tile in self.grid.get_adjacent_tiles(indexes[0], indexes[1]):
+                    if tile.game_unit:
+                        if tile.game_unit.power > unit.power:
+                            if tile.owner != 'Игрок' and not isinstance(tile.game_unit, Rock):
+                                access = False
+                return access
+            return False
+        indexes = clicked.indexes
+        access = True
+        for tile in self.grid.get_adjacent_tiles(indexes[0], indexes[1]):
+            if tile.game_unit:
+                if tile.game_unit.power > unit.power:
+                    if tile.owner != 'Игрок' and not isinstance(tile.game_unit, Rock):
+                        access = False
+        return access
+
+    def check_unit(self, clicked):
+        if not issubclass(self.chosen_unit[2], Building) or clicked.owner == 'Игрок':
+            return True
+        return False
+
     def next_move(self):
-        pass
+        for _ in range(self.game.players):
+            self.game.next_player()
 
     def farm_house_chosen(self):
-        self.chosen_unit = (pg.transform.scale(load_image('farm.png'), (self.w * 0.04, self.w * 0.04)), '10 $')
+        self.chosen_unit = (pg.transform.scale(load_image('farm.png'), (self.w * 0.04, self.w * 0.04)), '10 $', Farm)
         self.choose = Farm(2)
 
     def tower_level_1_chosen(self):
-        self.chosen_unit = (pg.transform.scale(load_image('towerfirst.png'), (self.w * 0.04, self.w * 0.04)), '15 $')
+        self.chosen_unit = (
+            pg.transform.scale(load_image('towerfirst.png'), (self.w * 0.04, self.w * 0.04)), '15 $', TowerFirst)
         self.choose = TowerFirst(2)
 
     def tower_level_2_chosen(self):
-        self.chosen_unit = (pg.transform.scale(load_image('towersecond.png'), (self.w * 0.04, self.w * 0.04)), '35 $')
+        self.chosen_unit = (
+            pg.transform.scale(load_image('towersecond.png'), (self.w * 0.04, self.w * 0.04)), '35 $', TowerSecond)
         self.choose = TowerSecond(2)
 
     def traveller_chosen(self):
-        self.chosen_unit = (pg.transform.scale(load_image('peasant.png'), (self.w * 0.04, self.w * 0.04)), '10 $')
+        self.chosen_unit = (
+            pg.transform.scale(load_image('peasant.png'), (self.w * 0.04, self.w * 0.04)), '10 $', Peasant)
         self.choose = Peasant(2)
 
     def spearman_chosen(self):
-        self.chosen_unit = (pg.transform.scale(load_image('spearman.png'), (self.w * 0.04, self.w * 0.04)), '20 $')
+        self.chosen_unit = (
+            pg.transform.scale(load_image('spearman.png'), (self.w * 0.04, self.w * 0.04)), '20 $', Spearman)
         self.choose = Spearman(2)
 
     def warrior_chosen(self):
-        self.chosen_unit = (pg.transform.scale(load_image('warrior.png'), (self.w * 0.04, self.w * 0.04)), '30 $')
+        self.chosen_unit = (
+            pg.transform.scale(load_image('warrior.png'), (self.w * 0.04, self.w * 0.04)), '30 $', Warrior)
         self.choose = Warrior(2)
 
     def knight_chosen(self):
-        self.chosen_unit = (pg.transform.scale(load_image('knight.png'), (self.w * 0.04, self.w * 0.04)), '40 $')
+        self.chosen_unit = (
+            pg.transform.scale(load_image('knight.png'), (self.w * 0.04, self.w * 0.04)), '40 $', Knight)
         self.choose = Knight(2)
 
     def back(self):
