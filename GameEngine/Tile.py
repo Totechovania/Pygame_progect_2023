@@ -24,6 +24,8 @@ class HexTile:
         self.owner = owner
         self.game_unit = game_unit
 
+        self.hexagon = hexagon_from_center(self.center_x, self.center_y, self.radius)
+
     def collide_point(self, x: float, y: float):
         return self.rect.collidepoint(x, y)
 
@@ -34,15 +36,13 @@ class HexTile:
         return ((self.center_x - x) ** 2 + (self.center_y - y) ** 2) ** 0.5
 
     def draw(self, surface: pg.Surface):
-        hexagon = hexagon_from_center(self.center_x, self.center_y, self.radius)
-        pg.draw.polygon(surface, self.color, hexagon)
-        pg.draw.polygon(surface, (0, 0, 0), hexagon, round(self.radius / 20))
+        pg.draw.polygon(surface, self.color, self.hexagon)
+        self.draw_stroke(surface, (0, 0, 0), round(self.radius / 20))
         if self.game_unit is not None:
             self.game_unit.draw(surface)
 
-    def draw_stroke(self, surface: pg.Surface, color=(255, 255, 255)):
-        hexagon = hexagon_from_center(self.center_x, self.center_y, self.radius)
-        pg.draw.polygon(surface, color, hexagon, round(self.radius / 12))
+    def draw_stroke(self, surface: pg.Surface, color=(255, 255, 255), width=1):
+        pg.draw.polygon(surface, color, self.hexagon, width)
 
     def set_game_unit(self, game_unit: GameUnit):
         self.game_unit = game_unit
@@ -50,7 +50,7 @@ class HexTile:
 
 
 class EmptyTile(HexTile):
-    def draw_stroke(self, surface: pg.Surface, color=(255, 255, 255)):
+    def draw_stroke(self, surface: pg.Surface, color=(255, 255, 255), width=1):
         pass
 
     def draw(self, surface: pg.Surface):
