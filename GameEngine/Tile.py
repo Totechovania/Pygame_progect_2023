@@ -5,11 +5,9 @@ from GameEngine.GameUnits.GameUnit import GameUnit
 
 class HexTile:
     def __init__(self, x: float, y: float, radius: float, indexes: tuple[int, int],
-                 color=None, owner=None, game_unit=None):
-        if color is not None:
-            self.color = color
-        else:
-            self.color = (125, 125, 125)
+                 color=(125, 125, 125), owner=None, game_unit=None):
+        self.color = color
+
         self.radius = radius
 
         width = round(3 ** 0.5 * self.radius)
@@ -47,6 +45,10 @@ class HexTile:
     def set_game_unit(self, game_unit: GameUnit):
         self.game_unit = game_unit
         self.game_unit.adjust_to_tile(self)
+
+    def set_owner(self, owner: str | None = None, color=(125, 125, 125)):
+        self.owner = owner
+        self.color = color
 
 
 class EmptyTile(HexTile):
