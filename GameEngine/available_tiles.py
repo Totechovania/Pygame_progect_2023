@@ -4,28 +4,30 @@ from GameEngine.tile_defense import tile_defense
 from GameEngine.GameUnits.Obstacles import Obstacles
 
 
-def available_tiles(grid: HexGrid, cur_tile: HexTile, power, step: int, owner, checked: list[HexTile] or None = None):
-    if checked is None:
-        checked = []
+def available_tiles(grid: HexGrid, cur_tile: HexTile, power, step: int, owner):
+    unchecked = {cur_tile.indexes: step}
+    to_check = {}
+    checked = {}
     res = []
-    if step == 0:
-        return res
-    i, j = cur_tile.indexes
-    adjacent_tiles = grid.get_adjacent_tiles(i, j)
-    for tile in adjacent_tiles:
-        for checked_tile, checked_step in checked:
-            if tile == checked_tile and step <= checked_step:
-                break
-        else:
-            checked.append((tile, step))
-            if tile_defense(grid, tile.indexes, owner) < power:
-                if owner != tile.owner:
-                    res.append(tile)
-                else:
-                    if tile.game_unit is None:
+    while unchecked and step:
+        for tile_indexes in unchecked:
+            i, j = tile_indexes
+            for tile in grid.get_adjacent_tiles(i, j):
+                if tile.indexes in checked.keys() and step <= checked[tile.indexes]:
+                    continue
+                checked[tile.indexes] = step
+                if tile_defense(grid, tile.indexes, owner) < power:
+                    if owner != tile.owner:
                         res.append(tile)
-                        res.extend(available_tiles(grid, tile, power, step - 1, owner, checked))
-                    elif isinstance(tile.game_unit, Obstacles):
-                        res.append(tile)
+                    else:
+                        if tile.game_unit is None:
+                            res.append(tile)
+                            to_check[tile.indexes] = step
+                        elif isinstance(tile.game_unit, Obstacles):
+                            res.append(tile)
+
+        unchecked = to_check
+        to_check = {}
+        step -= 1
 
     return res
