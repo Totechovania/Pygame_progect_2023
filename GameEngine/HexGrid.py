@@ -93,7 +93,11 @@ class HexGrid:
         x, y = get_tile_coords(i, j, self.radius)
         self[i, j] = HexTile(x, y, self.radius, (i, j), color, owner, game_unit)
 
-    def get_adjacent_indices(self, i, j):
+    def get_adjacent_indices(self, tile: HexTile | tuple[int, int]):
+        if isinstance(tile, HexTile):
+            i, j = tile.indexes
+        else:
+            i, j = tile
         relevant = [[-1, 0], [0, -1], [1, 0], [0, 1]]
         if i % 2 == 0:
             other = [[-1, -1], [1, -1]]
@@ -106,9 +110,13 @@ class HexGrid:
 
         return adjacent
 
-    def get_adjacent_tiles(self, i, j, empty_tiles=False):
+    def get_adjacent_tiles(self, tile: HexTile | tuple[int, int], empty_tiles=False):
+        if isinstance(tile, HexTile):
+            i, j = tile.indexes
+        else:
+            i, j = tile
         return filter(lambda tile: empty_tiles or not isinstance(tile, EmptyTile),
-                      (self[i, j] for i, j in self.get_adjacent_indices(i, j)))
+                      (self[i, j] for i, j in self.get_adjacent_indices((i, j))))
 
     @classmethod
     def empty(cls, w, h, radius, rect):
