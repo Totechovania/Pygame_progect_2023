@@ -1,5 +1,6 @@
 from GameEngine.GameUnits.Buildings import *
 from GameEngine.GameUnits.Obstacles import *
+from GameEngine.GameUnits.Units import *
 from GameEngine.available_tiles import available_tiles
 from GameEngine.state import State
 
@@ -48,17 +49,24 @@ class Game:
             return True
         return False
 
+    def count_player_earnings(self):
+        self.current_player.earnings = len(set(self.current_player.tiles)) + self.current_player.farms * 4
+        self.current_player.tiles = list(set(self.current_player.tiles))
+        for i in self.current_player.tiles:
+            if isinstance(i.game_unit, Unit):
+                self.current_player.earnings -= i.game_unit.pay
+
     def next_player(self):
         self.current_player_id = (self.current_player_id + 1) % self.players
         self.current_player = self.states[self.states_names[self.current_player_id]]['state']
         self.current_player.money += self.current_player.earnings
         if self.current_player.money < 0:
             for tile in self.current_player.tiles:
-                if tile.game_unit and not isinstance(tile.game_unit, Guildhall) and not\
+                if tile.game_unit and not isinstance(tile.game_unit, Guildhall) and not \
                         isinstance(tile.game_unit, Obstacles) and not isinstance(tile.game_unit, Building):
                     self.grid.set_tile(*tile.indexes, color=tile.color)
-                    self.current_player.earnings = len(self.current_player.tiles) + self.current_player.farms * 4
                     tile.set_game_unit(Grave(2))
+                    self.count_player_earnings()
         self.current_player.set_turn()
 
     def move(self, tile_from, tile_to):

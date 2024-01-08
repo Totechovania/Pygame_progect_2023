@@ -28,4 +28,4 @@ class Warrior(Unit):
 
 class Knight(Unit):
     def __init__(self, scale: float):
-        super().__init__('knight32.png', scale, power=4, steps=6, cost=40, pay=30)
+        super().__init__('knight32.png', scale, power=4, steps=6, cost=0, pay=30)

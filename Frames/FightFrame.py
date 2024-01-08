@@ -23,6 +23,7 @@ class FightFrame(IFrame):
         self.chosen = None
         self.choose = None
         self.chosen_unit = None
+        self.game.count_player_earnings()
 
     def update(self):
         shared.screen.fill((255, 255, 255))
@@ -34,14 +35,17 @@ class FightFrame(IFrame):
                 clicked = self.grid.collide_point(*event.pos)
                 if clicked is not None:
                     if event.button == 1:
-                        if not clicked.game_unit or clicked.owner != 'Игрок':
+                        if not clicked.game_unit or clicked.owner != 'Игрок' or (
+                                clicked.owner == 'Игрок' and isinstance(clicked.game_unit, Obstacles)):
                             if self.choose and (self.game.available_move(clicked) or self.check_near(clicked)) and int(
                                     self.chosen_unit[1].split(' ')[0]) <= self.game.states['Игрок']['state'].money \
                                     and self.check_defense(clicked) and self.check_unit(clicked):
                                 unit = self.chosen_unit[2](2)
                                 if isinstance(unit, Farm):
                                     self.game.states['Игрок']['state'].farms += 1
-                                    self.game.states['Игрок']['state'].earnings += 4
+                                if isinstance(clicked.game_unit, Guildhall):
+                                    self.game.states['Игрок']['captured_states'] += 1
+                                self.game.states['Игрок']['spent_money'] += unit.cost
                                 clicked.set_game_unit(self.choose)
                                 clicked.color = self.game.states['Игрок']['state'].tiles[0].color
                                 clicked.owner = 'Игрок'
@@ -51,6 +55,7 @@ class FightFrame(IFrame):
                                 self.game.states['Игрок']['state'].money -= unit.cost
                                 self.chosen_unit = None
                                 self.choose = None
+                                self.game.count_player_earnings()
 
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
@@ -95,7 +100,7 @@ class FightFrame(IFrame):
         shared.screen.blit(pg.transform.scale(load_image('money.png'), (self.w * 0.02, self.w * 0.02)),
                            (self.w * 0.425, self.h * 0.01))
 
-        draw_text('10 $', self.w * 0.11, self.h * 0.96, int(self.h * 0.9))
+        draw_text('12 $', self.w * 0.11, self.h * 0.96, int(self.h * 0.9))
         draw_text('15 $', self.w * 0.21, self.h * 0.96, int(self.h * 0.9))
         draw_text('35 $', self.w * 0.31, self.h * 0.96, int(self.h * 0.9))
 
@@ -204,11 +209,12 @@ class FightFrame(IFrame):
         return False
 
     def next_move(self):
+        self.game.states['Игрок']['earned_money'] += self.game.states['Игрок']['state'].earnings
         for _ in range(self.game.players):
             self.game.next_player()
 
     def farm_house_chosen(self):
-        self.chosen_unit = (pg.transform.scale(load_image('farm.png'), (self.w * 0.04, self.w * 0.04)), '10 $', Farm)
+        self.chosen_unit = (pg.transform.scale(load_image('farm.png'), (self.w * 0.04, self.w * 0.04)), '12 $', Farm)
         self.choose = Farm(2)
 
     def tower_level_1_chosen(self):
