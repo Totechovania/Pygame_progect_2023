@@ -63,7 +63,7 @@ def map_generator(scale, enemy):
                 c += 1
                 names.append(owner)
                 continue
-            if c == 50:
+            if c == 100:
                 return None, None
 
             grid[y, x].owner = owner
@@ -88,12 +88,12 @@ def map_generator(scale, enemy):
                                 y = y1
                                 break
                         except Exception:
-                            if c != 50:
+                            if c != 100:
                                 c += 1
                             return None, None
                     else:
                         break
-        elif c == 50:
+        elif c == 100:
             return None, None
         else:
             c += 1

@@ -4,7 +4,7 @@ from GameEngine.tile_defense import tile_defense
 from GameEngine.GameUnits.Obstacles import Obstacles
 
 
-def available_tiles(grid: HexGrid, cur_tile: HexTile | tuple[int, int], power, step: int, owner):
+def available_tiles(grid: HexGrid, cur_tile: HexTile or tuple[int, int], power, step: int, owner):
     if not isinstance(cur_tile, HexTile):
         cur_tile = grid[cur_tile]
     unchecked = {cur_tile.indexes: step}

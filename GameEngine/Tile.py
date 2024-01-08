@@ -46,7 +46,7 @@ class HexTile:
         self.game_unit = game_unit
         self.game_unit.adjust_to_tile(self)
 
-    def set_owner(self, owner: str | None = None, color=(125, 125, 125)):
+    def set_owner(self, owner: str or None = None, color=(125, 125, 125)):
         self.owner = owner
         self.color = color
 

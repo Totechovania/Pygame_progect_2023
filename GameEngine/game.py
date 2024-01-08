@@ -69,11 +69,13 @@ class Game:
                     self.current_player.money = 0
         self.count_player_earnings()
         self.current_player.set_turn()
+        self.states[self.states_names[self.current_player_id - 1]]['state'].set_turn()
 
     def move(self, tile_from, tile_to):
-        if self.available_move(tile_from):
+        if self.available_move(tile_from) and isinstance(tile_from.game_unit, Unit):
             unit = tile_from.game_unit
-            if tile_to in available_tiles(self.grid, tile_from, unit.power, unit.steps, tile_from.owner):
+            if tile_to in available_tiles(self.grid, tile_from, unit.power, unit.steps,
+                                          tile_from.owner) and not tile_from.game_unit.moved:
                 if isinstance(tile_to.game_unit, Guildhall):
                     self.remove_player(self.states[tile_to.owner]['state'])
                     self.states[tile_from.owner]['captured_states'] += 1
@@ -81,6 +83,6 @@ class Game:
                 tile_to.owner = tile_from.owner
                 tile_to.color = tile_from.color
                 tile_to.set_game_unit(unit)
+                tile_to.game_unit.moved = True
                 self.states[tile_from.owner]['state'].new_tile(tile_to)
                 self.count_player_earnings()
-

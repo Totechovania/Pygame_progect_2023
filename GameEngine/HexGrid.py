@@ -80,7 +80,7 @@ class HexGrid:
             for j in i:
                 yield j
 
-    def draw_tile_stroke(self, tile: tuple[int, int] | HexTile, color=(255, 255, 255), width=1):
+    def draw_tile_stroke(self, tile: tuple[int, int] or HexTile, color=(255, 255, 255), width=1):
         if not isinstance(tile, HexTile):
             tile = self[tile]
         tile.draw_stroke(self.surface, color, width)
@@ -93,7 +93,7 @@ class HexGrid:
         x, y = get_tile_coords(i, j, self.radius)
         self[i, j] = HexTile(x, y, self.radius, (i, j), color, owner, game_unit)
 
-    def get_adjacent_indices(self, tile: HexTile | tuple[int, int]):
+    def get_adjacent_indices(self, tile: HexTile or tuple[int, int]):
         if isinstance(tile, HexTile):
             i, j = tile.indexes
         else:
@@ -110,7 +110,7 @@ class HexGrid:
 
         return adjacent
 
-    def get_adjacent_tiles(self, tile: HexTile | tuple[int, int], empty_tiles=False):
+    def get_adjacent_tiles(self, tile: HexTile or tuple[int, int], empty_tiles=False):
         if isinstance(tile, HexTile):
             i, j = tile.indexes
         else:

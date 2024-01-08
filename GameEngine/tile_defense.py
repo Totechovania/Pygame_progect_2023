@@ -4,7 +4,7 @@ from GameEngine.GameUnits.Buildings import Building
 from GameEngine.GameUnits.Obstacles import Obstacles
 
 
-def tile_defense(grid, tile: tuple[int, int] | HexTile, owner) -> int:
+def tile_defense(grid, tile: tuple[int, int] or HexTile, owner) -> int:
     if isinstance(tile, HexTile):
         indexes = tile.indexes
     else:

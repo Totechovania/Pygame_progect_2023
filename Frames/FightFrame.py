@@ -41,14 +41,14 @@ class FightFrame(IFrame):
                 clicked = self.grid.collide_point(*event.pos)
                 if clicked is not None:
                     if event.button == 1:
-                        print(clicked.game_unit)
                         if not clicked.game_unit or clicked.owner != 'Игрок' or (
                                 clicked.owner == 'Игрок' and isinstance(clicked.game_unit, Obstacles)):
                             if isinstance(self.choose, HexTile):
                                 self.game.move(self.choose, clicked)
                                 self.choose = None
-                            elif self.choose and (self.game.available_move(clicked) or self.check_near(clicked)) and int(
-                                    self.chosen_unit[1].split(' ')[0]) <= self.game.states['Игрок']['state'].money \
+                            elif self.choose and (
+                                    self.game.available_move(clicked) or self.check_near(clicked)) and int(
+                                self.chosen_unit[1].split(' ')[0]) <= self.game.states['Игрок']['state'].money \
                                     and self.check_defense(clicked) and self.check_unit(clicked):
                                 unit = self.chosen_unit[2](2)
                                 if isinstance(unit, Farm):
@@ -57,6 +57,8 @@ class FightFrame(IFrame):
                                     self.game.states['Игрок']['captured_states'] += 1
                                 self.game.states['Игрок']['spent_money'] += unit.cost
                                 clicked.set_game_unit(self.choose)
+                                if clicked.owner != self.game.current_player.owner:
+                                    clicked.game_unit.moved = True
                                 clicked.color = self.game.states['Игрок']['state'].tiles[0].color
                                 clicked.owner = 'Игрок'
                                 if isinstance(unit, Unit):
@@ -68,9 +70,6 @@ class FightFrame(IFrame):
                                 self.game.count_player_earnings()
                         elif clicked.game_unit and self.game.states['Игрок']['state'].turn:
                             self.choose = clicked
-
-
-
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     raise KillTopFrame
@@ -197,25 +196,25 @@ class FightFrame(IFrame):
 
     def check_defense(self, clicked):
         unit = self.chosen_unit[2](2)
+        if clicked.owner is None and (not isinstance(clicked.game_unit, Rock) or clicked.game_unit is None):
+            return True
         if clicked.game_unit:
             if clicked.game_unit.power < unit.power:
                 indexes = clicked.indexes
-                access = True
                 for tile in self.grid.get_adjacent_tiles((indexes[0], indexes[1])):
                     if tile.game_unit:
                         if tile.game_unit.power > unit.power:
                             if tile.owner != 'Игрок' and not isinstance(tile.game_unit, Rock):
-                                access = False
-                return access
+                                return False
+                return True
             return False
         indexes = clicked.indexes
-        access = True
         for tile in self.grid.get_adjacent_tiles((indexes[0], indexes[1])):
             if tile.game_unit:
                 if tile.game_unit.power > unit.power:
                     if tile.owner != 'Игрок' and not isinstance(tile.game_unit, Rock):
-                        access = False
-        return access
+                        return False
+        return True
 
     def check_unit(self, clicked):
         if not issubclass(self.chosen_unit[2], Building) or clicked.owner == 'Игрок':
@@ -226,6 +225,9 @@ class FightFrame(IFrame):
         self.game.states['Игрок']['earned_money'] += self.game.states['Игрок']['state'].earnings
         for _ in range(self.game.players):
             self.game.next_player()
+            for i in self.game.current_player.tiles:
+                if isinstance(i.game_unit, Unit):
+                    i.game_unit.moved = False
             self.choose = None
 
     def farm_house_chosen(self):
