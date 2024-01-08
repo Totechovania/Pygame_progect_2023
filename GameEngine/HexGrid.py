@@ -89,7 +89,7 @@ class HexGrid:
         x, y = get_tile_coords(i, j, self.radius)
         self[i, j] = EmptyTile(x, y, self.radius, (i, j))
 
-    def set_tile(self, i, j, color=None, owner: str or None = None, game_unit: GameUnit or None = None):
+    def set_tile(self, i, j, color=(125, 125, 125), owner: str or None = None, game_unit: GameUnit or None = None):
         x, y = get_tile_coords(i, j, self.radius)
         self[i, j] = HexTile(x, y, self.radius, (i, j), color, owner, game_unit)
 
