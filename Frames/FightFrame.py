@@ -6,6 +6,7 @@ from Signals import *
 import shared
 from utilities.MapGenerater import map_generator
 import pygame as pg
+from GameEngine.Tile import HexTile
 from utilities.Button import Button
 from utilities.music import play_sound
 from utilities.image import draw_text, load_image
@@ -18,7 +19,12 @@ class FightFrame(IFrame):
         self.h = shared.HEIGHT
         self.buttons = pg.sprite.Group()
         self.generate_buttons()
-        self.grid, self.game = map_generator(scale, enemy)
+        self.grid = None
+        с = 0
+        while not self.grid:
+            self.grid, self.game = map_generator(scale, enemy)
+            print('краш' * с)
+            с += 1
         self.flag = False
         self.chosen = None
         self.choose = None
@@ -35,9 +41,13 @@ class FightFrame(IFrame):
                 clicked = self.grid.collide_point(*event.pos)
                 if clicked is not None:
                     if event.button == 1:
+                        print(clicked.game_unit)
                         if not clicked.game_unit or clicked.owner != 'Игрок' or (
                                 clicked.owner == 'Игрок' and isinstance(clicked.game_unit, Obstacles)):
-                            if self.choose and (self.game.available_move(clicked) or self.check_near(clicked)) and int(
+                            if isinstance(self.choose, HexTile):
+                                self.game.move(self.choose, clicked)
+                                self.choose = None
+                            elif self.choose and (self.game.available_move(clicked) or self.check_near(clicked)) and int(
                                     self.chosen_unit[1].split(' ')[0]) <= self.game.states['Игрок']['state'].money \
                                     and self.check_defense(clicked) and self.check_unit(clicked):
                                 unit = self.chosen_unit[2](2)
@@ -56,6 +66,10 @@ class FightFrame(IFrame):
                                 self.chosen_unit = None
                                 self.choose = None
                                 self.game.count_player_earnings()
+                        elif clicked.game_unit and self.game.states['Игрок']['state'].turn:
+                            self.choose = clicked
+
+
 
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
@@ -176,7 +190,7 @@ class FightFrame(IFrame):
     def check_near(self, clicked):
         indexes = clicked.indexes
         access = False
-        for tile in self.grid.get_adjacent_tiles(indexes[0], indexes[1]):
+        for tile in self.grid.get_adjacent_tiles((indexes[0], indexes[1])):
             if tile.owner == 'Игрок':
                 access = True
         return access
@@ -187,7 +201,7 @@ class FightFrame(IFrame):
             if clicked.game_unit.power < unit.power:
                 indexes = clicked.indexes
                 access = True
-                for tile in self.grid.get_adjacent_tiles(indexes[0], indexes[1]):
+                for tile in self.grid.get_adjacent_tiles((indexes[0], indexes[1])):
                     if tile.game_unit:
                         if tile.game_unit.power > unit.power:
                             if tile.owner != 'Игрок' and not isinstance(tile.game_unit, Rock):
@@ -196,7 +210,7 @@ class FightFrame(IFrame):
             return False
         indexes = clicked.indexes
         access = True
-        for tile in self.grid.get_adjacent_tiles(indexes[0], indexes[1]):
+        for tile in self.grid.get_adjacent_tiles((indexes[0], indexes[1])):
             if tile.game_unit:
                 if tile.game_unit.power > unit.power:
                     if tile.owner != 'Игрок' and not isinstance(tile.game_unit, Rock):
@@ -212,6 +226,7 @@ class FightFrame(IFrame):
         self.game.states['Игрок']['earned_money'] += self.game.states['Игрок']['state'].earnings
         for _ in range(self.game.players):
             self.game.next_player()
+            self.choose = None
 
     def farm_house_chosen(self):
         self.chosen_unit = (pg.transform.scale(load_image('farm.png'), (self.w * 0.04, self.w * 0.04)), '12 $', Farm)

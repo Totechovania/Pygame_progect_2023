@@ -59,23 +59,28 @@ class Game:
     def next_player(self):
         self.current_player_id = (self.current_player_id + 1) % self.players
         self.current_player = self.states[self.states_names[self.current_player_id]]['state']
+        self.count_player_earnings()
         self.current_player.money += self.current_player.earnings
         if self.current_player.money < 0:
             for tile in self.current_player.tiles:
-                if tile.game_unit and not isinstance(tile.game_unit, Guildhall) and not \
-                        isinstance(tile.game_unit, Obstacles) and not isinstance(tile.game_unit, Building):
-                    self.grid.set_tile(*tile.indexes, color=tile.color)
+                if isinstance(tile.game_unit, Unit):
+                    self.grid.unit = None
                     tile.set_game_unit(Grave(2))
-                    self.count_player_earnings()
+                    self.current_player.money = 0
+        self.count_player_earnings()
         self.current_player.set_turn()
 
     def move(self, tile_from, tile_to):
         if self.available_move(tile_from):
             unit = tile_from.game_unit
-            if tile_to in available_tiles(self.grid, tile_from, unit.power, unit.step, tile_from.owner):
-                self.grid[tile_from.indexes].set_tile()
+            if tile_to in available_tiles(self.grid, tile_from, unit.power, unit.steps, tile_from.owner):
                 if isinstance(tile_to.game_unit, Guildhall):
                     self.remove_player(self.states[tile_to.owner]['state'])
-                tile_to.set_game_unit(unit)
+                    self.states[tile_from.owner]['captured_states'] += 1
+                tile_from.game_unit = None
                 tile_to.owner = tile_from.owner
-                self.states[tile_from.owner]['state'].add_tile(tile_to)
+                tile_to.color = tile_from.color
+                tile_to.set_game_unit(unit)
+                self.states[tile_from.owner]['state'].new_tile(tile_to)
+                self.count_player_earnings()
+

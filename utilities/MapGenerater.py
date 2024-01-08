@@ -48,6 +48,7 @@ def map_generator(scale, enemy):
         if not isinstance(grid[y, x], EmptyTile) and not grid[y, x].game_unit:
             grid[y, x].set_game_unit(choice([Tree(2), Tree(2), Tree(2), Rock(2)]))
             obstacles -= 1
+    c = 0
     while enemy != 0:
         flag = False
         x, y = randint(0, width - 1), randint(0, height - 1)
@@ -57,15 +58,21 @@ def map_generator(scale, enemy):
             for tile in available_tiles(grid, grid[y, x], 5, 5, owner):
                 if tile.owner:
                     flag = True
+
             if flag:
+                c += 1
+                names.append(owner)
                 continue
+            if c == 50:
+                return None, None
+
             grid[y, x].owner = owner
             grid[y, x].color = color
             grid[y, x].set_game_unit(Guildhall(2))
             enemy -= 1
             tiles = 4
             while tiles != 0:
-                for tile in grid.get_adjacent_tiles(y, x):
+                for tile in grid.get_adjacent_tiles((y, x)):
                     if not isinstance(tile, EmptyTile) and not tile.owner:
                         tile.owner = owner
                         tile.color = color
@@ -75,14 +82,20 @@ def map_generator(scale, enemy):
                 while True:
                     if tiles != 0:
                         try:
-                            y1, x1 = choice(list(grid.get_adjacent_tiles(y, x))).indexes
+                            y1, x1 = choice(list(grid.get_adjacent_tiles((y, x)))).indexes
                             if not isinstance(grid[y1, x1], EmptyTile) and grid[y1, x1].owner == owner:
                                 x = x1
                                 y = y1
                                 break
                         except Exception:
-                            pass
+                            if c != 50:
+                                c += 1
+                            return None, None
                     else:
                         break
+        elif c == 50:
+            return None, None
+        else:
+            c += 1
     game = Game(start_enemy, grid)
     return grid, game
