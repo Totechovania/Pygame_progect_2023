@@ -11,6 +11,7 @@ def tile_defense(grid, cur_tile: tuple[int, int] or HexTile) -> int:
         indexes = cur_tile
         cur_tile = grid[indexes]
     adjacent_tiles = grid.get_adjacent_tiles(indexes)
+    adjacent_tiles.append(cur_tile)
     owner = cur_tile.owner
 
     def tile_defends(tile):
