@@ -18,13 +18,8 @@ class FightFrame(IFrame):
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
         self.buttons = pg.sprite.Group()
+        self.grid, self.game = map_generator(scale, enemy)
         self.generate_buttons()
-        self.grid = None
-        с = 0
-        while not self.grid:
-            self.grid, self.game = map_generator(scale, enemy)
-            print('краш' * с)
-            с += 1
         self.flag = False
         self.chosen = None
         self.choose = None
@@ -46,30 +41,12 @@ class FightFrame(IFrame):
                             if isinstance(self.choose, HexTile):
                                 self.game.move(self.choose, clicked)
                                 self.choose = None
-                            elif self.choose and (
-                                    self.game.available_move(clicked) or self.check_near(clicked)) and int(
-                                self.chosen_unit[1].split(' ')[0]) <= self.game.states['Игрок']['state'].money \
-                                    and self.check_defense(clicked) and self.check_unit(clicked):
-                                unit = self.chosen_unit[2](2)
-                                if isinstance(unit, Farm):
-                                    self.game.states['Игрок']['state'].farms += 1
-                                if isinstance(clicked.game_unit, Guildhall):
-                                    self.game.states['Игрок']['captured_states'] += 1
-                                self.game.states['Игрок']['spent_money'] += unit.cost
-                                clicked.set_game_unit(self.choose)
-                                if clicked.owner != self.game.current_player.owner:
-                                    clicked.game_unit.moved = True
-                                clicked.color = self.game.states['Игрок']['state'].tiles[0].color
-                                clicked.owner = 'Игрок'
-                                if isinstance(unit, Unit):
-                                    self.game.states['Игрок']['state'].earnings -= unit.pay
-                                self.game.states['Игрок']['state'].new_tile(clicked)
-                                self.game.states['Игрок']['state'].money -= unit.cost
+                            elif self.choose and self.game.new_unit(clicked, self.chosen_unit[2](2)):
                                 self.chosen_unit = None
                                 self.choose = None
-                                self.game.count_player_earnings()
                         elif clicked.game_unit and self.game.states['Игрок']['state'].turn:
                             self.choose = clicked
+                            self.chosen_unit = None
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     raise KillTopFrame
@@ -180,55 +157,10 @@ class FightFrame(IFrame):
             'knight.png', self.buttons)
         knight_summon_button.connect(self.knight_chosen)
 
-    def back_move(self):
-        try:
-            shared.operational_list.pop()
-        except IndexError:
-            pass
-
-    def check_near(self, clicked):
-        indexes = clicked.indexes
-        access = False
-        for tile in self.grid.get_adjacent_tiles((indexes[0], indexes[1])):
-            if tile.owner == 'Игрок':
-                access = True
-        return access
-
-    def check_defense(self, clicked):
-        unit = self.chosen_unit[2](2)
-        if clicked.owner is None and (not isinstance(clicked.game_unit, Rock) or clicked.game_unit is None):
-            return True
-        if clicked.game_unit:
-            if clicked.game_unit.power < unit.power:
-                indexes = clicked.indexes
-                for tile in self.grid.get_adjacent_tiles((indexes[0], indexes[1])):
-                    if tile.game_unit:
-                        if tile.game_unit.power > unit.power:
-                            if tile.owner != 'Игрок' and not isinstance(tile.game_unit, Rock):
-                                return False
-                return True
-            return False
-        indexes = clicked.indexes
-        for tile in self.grid.get_adjacent_tiles((indexes[0], indexes[1])):
-            if tile.game_unit:
-                if tile.game_unit.power > unit.power:
-                    if tile.owner != 'Игрок' and not isinstance(tile.game_unit, Rock):
-                        return False
-        return True
-
-    def check_unit(self, clicked):
-        if not issubclass(self.chosen_unit[2], Building) or clicked.owner == 'Игрок':
-            return True
-        return False
-
     def next_move(self):
-        self.game.states['Игрок']['earned_money'] += self.game.states['Игрок']['state'].earnings
-        for _ in range(self.game.players):
-            self.game.next_player()
-            for i in self.game.current_player.tiles:
-                if isinstance(i.game_unit, Unit):
-                    i.game_unit.moved = False
-            self.choose = None
+        self.game.next_player()
+        self.chosen_unit = None
+        self.choose = None
 
     def farm_house_chosen(self):
         self.chosen_unit = (pg.transform.scale(load_image('farm.png'), (self.w * 0.04, self.w * 0.04)), '12 $', Farm)
@@ -267,6 +199,9 @@ class FightFrame(IFrame):
     def back(self):
         play_sound('button_press.mp3')
         raise KillTopFrame
+
+    def back_move(self):
+        self.grid = self.game.back_move()
 
     def open_pop_up_window(self):
         from Frames.PopUpWindow import PopUpWindow

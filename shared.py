@@ -12,7 +12,6 @@ __all__ = (
     'fullscreen',
     'fullscreen_h',
     'fullscreen_w',
-    'operational_list'
 )
 
 FPS: int
@@ -25,4 +24,3 @@ music: bool
 fullscreen: bool
 fullscreen_w: int
 fullscreen_h: int
-operational_list: list

@@ -48,7 +48,6 @@ def map_generator(scale, enemy):
         if not isinstance(grid[y, x], EmptyTile) and not grid[y, x].game_unit:
             grid[y, x].set_game_unit(choice([Tree(2), Tree(2), Tree(2), Rock(2)]))
             obstacles -= 1
-    c = 0
     while enemy != 0:
         flag = False
         x, y = randint(0, width - 1), randint(0, height - 1)
@@ -58,14 +57,9 @@ def map_generator(scale, enemy):
             for tile in available_tiles(grid, grid[y, x], 5, 5, owner):
                 if tile.owner:
                     flag = True
-
             if flag:
-                c += 1
                 names.append(owner)
                 continue
-            if c == 100:
-                return None, None
-
             grid[y, x].owner = owner
             grid[y, x].color = color
             grid[y, x].set_game_unit(Guildhall(2))
@@ -88,14 +82,8 @@ def map_generator(scale, enemy):
                                 y = y1
                                 break
                         except Exception:
-                            if c != 100:
-                                c += 1
-                            return None, None
+                            pass
                     else:
                         break
-        elif c == 100:
-            return None, None
-        else:
-            c += 1
     game = Game(start_enemy, grid)
     return grid, game
