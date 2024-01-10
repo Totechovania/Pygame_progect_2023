@@ -1,7 +1,9 @@
 from GameEngine.GameUnits.Buildings import *
 from GameEngine.GameUnits.Obstacles import *
 from GameEngine.GameUnits.Units import *
+from GameEngine.Tile import EmptyTile
 from GameEngine.available_tiles import available_tiles
+from GameEngine.tile_defense import tile_defense
 from GameEngine.state import State
 from GameEngine.Bot import *
 from GameEngine.HexGrid import EmptyTile
@@ -94,55 +96,63 @@ class Game:
         elif tile.game_unit and not tile.game_unit.power < unit.power:
             return False
         indexes = tile.indexes
+        if tile.owner == self.current_player.owner:
+            return True
+        if tile_defense(self.grid, tile) >= unit.power:
+            return False
         for tile in self.grid.get_adjacent_tiles((indexes[0], indexes[1])):
             if tile.game_unit:
                 if tile.game_unit.power > unit.power:
-                    if tile.owner != 'Игрок' and not isinstance(tile.game_unit, Rock):
+                    if tile.owner != self.current_player.owner and not isinstance(tile.game_unit, Rock):
                         return False
         return True
 
     def check_near(self, check_tile):
         indexes = check_tile.indexes
         for tile in self.grid.get_adjacent_tiles((indexes[0], indexes[1])):
-            if tile.owner == 'Игрок':
+            if tile.owner == self.current_player.owner:
                 return True
 
-    def back_move(self):
-        print('Работает')
-        try:
-            grid, self.states = self.operational_list.pop(-1)
-            if grid == self.grid.grid:
-                print(self.grid)
-            return self.grid
-        except IndexError:
-            print(self.operational_list)
-            return self.grid
+    # def back_move(self):
+    #     print('Работает')
+    #     try:
+    #         grid, self.states = self.operational_list.pop(-1)
+    #         if grid == self.grid.grid:
+    #             print(self.grid)
+    #         return self.grid
+    #     except IndexError:
+    #         print(self.operational_list)
+    #         return self.grid
 
     def new_unit(self, tile, unit):
         if isinstance(tile, EmptyTile):
             return False
         if (self.available_move(tile) or self.check_near(tile)) and (
                 not isinstance(unit, Building) or tile.owner == 'Игрок') and \
-                self.check_defense(tile, unit) and unit.cost <= self.current_player.money:
+                self.check_defense(tile, unit) and unit.cost <= self.current_player.money and \
+                not isinstance(tile, EmptyTile):
             if isinstance(unit, Farm) and unit.cost + (self.current_player.farms * 4) > self.current_player.money:
                 return False
             self.operational_list.append((self.grid.grid.copy(), self.states.copy()))
-            if tile.owner:
-                self.states[tile.owner]['state'].lose_tile(tile)
-            if isinstance(unit, Farm):
-                self.states['Игрок']['state'].farms += 1
-            if isinstance(tile.game_unit, Guildhall):
-                self.states['Игрок']['captured_states'] += 1
-            self.states['Игрок']['spent_money'] += unit.cost
             tile.set_game_unit(unit)
             if tile.owner != self.current_player.owner:
                 tile.game_unit.moved = True
-            tile.color = self.states['Игрок']['state'].tiles[0].color
-            tile.owner = 'Игрок'
+            try:
+                if tile.owner:
+                    self.states[tile.owner]['state'].lose_tile(tile)
+            except Exception:
+                pass
+            self.current_player.new_tile(tile)
+            if isinstance(unit, Farm):
+                self.current_player.farms += 1
+            if isinstance(tile.game_unit, Guildhall):
+                self.states[self.current_player.owner]['captured_states'] += 1
+            self.states[self.current_player.owner]['spent_money'] += unit.cost
+            tile.color = self.current_player.tiles[0].color
+            tile.owner = self.current_player.owner
             if isinstance(unit, Unit):
-                self.states['Игрок']['state'].earnings -= unit.pay
-            self.states['Игрок']['state'].new_tile(tile)
-            self.states['Игрок']['state'].money -= unit.cost
+                self.current_player.earnings -= unit.pay
+            self.current_player.money -= unit.cost
             self.count_player_earnings()
             return True
 
@@ -152,8 +162,11 @@ class Game:
             if (tile_to in available_tiles(self.grid, tile_from, unit.power, unit.steps,
                                            tile_from.owner)) and not tile_from.game_unit.moved:
                 self.operational_list.append((self.grid.grid.copy(), self.states.copy()))
-                if tile_to.owner:
-                    self.states[tile_to.owner]['state'].lose_tile(tile_to)
+                try:
+                    if tile_to.owner:
+                        self.states[tile_to.owner]['state'].lose_tile(tile_to)
+                except Exception:
+                    pass
                 if isinstance(tile_to.game_unit, Guildhall):
                     self.remove_player(self.states[tile_to.owner]['state'])
                     self.states[tile_from.owner]['captured_states'] += 1

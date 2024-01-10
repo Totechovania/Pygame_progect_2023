@@ -117,9 +117,9 @@ class FightFrame(IFrame):
         back_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'back.png', self.buttons)
         back_button.connect(self.back)
 
-        back_move_button = Button((0, shared.HEIGHT * 0.9, int(0.04 * self.w), int(0.04 * self.w)), 'back_move.png',
-                                  self.buttons)
-        back_move_button.connect(self.back_move)
+        # back_move_button = Button((0, shared.HEIGHT * 0.9, int(0.04 * self.w), int(0.04 * self.w)), 'back_move.png',
+        #                           self.buttons)
+        # back_move_button.connect(self.back_move)
 
         next_move_button = Button((shared.WIDTH * 0.96, shared.HEIGHT * 0.9, int(0.04 * self.w), int(0.04 * self.w)),
                                   'next_move.png', self.buttons)
@@ -201,8 +201,8 @@ class FightFrame(IFrame):
         play_sound('button_press.mp3')
         raise KillTopFrame
 
-    def back_move(self):
-        self.grid = self.game.back_move()
+    # def back_move(self):
+    #     self.grid = self.game.back_move()
 
     def open_pop_up_window(self):
         from Frames.PopUpWindow import PopUpWindow
