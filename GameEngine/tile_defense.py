@@ -1,7 +1,6 @@
 from GameEngine.Tile import HexTile, EmptyTile
 from GameEngine.GameUnits.Units import Unit
 from GameEngine.GameUnits.Buildings import Building
-from GameEngine.GameUnits.Obstacles import Obstacles
 
 
 def tile_defense(grid, cur_tile: tuple[int, int] or HexTile) -> int:
@@ -10,7 +9,7 @@ def tile_defense(grid, cur_tile: tuple[int, int] or HexTile) -> int:
     else:
         indexes = cur_tile
         cur_tile = grid[indexes]
-    adjacent_tiles = grid.get_adjacent_tiles(indexes)
+    adjacent_tiles = list(grid.get_adjacent_tiles(indexes))
     adjacent_tiles.append(cur_tile)
     owner = cur_tile.owner
 
@@ -22,5 +21,3 @@ def tile_defense(grid, cur_tile: tuple[int, int] or HexTile) -> int:
     adjacent_tiles = list(filter(tile_defends, adjacent_tiles))
 
     return max(map(lambda tile: tile.game_unit.power, adjacent_tiles), default=0)
-
-

@@ -114,8 +114,11 @@ class Game:
             return self.grid
 
     def new_unit(self, tile, unit):
-        if (self.available_move(tile) or self.check_near(tile)) and (not isinstance(unit, Building) or tile.owner == 'Игрок') and \
+        if (self.available_move(tile) or self.check_near(tile)) and (
+                not isinstance(unit, Building) or tile.owner == 'Игрок') and \
                 self.check_defense(tile, unit) and unit.cost <= self.current_player.money:
+            if isinstance(unit, Farm) and unit.cost + (self.current_player.farms * 4) > self.current_player.money:
+                return False
             self.operational_list.append((self.grid.grid.copy(), self.states.copy()))
             if tile.owner:
                 self.states[tile.owner]['state'].lose_tile(tile)
@@ -140,7 +143,7 @@ class Game:
         if self.available_move(tile_from) and isinstance(tile_from.game_unit, Unit):
             unit = tile_from.game_unit
             if (tile_to in available_tiles(self.grid, tile_from, unit.power, unit.steps,
-                                          tile_from.owner)) and not tile_from.game_unit.moved:
+                                           tile_from.owner)) and not tile_from.game_unit.moved:
                 self.operational_list.append((self.grid.grid.copy(), self.states.copy()))
                 if tile_to.owner:
                     self.states[tile_to.owner]['state'].lose_tile(tile_to)

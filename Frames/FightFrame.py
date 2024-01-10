@@ -89,8 +89,8 @@ class FightFrame(IFrame):
 
         shared.screen.blit(pg.transform.scale(load_image('money.png'), (self.w * 0.02, self.w * 0.02)),
                            (self.w * 0.425, self.h * 0.01))
-
-        draw_text('12 $', self.w * 0.11, self.h * 0.96, int(self.h * 0.9))
+        draw_text(str((self.game.current_player.farms * 4) + 12) + ' $', self.w * 0.11, self.h * 0.96,
+                  int(self.h * 0.9))
         draw_text('15 $', self.w * 0.21, self.h * 0.96, int(self.h * 0.9))
         draw_text('35 $', self.w * 0.31, self.h * 0.96, int(self.h * 0.9))
 
@@ -163,7 +163,8 @@ class FightFrame(IFrame):
         self.choose = None
 
     def farm_house_chosen(self):
-        self.chosen_unit = (pg.transform.scale(load_image('farm.png'), (self.w * 0.04, self.w * 0.04)), '12 $', Farm)
+        self.chosen_unit = (pg.transform.scale(load_image('farm.png'), (self.w * 0.04, self.w * 0.04)),
+                            str((self.game.current_player.farms * 4) + 12) + ' $', Farm)
         self.choose = Farm(2)
 
     def tower_level_1_chosen(self):
