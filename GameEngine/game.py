@@ -4,6 +4,7 @@ from GameEngine.GameUnits.Units import *
 from GameEngine.available_tiles import available_tiles
 from GameEngine.state import State
 from GameEngine.Bot import *
+from GameEngine.HexGrid import EmptyTile
 from random import choice
 
 
@@ -35,10 +36,13 @@ class Game:
                     self.states[j.owner].append(j)
 
     def add_all_players(self):
-        for i in self.states:
-            self.add_player(State(i, self.states[i], choice([Explorer()])))
-        self.states_names[self.states_names.index('Игрок')], self.states_names[0] = self.states_names[0], \
-            self.states_names[self.states_names.index('Игрок')]
+        try:
+            for i in self.states:
+                self.add_player(State(i, self.states[i], choice([Explorer()])))
+            self.states_names[self.states_names.index('Игрок')], self.states_names[0] = self.states_names[0], \
+                self.states_names[self.states_names.index('Игрок')]
+        except Exception:
+            pass
 
     def remove_player(self, state):
         del self.states[state.owner]
@@ -65,7 +69,8 @@ class Game:
         self.current_player = self.states[self.states_names[self.current_player_id]]['state']
         self.count_player_earnings()
         self.current_player.money += self.current_player.earnings
-        self.states[self.current_player.owner]['earned_money'] += self.states['Игрок']['state'].earnings
+        if 'Игрок' in self.states_names:
+            self.states[self.current_player.owner]['earned_money'] += self.states['Игрок']['state'].earnings
         for i in self.current_player.tiles:
             if isinstance(i.game_unit, Unit):
                 i.game_unit.moved = False
@@ -114,6 +119,8 @@ class Game:
             return self.grid
 
     def new_unit(self, tile, unit):
+        if isinstance(tile, EmptyTile):
+            return False
         if (self.available_move(tile) or self.check_near(tile)) and (
                 not isinstance(unit, Building) or tile.owner == 'Игрок') and \
                 self.check_defense(tile, unit) and unit.cost <= self.current_player.money:

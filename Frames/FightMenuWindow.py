@@ -20,7 +20,7 @@ class FightMenuWindow(IFrame):
         self.particles = pg.sprite.Group()
         self.generate_buttons()
         self.variations = {0: '#7FFF00', 1: '#FFFF00', 2: '#FFD700', 3: '#FF8C00', 4: '#FF4500', 5: '#FF0000',
-                           6: '#8B0000', 7: '#9400D3', 8: '#800080', 9: '#4B0082'}
+                           6: '#8B0000', 7: '#9400D3', 8: '#800080', 9: '#4B0082', -1: '#FF4500'}
         data = load_json_file('fight_settings.json')
         self.saved = False
         self.difficulty = data['DIFFICULTY']
@@ -105,10 +105,10 @@ class FightMenuWindow(IFrame):
                      (self.w * 0.15, self.h * 0.4, int(0.08 * self.w), int(0.04 * self.w)), 0)
         draw_text(str(self.map_size + 1), self.w * 0.185, self.h * 0.43, int(self.w * 0.05))
 
-        draw_text('Количество игроков (1 - 4)', self.w * 0.065, self.h * 0.54, 'black', int(self.w * 0.04))
-        pg.draw.rect(shared.screen, pg.Color(self.variations[self.players]),
+        draw_text('Количество игроков (0 - 1)', self.w * 0.065, self.h * 0.54, 'black', int(self.w * 0.04))
+        pg.draw.rect(shared.screen, pg.Color(self.variations[self.players - 1]),
                      (self.w * 0.15, self.h * 0.65, int(0.08 * self.w), int(0.04 * self.w)), 0)
-        draw_text(str(self.players + 1), self.w * 0.185, self.h * 0.68, int(self.w * 0.05))
+        draw_text(str(self.players), self.w * 0.185, self.h * 0.68, int(self.w * 0.05))
 
         draw_text('Количество цветов (2 - 9)', self.w * 0.065, self.h * 0.78, 'black', int(self.w * 0.04))
         pg.draw.rect(shared.screen, pg.Color(self.variations[self.colors]),
@@ -128,7 +128,7 @@ class FightMenuWindow(IFrame):
 
     def players_step(self):
         self.saved = False
-        self.players = (self.players + 1) % 4
+        self.players = (self.players + 1) % 2
 
     def colors_step(self):
         self.saved = False
@@ -137,7 +137,7 @@ class FightMenuWindow(IFrame):
             self.colors = 1
 
     def start_game(self):
-        raise NewFrame(FightFrame(self.map_size + 1, self.colors + 1))
+        raise NewFrame(FightFrame(self.map_size + 1, self.colors + 1, self.players))
 
     def save_settings(self):
         self.saved = True

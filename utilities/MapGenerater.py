@@ -27,12 +27,13 @@ def perlin_noise(size):
     return landscale
 
 
-def map_generator(scale, enemy):
+def map_generator(scale, enemy, players):
     names = ['Александр', 'Анна', 'Екатерина', 'Дмитрий', 'Сергей', 'Мария', 'Владимир', 'Ольга', 'Илья', 'Яна',
              'Андрей', 'Павел', 'Елена', 'Роман', 'Елизавета', 'Вячеслав', 'София', 'Антон', 'Виктория', 'Максим',
              'Ксения', 'Артем', 'Юлия', 'Николай', 'Татьяна', 'Денис', 'Кристина', 'Игорь', 'Евгения', 'Кирилл']
     shuffle(names)
-    names[0] = 'Игрок'
+    if players:
+        names[0] = 'Игрок'
     start_enemy = enemy
     width = randint(10, 20) * scale
     height = randint(10, 20) * scale

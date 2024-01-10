@@ -13,12 +13,12 @@ from utilities.image import draw_text, load_image
 
 
 class FightFrame(IFrame):
-    def __init__(self, scale, enemy, level=1):
+    def __init__(self, scale, enemy, players):
         self.bot_types = ['defender', 'attacker', 'farmer']
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
         self.buttons = pg.sprite.Group()
-        self.grid, self.game = map_generator(scale, enemy)
+        self.grid, self.game = map_generator(scale, enemy, players)
         self.generate_buttons()
         self.flag = False
         self.chosen = None
