@@ -114,7 +114,7 @@ class Game:
             if tile.owner == self.current_player.owner:
                 return True
 
-    # def back_move(self):
+    # def back_move(self)
     #     print('Работает')
     #     try:
     #         grid, self.states = self.operational_list.pop(-1)
