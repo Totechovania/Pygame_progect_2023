@@ -35,8 +35,8 @@ def map_generator(scale, enemy, players, rect):
     if players:
         names[0] = 'Игрок'
     start_enemy = enemy
-    width = randint(10, 20) * scale
-    height = randint(10, 20) * scale
+    width = 10
+    height = 10
     obstacles = randint(5, 10) * scale
     grid = HexGrid.filled(width, height, 40, rect)
     noise = perlin_noise(max(width, height))
@@ -49,6 +49,7 @@ def map_generator(scale, enemy, players, rect):
         if not isinstance(grid[y, x], EmptyTile) and not grid[y, x].game_unit:
             grid[y, x].set_game_unit(choice([Tree(2), Tree(2), Tree(2), Rock(2)]))
             obstacles -= 1
+
     while enemy != 0:
         flag = False
         x, y = randint(0, width - 1), randint(0, height - 1)
@@ -69,6 +70,8 @@ def map_generator(scale, enemy, players, rect):
                 tiles = 3
             else:
                 tiles = 4
+
+            # todo проверить лупы
             while tiles != 0:
                 for tile in grid.get_adjacent_tiles((y, x)):
                     if not isinstance(tile, EmptyTile) and not tile.owner:
@@ -77,17 +80,18 @@ def map_generator(scale, enemy, players, rect):
                         tiles -= 1
                         if tiles == 0:
                             break
+                k = 0
                 while True:
+                    k += 1
                     if tiles != 0:
-                        try:
+                        adj_tiles = grid.get_adjacent_tiles((y, x))
+                        if adj_tiles:
                             y1, x1 = choice(list(grid.get_adjacent_tiles((y, x)))).indexes
                             if not isinstance(grid[y1, x1], EmptyTile) and grid[y1, x1].owner == owner:
                                 x = x1
                                 y = y1
                                 break
-                        except Exception:
-                            pass
-                    else:
+                    if k > 100:
                         break
     game = Game(start_enemy, grid)
     return grid, game

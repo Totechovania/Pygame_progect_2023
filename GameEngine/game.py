@@ -42,7 +42,7 @@ class Game:
                 self.add_player(State(i, self.states[i], bot))
                 bot.state = self.states[i]['state']
                 bot.game = self
-                print(self.states[i]['state'])
+                #print(self.states[i]['state'])
             self.states_names[self.states_names.index('Игрок')], self.states_names[0] = self.states_names[0], \
                 self.states_names[self.states_names.index('Игрок')]
         except Exception:
@@ -69,7 +69,7 @@ class Game:
                 self.current_player.earnings -= i.game_unit.pay
 
     def next_player(self):
-        print(self.players, self.current_player_id, self.current_player, self.states, self.states_names)
+        #print(self.players, self.current_player_id, self.current_player, self.states, self.states_names)
         self.current_player_id = (self.current_player_id + 1) % self.players
         self.current_player = self.states[self.states_names[self.current_player_id]]['state']
         self.count_player_earnings()
