@@ -174,8 +174,11 @@ class Game:
                 except Exception:
                     pass
                 if isinstance(tile_to.game_unit, Guildhall):
-                    self.remove_player(self.states[tile_to.owner]['state'])
-                    self.states[tile_from.owner]['captured_states'] += 1
+                    self.states[self.current_player.owner]['captured_states'] += 1
+                    self.states[tile_to.owner]['state'].lose_game_state()
+                    del self.states[tile_to.owner]
+                    del self.states_names[self.states_names.index(tile_to.owner)]
+                    self.players -= 1
                 tile_from.game_unit = None
                 tile_to.owner = tile_from.owner
                 tile_to.color = tile_from.color

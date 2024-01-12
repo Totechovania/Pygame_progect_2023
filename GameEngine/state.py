@@ -7,7 +7,7 @@ class State:
     def __init__(self, owner, tiles, bot):
         self.owner = owner
         self.tiles = tiles
-        self.money = 20900
+        self.money = 20
         self.farms = 0
         self.earnings = 10
         self.bot = bot

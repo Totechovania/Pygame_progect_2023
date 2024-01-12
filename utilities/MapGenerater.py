@@ -3,7 +3,6 @@ from GameEngine.game import Game
 from GameEngine.Tile import EmptyTile
 from GameEngine.GameUnits.Obstacles import Rock, Tree
 from GameEngine.GameUnits.Buildings import Guildhall
-import shared
 from perlin_noise import PerlinNoise
 from random import randint, choice, shuffle
 from numpy import floor
