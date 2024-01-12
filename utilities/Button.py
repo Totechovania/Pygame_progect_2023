@@ -6,11 +6,20 @@ class Button(pg.sprite.Sprite):
     def __init__(self,
                  rect: tuple or list or pg.Rect,
                  image_path: str,
-                 *groups: pg.sprite.Group):
+                 *groups: pg.sprite.Group,
+                 change_under_mouse: bool = True):
         super().__init__(*groups)
         self.func = None
         self.image = pg.transform.scale(load_image(image_path), (rect[2], rect[3]))
         self.rect = pg.Rect(rect)
+
+        self.main_image = self.image
+        self.main_rect = self.rect
+
+        self.change_under_mouse = change_under_mouse
+        self.under_mouse_rect = pg.Rect(rect[0], rect[1], rect[2] * 1.2, rect[3] * 1.2)
+        self.under_mouse_rect.center = self.rect.center
+        self.under_mouse_image = pg.transform.scale(load_image(image_path), (rect[2] * 1.2, rect[3] * 1.2))
 
     def connect(self, func: callable):
         self.func = func
@@ -21,6 +30,10 @@ class Button(pg.sprite.Sprite):
                 if self.rect.collidepoint(event.pos):
                     if self.func is not None:
                         self.func()
+        if self.change_under_mouse and self.rect.collidepoint(pg.mouse.get_pos()):
+            self.image = self.under_mouse_image
+            self.rect = self.under_mouse_rect
+        else:
+            self.image = self.main_image
+            self.rect = self.main_rect
 
-    def draw(self, surface):
-        surface.blit(self.image, self.rect)
