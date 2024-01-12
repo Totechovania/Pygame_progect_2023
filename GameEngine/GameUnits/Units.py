@@ -15,17 +15,29 @@ class Peasant(Unit):
     def __init__(self, scale: float):
         super().__init__('peasant32.png', scale, power=1, steps=6, cost=10, pay=1)
 
+    def to_string(self):
+        return 'Peasant'
+
 
 class Spearman(Unit):
     def __init__(self, scale: float):
         super().__init__('spearman32.png', scale, power=2, steps=8, cost=15, pay=5)
+
+    def to_string(self):
+        return 'Spearman'
 
 
 class Warrior(Unit):
     def __init__(self, scale: float):
         super().__init__('warrior32.png', scale, power=3, steps=10, cost=30, pay=15)
 
+    def to_string(self):
+        return 'Warrior'
+
 
 class Knight(Unit):
     def __init__(self, scale: float):
         super().__init__('knight32.png', scale, power=4, steps=6, cost=40, pay=30)
+
+    def to_string(self):
+        return 'Knight'
