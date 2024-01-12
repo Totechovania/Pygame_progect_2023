@@ -118,6 +118,9 @@ class HexGrid:
         return filter(lambda tile: empty_tiles or not isinstance(tile, EmptyTile),
                       (self[i, j] for i, j in self.get_adjacent_indices((i, j))))
 
+    def tiles_to_string(self):
+        return '\n'.join(' '.join(tile.to_string() for tile in row) for row in self.grid) + '\n'
+
     @classmethod
     def empty(cls, w, h, radius, rect):
         grid = []

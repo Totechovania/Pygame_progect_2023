@@ -11,21 +11,13 @@ class Tree(Obstacles):
     def __init__(self, scale):
         super().__init__('tree32.png', scale, power=0)
 
-    def to_string(self):
-        return 'Tree'
-
 
 class Grave(Obstacles):
     def __init__(self, scale):
         super().__init__('grave32.png', scale, power=0)
-
-    def to_string(self):
-        return 'Grave'
 
 
 class Rock(Obstacles):
     def __init__(self, scale):
         super().__init__('rock32.png', scale, power=2)
 
-    def to_string(self):
-        return 'Rock'

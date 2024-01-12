@@ -1,6 +1,7 @@
 import pygame as pg
 from utilities.hexagons import hexagon_from_center
 from GameEngine.GameUnits.GameUnit import GameUnit
+from GameEngine.GameUnits.conversions import unit_to_string
 
 
 class HexTile:
@@ -51,12 +52,8 @@ class HexTile:
         self.color = color
 
     def to_string(self):
-        res = 'HexTile/'
-        if self.game_unit is None:
-            res += 'None'
-        else:
-            res += self.game_unit.to_string()
-        return res
+        return (f'{self.__class__.__name__}/{self.owner}/'
+                f'{unit_to_string(self.game_unit)}')
 
 
 class EmptyTile(HexTile):
@@ -70,4 +67,5 @@ class EmptyTile(HexTile):
         pass
 
     def to_string(self):
-        return 'EmptyTile/None'
+        return 'EmptyTile/None/None'
+
