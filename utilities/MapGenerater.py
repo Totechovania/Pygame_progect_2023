@@ -35,8 +35,8 @@ def map_generator(scale, enemy, players, rect):
     if players:
         names[0] = 'Игрок'
     start_enemy = enemy
-    width = 10
-    height = 10
+    width = randint(10, 20) * scale
+    height = randint(10, 20) * scale
     obstacles = randint(5, 10) * scale
     grid = HexGrid.filled(width, height, 40, rect)
     noise = perlin_noise(max(width, height))
