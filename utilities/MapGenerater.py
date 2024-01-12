@@ -65,7 +65,10 @@ def map_generator(scale, enemy, players):
             grid[y, x].color = color
             grid[y, x].set_game_unit(Guildhall(2))
             enemy -= 1
-            tiles = 4
+            if scale == 1 and enemy > 7:
+                tiles = 3
+            else:
+                tiles = 4
             while tiles != 0:
                 for tile in grid.get_adjacent_tiles((y, x)):
                     if not isinstance(tile, EmptyTile) and not tile.owner:

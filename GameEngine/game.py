@@ -5,9 +5,7 @@ from GameEngine.Tile import EmptyTile
 from GameEngine.available_tiles import available_tiles
 from GameEngine.tile_defense import tile_defense
 from GameEngine.state import State
-from GameEngine.Bot import *
-from GameEngine.HexGrid import EmptyTile
-from random import choice
+from GameEngine.Bot import Bot
 
 
 class Game:
@@ -40,7 +38,7 @@ class Game:
     def add_all_players(self):
         try:
             for i in self.states:
-                self.add_player(State(i, self.states[i], choice([Explorer()])))
+                self.add_player(State(i, self.states[i], Bot()))
             self.states_names[self.states_names.index('Игрок')], self.states_names[0] = self.states_names[0], \
                 self.states_names[self.states_names.index('Игрок')]
         except Exception:
