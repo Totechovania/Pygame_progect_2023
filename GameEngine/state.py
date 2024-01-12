@@ -1,11 +1,13 @@
 from GameEngine.GameUnits.Buildings import *
+from GameEngine.GameUnits.Obstacles import Grave
+from GameEngine.GameUnits.Units import Unit
 
 
 class State:
     def __init__(self, owner, tiles, bot):
         self.owner = owner
         self.tiles = tiles
-        self.money = 20
+        self.money = 20900
         self.farms = 0
         self.earnings = 10
         self.bot = bot
@@ -24,3 +26,7 @@ class State:
             self.turn = False
         else:
             self.turn = True
+
+    def lose_game_state(self):
+        for el in filter(lambda x: x.game_unit and isinstance(x.game_unit, Unit), self.tiles):
+            el.set_game_unit(Grave(2))

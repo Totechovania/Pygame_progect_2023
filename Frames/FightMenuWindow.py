@@ -51,11 +51,12 @@ class FightMenuWindow(IFrame):
                     raise KillTopFrame
             if event.type == pg.MOUSEBUTTONDOWN:
                 create_particles(pg.mouse.get_pos(), self.particles, 'coin.png')
-        self.particles.update()
         self.draw_fon()
-        self.particles.draw(shared.screen)
         self.buttons.update(events)
         self.buttons.draw(shared.screen)
+
+
+
 
     def generate_buttons(self):
         exit_button = Button(
