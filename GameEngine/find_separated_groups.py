@@ -4,7 +4,7 @@ from GameEngine.HexGrid import HexGrid
 from GameEngine.Tile import HexTile
 
 
-def find_separated_groups(grid: HexGrid, tiles: list[HexTile], empty_tiles=False) -> list[list[HexTile]]:
+def find_separated_groups(grid: HexGrid, tiles: list[HexTile] | HexGrid, empty_tiles=False) -> list[list[HexTile]]:
     if not tiles:
         return []
     res = []

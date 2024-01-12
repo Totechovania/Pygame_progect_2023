@@ -27,7 +27,7 @@ def perlin_noise(size):
     return landscale
 
 
-def map_generator(scale, enemy, players):
+def map_generator(scale, enemy, players, rect):
     names = ['Александр', 'Анна', 'Екатерина', 'Дмитрий', 'Сергей', 'Мария', 'Владимир', 'Ольга', 'Илья', 'Яна',
              'Андрей', 'Павел', 'Елена', 'Роман', 'Елизавета', 'Вячеслав', 'София', 'Антон', 'Виктория', 'Максим',
              'Ксения', 'Артем', 'Юлия', 'Николай', 'Татьяна', 'Денис', 'Кристина', 'Игорь', 'Евгения', 'Кирилл']
@@ -38,7 +38,7 @@ def map_generator(scale, enemy, players):
     width = randint(10, 20) * scale
     height = randint(10, 20) * scale
     obstacles = randint(5, 10) * scale
-    grid = HexGrid.filled(width, height, 40, (20, 20, shared.WIDTH, shared.HEIGHT))
+    grid = HexGrid.filled(width, height, 40, rect)
     noise = perlin_noise(max(width, height))
     for i in range(width):
         for j in range(height):

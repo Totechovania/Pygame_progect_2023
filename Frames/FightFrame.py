@@ -18,7 +18,9 @@ class FightFrame(IFrame):
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
         self.buttons = pg.sprite.Group()
-        self.grid, self.game = map_generator(scale, enemy, players)
+
+        rect = pg.Rect(0, 0, self.w, self.h) #todo переделать
+        self.grid, self.game = map_generator(scale, enemy, players, rect)
         self.generate_buttons()
         self.flag = False
         self.chosen = None
