@@ -27,6 +27,8 @@ def available_tiles(grid: HexGrid, cur_tile: HexTile or tuple[int, int], power, 
                 if isinstance(tile.game_unit, Obstacles):
                     go_further = False
                     tile_power = max(tile_power, tile.game_unit.power)
+                elif tile.game_unit is not None and tile.owner == owner:
+                    continue
                 if power > tile_power:
                     res.append(tile)
                     if go_further:
