@@ -42,7 +42,6 @@ class Game:
                 self.add_player(State(i, self.states[i], bot))
                 bot.state = self.states[i]['state']
                 bot.game = self
-                #print(self.states[i]['state'])
             self.states_names[self.states_names.index('Игрок')], self.states_names[0] = self.states_names[0], \
                 self.states_names[self.states_names.index('Игрок')]
         except Exception:
@@ -69,7 +68,6 @@ class Game:
                 self.current_player.earnings -= i.game_unit.pay
 
     def next_player(self):
-        #print(self.players, self.current_player_id, self.current_player, self.states, self.states_names)
         self.current_player_id = (self.current_player_id + 1) % self.players
         self.current_player = self.states[self.states_names[self.current_player_id]]['state']
         self.count_player_earnings()
@@ -131,28 +129,27 @@ class Game:
         if isinstance(tile, EmptyTile):
             return False
         if (self.available_move(tile) or self.check_near(tile)) and (
-                not isinstance(unit, Building) or tile.owner == 'Игрок') and \
+                not isinstance(unit, Building) or self.available_move(tile)) and \
                 self.check_defense(tile, unit) and unit.cost <= self.current_player.money and \
                 not isinstance(tile, EmptyTile):
             if isinstance(unit, Farm) and unit.cost + (self.current_player.farms * 4) > self.current_player.money:
                 return False
-
             if isinstance(tile.game_unit, Guildhall):
                 self.states[self.current_player.owner]['captured_states'] += 1
                 self.states[tile.owner]['state'].lose_game_state()
-                del self.states[tile.owner]
-                del self.states_names[self.states_names.index(tile.owner)]
-                self.players -= 1
+                self.remove_player(tile.owner)
 
             tile.set_game_unit(unit)
             if tile.owner != self.current_player.owner:
                 tile.game_unit.moved = True
-            if tile.owner and tile.game_unit.moved:
+            if tile.owner and isinstance(tile.game_unit, Unit) and tile.game_unit.moved:
                 if tile.owner in self.states:
                     self.states[tile.owner]['state'].lose_tile(tile)
             self.current_player.new_tile(tile)
             if isinstance(unit, Farm):
                 self.current_player.farms += 1
+            if isinstance(tile.game_unit, Guildhall):
+                self.states[self.current_player.owner]['captured_states'] += 1
             self.states[self.current_player.owner]['spent_money'] += unit.cost
             tile.color = self.current_player.tiles[0].color
             tile.owner = self.current_player.owner
@@ -167,7 +164,6 @@ class Game:
             unit = tile_from.game_unit
             if (tile_to in available_tiles(self.grid, tile_from, unit.power, unit.steps,
                                            tile_from.owner)) and not tile_from.game_unit.moved:
-                self.operational_list.append((self.grid.grid.copy(), self.states.copy()))
                 try:
                     if tile_to.owner:
                         self.states[tile_to.owner]['state'].lose_tile(tile_to)
@@ -176,9 +172,7 @@ class Game:
                 if isinstance(tile_to.game_unit, Guildhall):
                     self.states[self.current_player.owner]['captured_states'] += 1
                     self.states[tile_to.owner]['state'].lose_game_state()
-                    del self.states[tile_to.owner]
-                    del self.states_names[self.states_names.index(tile_to.owner)]
-                    self.players -= 1
+                    self.remove_player(tile_to.owner)
                 tile_from.game_unit = None
                 tile_to.owner = tile_from.owner
                 tile_to.color = tile_from.color
