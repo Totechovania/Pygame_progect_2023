@@ -38,7 +38,11 @@ class Game:
     def add_all_players(self):
         try:
             for i in self.states:
-                self.add_player(State(i, self.states[i], Bot()))
+                bot = Bot()
+                self.add_player(State(i, self.states[i], bot))
+                bot.state = self.states[i]['state']
+                bot.game = self
+                print(self.states[i]['state'])
             self.states_names[self.states_names.index('Игрок')], self.states_names[0] = self.states_names[0], \
                 self.states_names[self.states_names.index('Игрок')]
         except Exception:
@@ -136,13 +140,15 @@ class Game:
             if tile.owner != self.current_player.owner:
                 tile.game_unit.moved = True
             try:
-                if tile.owner:
+                if tile.owner and tile.game_unit.moved:
                     self.states[tile.owner]['state'].lose_tile(tile)
             except Exception:
                 pass
             self.current_player.new_tile(tile)
             if isinstance(unit, Farm):
+                print(self.current_player.farms)
                 self.current_player.farms += 1
+                print(self.current_player.farms)
             if isinstance(tile.game_unit, Guildhall):
                 self.states[self.current_player.owner]['captured_states'] += 1
             self.states[self.current_player.owner]['spent_money'] += unit.cost
