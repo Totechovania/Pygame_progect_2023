@@ -80,8 +80,6 @@ class HexGrid:
             for j in i:
                 yield j
 
-
-
     def draw_tile_stroke(self, tile: tuple[int, int] or HexTile, color=(255, 255, 255), width=1):
         if not isinstance(tile, HexTile):
             tile = self[tile]

@@ -50,6 +50,14 @@ class HexTile:
         self.owner = owner
         self.color = color
 
+    def to_string(self):
+        res = 'HexTile/'
+        if self.game_unit is None:
+            res += 'None'
+        else:
+            res += self.game_unit.to_string()
+        return res
+
 
 class EmptyTile(HexTile):
     def draw_stroke(self, surface: pg.Surface, color=(255, 255, 255), width=1):
@@ -60,3 +68,6 @@ class EmptyTile(HexTile):
 
     def set_game_unit(self, game_unit: GameUnit):
         pass
+
+    def to_string(self):
+        return 'EmptyTile/None'
