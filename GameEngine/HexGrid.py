@@ -1,6 +1,7 @@
 import pygame as pg
 from GameEngine.Tile import HexTile, EmptyTile
 from GameEngine.GameUnits.GameUnit import GameUnit
+from GameEngine.GameUnits.conversions import unit_from_string
 from utilities.hexagons import get_tile_coords
 
 
@@ -120,6 +121,17 @@ class HexGrid:
 
     def tiles_to_string(self):
         return '\n'.join(' '.join(tile.to_string() for tile in row) for row in self.grid) + '\n'
+
+    def tiles_from_string(self, string):
+        lst = list((raw.split() for raw in string.split('\n')))
+        for i in range(self.h):
+            for j in range(self.w):
+                tile, owner, color, unit = lst[i][j].split('/')
+                color = tuple(int(color) for color in color.split(','))
+                if tile == 'EmptyTile':
+                    self.set_empty(i, j)
+                else:
+                    self.set_tile(i, j, owner=owner, game_unit=unit_from_string(unit, 2), color=color)
 
     @classmethod
     def empty(cls, w, h, radius, rect):

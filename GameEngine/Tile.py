@@ -24,6 +24,8 @@ class HexTile:
         self.game_unit = game_unit
 
         self.hexagon = hexagon_from_center(self.center_x, self.center_y, self.radius)
+        if self.game_unit is not None:
+            self.game_unit.adjust_to_tile(self)
 
     def collide_point(self, x: float, y: float):
         return self.rect.collidepoint(x, y)
@@ -45,14 +47,15 @@ class HexTile:
 
     def set_game_unit(self, game_unit: GameUnit):
         self.game_unit = game_unit
-        self.game_unit.adjust_to_tile(self)
+        if self.game_unit is not None:
+            self.game_unit.adjust_to_tile(self)
 
     def set_owner(self, owner: str or None = None, color=(125, 125, 125)):
         self.owner = owner
         self.color = color
 
     def to_string(self):
-        return (f'{self.__class__.__name__}/{self.owner}/'
+        return (f'{self.__class__.__name__}/{self.owner}/{",".join(map(str, self.color))}/'
                 f'{unit_to_string(self.game_unit)}')
 
 
@@ -67,5 +70,5 @@ class EmptyTile(HexTile):
         pass
 
     def to_string(self):
-        return 'EmptyTile/None/None'
+        return 'EmptyTile/None/0,0,0/None'
 
