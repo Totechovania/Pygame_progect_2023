@@ -18,8 +18,8 @@ class Bot:
                 self.game.new_unit(choice(tiles), Peasant(2))
         tiles = list(filter(lambda x: isinstance(x.game_unit, Peasant) and not x.game_unit.moved, self.state.tiles))
         for el in tiles:
-            available_to_move_tiles = list(
-                filter(lambda x: not x.owner,
-                       available_tiles(self.game.grid, el, el.game_unit.power, el.game_unit.steps, el.owner)))
+            available_to_move_tiles = list(filter(lambda x: not x.owner, available_tiles(self.game.grid,
+                                                                                         el, el.game_unit.power,
+                                                                                         el.game_unit.steps, el.owner)))
             if available_to_move_tiles:
                 self.game.move(el, choice(available_to_move_tiles))
