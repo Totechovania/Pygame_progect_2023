@@ -20,6 +20,8 @@ class HexGrid:
         surf_w = round((w + (0.5 if h != 1 else 0)) * radius * 3 ** 0.5)
         surf_h = round((1.5 * h + 0.5) * radius)
         self.surface = pg.Surface((surf_w, surf_h), pg.SRCALPHA)
+        self.gray_surface = pg.Surface((surf_w, surf_h), pg.SRCALPHA)
+
         self.image = pg.Surface(self.rect.size, pg.SRCALPHA)
 
         self.scale = 1
@@ -32,12 +34,23 @@ class HexGrid:
         self.MIN_SCALE = min(self.rect.bottom / (surf_h * 1.1), self.rect.right / (surf_w * 1.1))
 
     def draw(self, surface: pg.Surface):
+        self.surface.blit(self.gray_surface, (0, 0))
+
         self.image.fill((0, 0, 0, 0))
         scaled = pg.transform.scale_by(self.image, 1 / self.scale)
         scaled.blit(self.surface, (self.delta_pos[0] / self.scale, self.delta_pos[1] / self.scale))
         scaled = pg.transform.scale_by(scaled, self.scale)
         self.image.blit(scaled, (0, 0))
         surface.blit(self.image, (self.rect.x, self.rect.y))
+
+        self.gray_surface.fill((0, 0, 0, 0))
+
+    def draw_gray(self, excepted_tiles: list[HexTile]):
+        excepted_tiles = list(excepted_tiles)
+        for tile in self:
+            if tile in excepted_tiles or isinstance(tile, EmptyTile):
+                continue
+            pg.draw.polygon(self.gray_surface, (0, 0, 0, 80), tile.hexagon)
 
     def draw_tiles(self):
         self.surface.fill((0, 0, 0, 0))
@@ -64,10 +77,11 @@ class HexGrid:
         return x, y
 
     def collide_point(self, x: float, y: float):
-        x, y = self.relative_pos(x, y)
-        collided = tuple(filter(lambda tile: tile.collide_point(x, y), self))
-        if collided:
-            return min(collided, key=lambda tile: tile.distance(x, y))
+        if self.rect.collidepoint(x, y):
+            x, y = self.relative_pos(x, y)
+            collided = tuple(filter(lambda tile: tile.collide_point(x, y), self))
+            if collided:
+                return min(collided, key=lambda tile: tile.distance(x, y))
         return None
 
     def __getitem__(self, key):
@@ -109,15 +123,15 @@ class HexGrid:
         adjacent = [(i + d[0], j + d[1]) for d in relevant]
         adjacent = filter(lambda x: (0 <= x[0] < self.h) and (0 <= x[1] < self.w), adjacent)
 
-        return adjacent
+        return list(adjacent)
 
     def get_adjacent_tiles(self, tile: HexTile or tuple[int, int], empty_tiles=False):
         if isinstance(tile, HexTile):
             i, j = tile.indexes
         else:
             i, j = tile
-        return filter(lambda tile: empty_tiles or not isinstance(tile, EmptyTile),
-                      (self[i, j] for i, j in self.get_adjacent_indices((i, j))))
+        return list(filter(lambda tile: empty_tiles or not isinstance(tile, EmptyTile),
+                    (self[i, j] for i, j in self.get_adjacent_indices((i, j)))))
 
     def tiles_to_string(self):
         return '\n'.join(' '.join(tile.to_string() for tile in row) for row in self.grid) + '\n'
