@@ -81,18 +81,21 @@ class Bot:
                     break
 
     def forgotten_units_to_move(self):
-        tiles = list(filter(lambda x: isinstance(x.game_unit, Unit) and not x.game_unit.moved, self.state.tiles))
-        for el in tiles:
-            available_to_move_tiles = available_tiles(self.game.grid, el, el.game_unit.power, el.game_unit.steps,
-                                                      el.owner)
-            for tile in filter(lambda x: x.owner != self.game.current_player.owner, available_to_move_tiles):
-                if isinstance(el.game_unit, Peasant):
-                    if not tile.owner:
-                        self.game.move(el, tile)
-                        break
-                else:
-                    if tile.owner:
-                        self.game.move(el, tile)
-                        break
-            if available_to_move_tiles:
-                self.game.move(el, choice(available_to_move_tiles))
+        try:
+            tiles = list(filter(lambda x: isinstance(x.game_unit, Unit) and not x.game_unit.moved, self.state.tiles))
+            for el in tiles:
+                available_to_move_tiles = available_tiles(self.game.grid, el, el.game_unit.power, el.game_unit.steps,
+                                                          el.owner)
+                for tile in filter(lambda x: x.owner != self.game.current_player.owner, available_to_move_tiles):
+                    if isinstance(el.game_unit, Peasant):
+                        if not tile.owner:
+                            self.game.move(el, tile)
+                            break
+                    else:
+                        if tile.owner:
+                            self.game.move(el, tile)
+                            break
+                if available_to_move_tiles:
+                    self.game.move(el, choice(available_to_move_tiles))
+        except Exception:
+            pass

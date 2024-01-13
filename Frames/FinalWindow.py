@@ -81,4 +81,4 @@ class FinalWindow(IFrame):
         raise KillTopFrame
 
     def back_menu(self):
-        raise KillFewTopFrames(4)
+        raise KillFewTopFrames(3)

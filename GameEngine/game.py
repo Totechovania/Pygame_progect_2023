@@ -10,7 +10,7 @@ from Frames.FinalWindow import FinalWindow
 from Signals import NewFrame
 import shared
 from time import time
-
+from GameEngine.find_separated_groups import find_separated_groups
 
 
 class Game:
@@ -169,6 +169,7 @@ class Game:
             if tile.owner and isinstance(tile.game_unit, Unit) and tile.game_unit.moved:
                 if tile.owner in self.states:
                     self.states[tile.owner]['state'].lose_tile(tile)
+            self.check_supply_line(tile)
             self.current_player.new_tile(tile)
             if isinstance(unit, Farm):
                 self.current_player.farms += 1
@@ -203,5 +204,26 @@ class Game:
                 tile_to.set_game_unit(unit)
                 tile_to.game_unit.moved = True
                 tile_to.game_unit.stop = True
+                self.check_supply_line(tile_to)
                 self.states[tile_from.owner]['state'].new_tile(tile_to)
                 self.count_player_earnings()
+
+    def check_supply_line(self, tile):
+        if tile.owner:
+            separated_groups = find_separated_groups(self.grid, self.states[tile.owner]['state'].tiles)
+        else:
+            return
+        if len(separated_groups) == 1:
+            return
+        black_list = []
+        for i in separated_groups:
+            capital = False
+            for j in i:
+                if isinstance(j.game_unit, Guildhall):
+                    capital = True
+            if not capital:
+                black_list.append(i)
+        for i in black_list:
+            for j in i:
+                if isinstance(j.game_unit, Unit):
+                    j.set_game_unit(Grave('grave32.png'))
