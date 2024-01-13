@@ -13,12 +13,8 @@ class Bot:
         self.game = None
 
     def do_move(self):
-        if self.steps < 10:
-            self.explorer()
-        if self.steps == 3 or self.steps == 4:
-            self.defender()
-        else:
-            self.defender()
+        self.farmer()
+        self.fighter()
         self.forgotten_units_to_move()
         self.steps += 1
 
@@ -61,6 +57,28 @@ class Bot:
                 self.game.new_unit(tile, TowerFirst())
             else:
                 break
+
+    def fighter(self):
+        for i in range(self.state.money // 15):
+            tiles_obstacles = list(
+                filter(lambda x: isinstance(x.game_unit, Obstacles), self.state.tiles))
+            if tiles_obstacles:
+                tiles = tiles_obstacles
+            else:
+                tiles = list(filter(lambda x: not x.game_unit, self.state.tiles))
+            if tiles:
+                units = list(filter(lambda x: isinstance(x.game_unit, Unit), self.state.tiles))
+                if self.state.earnings - 30 > 10 and self.state.money - 40 > 0 and len(list(
+                        filter(lambda x: isinstance(x.game_unit, Knight), units))) < 4:
+                    self.game.new_unit(choice(tiles), Knight(2))
+                elif self.state.earnings - 15 > 10 and self.state.money - 30 > 0 and len(list(
+                        filter(lambda x: isinstance(x.game_unit, Warrior), units))) < 8:
+                    self.game.new_unit(choice(tiles), Warrior(2))
+                elif self.state.earnings - 5 > 10 and self.state.money - 15 > 0 and len(list(
+                        filter(lambda x: isinstance(x.game_unit, Spearman), units))) < 4:
+                    self.game.new_unit(choice(tiles), Spearman(2))
+                else:
+                    break
 
     def forgotten_units_to_move(self):
         tiles = list(filter(lambda x: isinstance(x.game_unit, Unit) and not x.game_unit.moved, self.state.tiles))

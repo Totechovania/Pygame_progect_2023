@@ -48,11 +48,11 @@ class Game:
             pass
 
     def remove_player(self, state):
-        del self.states[state]
-        del self.states_names[self.states_names.index(state)]
+        del self.states[state.owner]
+        del self.states_names[self.states_names.index(state.owner)]
         self.players -= 1
         if self.players == 1:
-            return self.states['state']
+            return self.states[self.states_names[0]]['state']
         return None
 
     def available_move(self, tile):
@@ -115,7 +115,7 @@ class Game:
             if tile.owner == self.current_player.owner:
                 return True
 
-    # def back_move(self)
+    # def back_move(self):
     #     print('Работает')
     #     try:
     #         grid, self.states = self.operational_list.pop(-1)
@@ -138,8 +138,8 @@ class Game:
             if isinstance(tile.game_unit, Guildhall):
                 self.states[self.current_player.owner]['captured_states'] += 1
                 self.states[tile.owner]['state'].lose_game_state()
-                print(tile.owner)
-                self.remove_player(tile.owner)
+                self.remove_player(tile)
+
             tile.set_game_unit(unit)
             if tile.owner != self.current_player.owner:
                 tile.game_unit.moved = True
@@ -174,7 +174,7 @@ class Game:
                 if isinstance(tile_to.game_unit, Guildhall):
                     self.states[self.current_player.owner]['captured_states'] += 1
                     self.states[tile_to.owner]['state'].lose_game_state()
-                    self.remove_player(tile_to.owner)
+                    self.remove_player(tile_to)
                 tile_from.game_unit = None
                 tile_to.owner = tile_from.owner
                 tile_to.color = tile_from.color
