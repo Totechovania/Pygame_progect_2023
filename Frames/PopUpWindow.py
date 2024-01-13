@@ -71,4 +71,4 @@ class PopUpWindow(IFrame):
         raise KillTopFrame
 
     def back_menu(self):
-        raise KillFewTopFrames(3)
+        raise KillFewTopFrames(4)

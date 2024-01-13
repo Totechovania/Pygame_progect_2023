@@ -8,7 +8,7 @@ from Signals import *
 from Frames.FightMenuWindow import FightMenuWindow
 from Frames.PopUpWindow import PopUpWindow
 from Frames.Campany import Campany
-from Frames.FightFrame import FightFrame
+# from Frames.FightFrame import FightFrame
 
 
 class ChooseMode(IFrame):
@@ -53,7 +53,8 @@ class ChooseMode(IFrame):
         raise NewFrame(FightMenuWindow())
 
     def redactor(self):
-        raise NewFrame(FightFrame(1, 0, 0))
+        pass
+        # raise NewFrame(FightFrame(1, 0, 0))
 
     def campany(self):
         raise NewFrame(Campany())

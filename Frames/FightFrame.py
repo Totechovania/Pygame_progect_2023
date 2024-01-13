@@ -12,8 +12,9 @@ from utilities.image import draw_text, load_image
 
 
 class FightFrame(IFrame):
-    def __init__(self, scale, enemy, players):
+    def __init__(self, scale, enemy, players, level):
         self.bot_types = ['defender', 'attacker', 'farmer']
+        self.level = level
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
         self.buttons = pg.sprite.Group()

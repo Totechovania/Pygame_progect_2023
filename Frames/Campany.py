@@ -1,5 +1,6 @@
 from Frames.PopUpWindow import PopUpWindow
 from Frames.IFrame import IFrame
+from Frames.FightFrame import FightFrame
 from utilities.Button import Button
 from utilities.Particles import create_particles
 from utilities.image import draw_text, load_image
@@ -47,19 +48,19 @@ class Campany(IFrame):
         self.generate_buttons()
 
     def go_to_first_level(self):
-        pass
+        raise NewFrame(FightFrame(1, 5, 1, 1))
 
     def go_to_second_level(self):
-        pass
+        raise NewFrame(FightFrame(2, 6, 1, 2))
 
     def go_to_third_level(self):
-        pass
+        raise NewFrame(FightFrame(2, 7, 1, 3))
 
     def go_to_forth_level(self):
-        pass
+        raise NewFrame(FightFrame(3, 8, 1, 4))
 
     def go_to_fifth_level(self):
-        pass
+        raise NewFrame(FightFrame(3, 9, 1, 5))
 
     def generate_buttons(self):
         exit_button = Button(
