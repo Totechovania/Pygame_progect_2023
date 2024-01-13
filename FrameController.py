@@ -29,6 +29,8 @@ class FrameController:
             self.handle_kill_entire_app()
         elif isinstance(signal, ApplySettings):
             self.handle_apply_settings()
+        elif isinstance(signal, KillFewTopFrames):
+            self.handle_kill_few_top_frames(signal.quantity)
 
     def handle_new_frame(self, frame: IFrame):
         self.frames[-1].pause()
@@ -49,3 +51,11 @@ class FrameController:
     def handle_apply_settings(self):
         for frame in self.frames:
             frame.apply_settings()
+
+    def handle_kill_few_top_frames(self, quantity):
+        for _ in range(quantity):
+            self.frames[-1].end()
+            self.frames.pop()
+            if self.frames:
+                self.frames[-1].resume()
+

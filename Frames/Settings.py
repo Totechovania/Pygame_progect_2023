@@ -11,7 +11,8 @@ from Signals import *
 
 
 class Settings(IFrame):
-    def __init__(self):
+    def __init__(self, in_game=False):
+        self.in_game = in_game
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
         self.image_fon = pg.transform.scale(load_image('fon_menu.png'), (self.w, self.h))
@@ -21,8 +22,8 @@ class Settings(IFrame):
         self.sound = shared.sound
         self.music = shared.music
         size = get_size()
-        self.height = size[1]
-        self.width = size[0]
+        self.height = str(size[1])
+        self.width = str(size[0])
         self.fullscreen = shared.fullscreen
         self.buttons = pg.sprite.Group()
         self.particles = pg.sprite.Group()
@@ -59,57 +60,59 @@ class Settings(IFrame):
                 if event.key == pg.K_ESCAPE:
                     raise KillTopFrame
                 if self.flag_width:
-                    if len(str(self.width)) < 10:
+                    if len(self.width) < 10:
                         if event.key == pg.K_0:
-                            self.width = int(str(self.width) + '0')
+                            self.redraw_marker(self.width, '0')
                         if event.key == pg.K_1:
-                            self.width = int(str(self.width) + '1')
+                            self.redraw_marker(self.width, '1')
                         if event.key == pg.K_2:
-                            self.width = int(str(self.width) + '2')
+                            self.redraw_marker(self.width, '2')
                         if event.key == pg.K_3:
-                            self.width = int(str(self.width) + '3')
+                            self.redraw_marker(self.width, '3')
                         if event.key == pg.K_4:
-                            self.width = int(str(self.width) + '4')
+                            self.redraw_marker(self.width, '4')
                         if event.key == pg.K_5:
-                            self.width = int(str(self.width) + '5')
+                            self.redraw_marker(self.width, '5')
                         if event.key == pg.K_6:
-                            self.width = int(str(self.width) + '6')
+                            self.redraw_marker(self.width, '6')
                         if event.key == pg.K_7:
-                            self.width = int(str(self.width) + '7')
+                            self.redraw_marker(self.width, '7')
                         if event.key == pg.K_8:
-                            self.width = int(str(self.width) + '8')
+                            self.redraw_marker(self.width, '8')
                         if event.key == pg.K_9:
-                            self.width = int(str(self.width) + '9')
+                            self.redraw_marker(self.width, '9')
                     if event.key == pg.K_BACKSPACE:
                         try:
-                            self.width = int(str(self.width)[:-1])
+                            self.width = self.width[:-2]
+                            self.width += '|'
                         except Exception:
                             self.width = ''
                 if self.flag_height:
-                    if len(str(self.height)) < 10:
+                    if len(self.height) < 10:
                         if event.key == pg.K_0:
-                            self.height = int(str(self.height) + '0')
+                            self.redraw_marker(self.height, '0')
                         if event.key == pg.K_1:
-                            self.height = int(str(self.height) + '1')
+                            self.redraw_marker(self.height, '1')
                         if event.key == pg.K_2:
-                            self.height = int(str(self.height) + '2')
+                            self.redraw_marker(self.height, '2')
                         if event.key == pg.K_3:
-                            self.height = int(str(self.height) + '3')
+                            self.redraw_marker(self.height, '3')
                         if event.key == pg.K_4:
-                            self.height = int(str(self.height) + '4')
+                            self.redraw_marker(self.height, '4')
                         if event.key == pg.K_5:
-                            self.height = int(str(self.height) + '5')
+                            self.redraw_marker(self.height, '5')
                         if event.key == pg.K_6:
-                            self.height = int(str(self.height) + '6')
+                            self.redraw_marker(self.height, '6')
                         if event.key == pg.K_7:
-                            self.height = int(str(self.height) + '7')
+                            self.redraw_marker(self.height, '7')
                         if event.key == pg.K_8:
-                            self.height = int(str(self.height) + '8')
+                            self.redraw_marker(self.height, '8')
                         if event.key == pg.K_9:
-                            self.height = int(str(self.height) + '9')
+                            self.redraw_marker(self.height, '9')
                     if event.key == pg.K_BACKSPACE:
                         try:
-                            self.height = int(str(self.height)[:-1])
+                            self.height = self.height[:-2]
+                            self.height += '|'
                         except Exception:
                             self.height = ''
             if event.type == pg.KEYUP:
@@ -160,9 +163,21 @@ class Settings(IFrame):
                                              'set_default.png', self.buttons)
         set_default_settings_button.connect(self.set_default_settings)
 
+        if self.in_game:
+            back_menu = Button((self.w * 0.375, self.h * 0.88, self.w * 0.26, self.h * 0.09),
+                               'set_default.png', self.buttons)
+            back_menu.connect(self.back_menu)
+
     def draw_fon(self):
         shared.screen.blit(self.image_fon, (0, 0))
-        pg.draw.rect(shared.screen, pg.Color('#F0FFF0'), (self.w * 0.28, self.h * 0.1, self.w * 0.42, self.h * 0.8), 0)
+        if self.in_game:
+            pg.draw.rect(shared.screen, pg.Color('#F0FFF0'),
+                         (self.w * 0.28, self.h * 0.1, self.w * 0.42, self.h * 0.88), 0)
+            draw_text('Вернуться в меню', self.w * 0.4, self.h * 0.9, '#000000', int(self.w * 0.03))
+        else:
+            pg.draw.rect(shared.screen, pg.Color('#F0FFF0'), (self.w * 0.28, self.h * 0.1, self.w * 0.42, self.h * 0.8),
+                         0)
+
         draw_text('Звук', self.w * 0.3, self.h * 0.175, '#000000', int(self.w * 0.03))
         draw_text('Музыка', self.w * 0.3, self.h * 0.275, '#000000', int(self.w * 0.03))
         draw_text('Полный экран', self.w * 0.3, self.h * 0.375, '#000000', int(self.w * 0.03))
@@ -178,16 +193,40 @@ class Settings(IFrame):
             shared.screen.blit(self.image_check, (self.w * 0.6549, self.h * 0.28))
         if self.fullscreen:
             shared.screen.blit(self.image_check, (self.w * 0.6549, self.h * 0.38))
+        if self.flag_width:
+            draw_text('Сохранить настройки', self.w * 0.4, self.h * 0.7, '#000000', int(self.w * 0.03))
+        if self.flag_height:
+            draw_text('Сохранить настройки', self.w * 0.4, self.h * 0.7, '#000000', int(self.w * 0.03))
 
     def change_width(self):
         play_sound('button_press.mp3')
         self.flag_width = True
         self.flag_height = False
+        if str(self.height)[-1] == '|':
+            self.height = str(self.height)[:-1]
+        if str(self.width)[-1] != '|':
+            self.width = str(self.width) + '|'
 
     def change_height(self):
         play_sound('button_press.mp3')
         self.flag_height = True
         self.flag_width = False
+        if str(self.width)[-1] == '|':
+            self.width = str(self.width)[:-1]
+        if str(self.height)[-1] != '|':
+            self.height = str(self.height) + '|'
+
+    def redraw_marker(self, line, number):
+        if line == self.height:
+            self.height = str(self.height)[:-1]
+            self.height = str(self.height) + number
+            self.height = str(self.height) + '|'
+
+        if line == self.width:
+            self.width = str(self.width[:-1])
+            self.width = str(self.width) + number
+            self.width = str(self.width) + '|'
+
 
     def change_fullscreen_settings(self):
         play_sound('button_press.mp3')
@@ -210,21 +249,28 @@ class Settings(IFrame):
         else:
             self.music = True
 
+    def back_menu(self):
+        raise NewFrame(PopUpWindow(shared.screen.copy(), True))
+
     def set_new_settings(self):
         play_sound('button_press.mp3')
         data = load_json_file('settings.json')
-        if not (500 < self.width < shared.fullscreen_w):
+        if str(self.height)[-1] == '|':
+            self.height = str(self.height)[:-1]
+        if str(self.width)[-1] == '|':
+            self.width = str(self.width)[:-1]
+        if not (500 < int(self.width) < shared.fullscreen_w):
             self.width = int(shared.fullscreen_w * 0.55)
-        if not (300 < self.height < shared.fullscreen_h):
+        if not (300 < int(self.height) < shared.fullscreen_h):
             self.height = int(shared.fullscreen_h * 0.581)
         data['SOUND'] = self.sound
         data['MUSIC'] = self.music
-        data['HEIGHT'] = self.height
-        data['WIDTH'] = self.width
+        data['HEIGHT'] = int(self.height)
+        data['WIDTH'] = int(self.width)
         data['FULLSCREEN'] = self.fullscreen
         change_json_file(data, 'settings.json')
-        shared.WIDTH = self.width
-        shared.HEIGHT = self.height
+        shared.WIDTH = int(self.width)
+        shared.HEIGHT = int(self.height)
         shared.music = self.music
         shared.sound = self.sound
         shared.fullscreen = self.fullscreen

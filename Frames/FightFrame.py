@@ -19,7 +19,7 @@ class FightFrame(IFrame):
         self.h = shared.HEIGHT
         self.buttons = pg.sprite.Group()
 
-        rect = pg.Rect(0, 0, self.w, self.h) #todo переделать
+        rect = pg.Rect(0, 0, self.w, self.h)  # todo переделать
         self.grid, self.game = map_generator(scale, enemy, players, rect)
         self.generate_buttons()
         self.flag = False
@@ -117,8 +117,8 @@ class FightFrame(IFrame):
             (self.w * 0.958, 0, int(0.04 * self.w), int(0.04 * self.w)), 'leave_button.png', self.buttons)
         exit_button.connect(self.open_pop_up_window)
 
-        back_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'back.png', self.buttons)
-        back_button.connect(self.back)
+        settings_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'settings_button.png', self.buttons)
+        settings_button.connect(self.back)
 
         # back_move_button = Button((0, shared.HEIGHT * 0.9, int(0.04 * self.w), int(0.04 * self.w)), 'back_move.png',
         #                           self.buttons)
@@ -201,8 +201,9 @@ class FightFrame(IFrame):
         self.choose = Knight('knight32.png')
 
     def back(self):
+        from Frames.Settings import Settings
         play_sound('button_press.mp3')
-        raise KillTopFrame
+        raise NewFrame(Settings(True))
 
     # def back_move(self):
     #     self.grid = self.game.back_move()
@@ -211,3 +212,15 @@ class FightFrame(IFrame):
         from Frames.PopUpWindow import PopUpWindow
         play_sound('button_press.mp3')
         raise NewFrame(PopUpWindow(shared.screen.copy()))
+
+    def apply_settings(self):
+        self.buttons.empty()
+        if shared.fullscreen:
+            shared.screen = pg.display.set_mode((shared.fullscreen_w, shared.fullscreen_h), pg.FULLSCREEN)
+            shared.WIDTH = shared.fullscreen_w
+            shared.HEIGHT = shared.fullscreen_h
+        else:
+            shared.screen = pg.display.set_mode((shared.WIDTH, shared.HEIGHT))
+        self.w = shared.WIDTH
+        self.h = shared.HEIGHT
+        self.generate_buttons()

@@ -6,6 +6,7 @@ __all__ = (
     'KillTopFrame',
     'KillEntireApp',
     'ApplySettings',
+    'KillFewTopFrames'
 )
 
 
@@ -28,3 +29,8 @@ class KillEntireApp(Signal):
 
 class ApplySettings(Signal):
     pass
+
+
+class KillFewTopFrames(Signal):
+    def __init__(self, quantity: int):
+        self.quantity = quantity
