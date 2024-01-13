@@ -43,8 +43,10 @@ class GameUnit(pg.sprite.Sprite):
         surface.blit(pg.transform.scale(self.image, self.rect.size), self.rect)
 
     def update(self):
-        if self.counter % 8 == 0:
+        if self.counter % 6 == 0:
             if not self.stop:
                 self.cur_frame = (self.cur_frame + 1) % len(self.images[(self.image_path, self.scale)])
+            else:
+                self.cur_frame = 0
             self.image = self.images[(self.image_path, self.scale)][self.cur_frame]
         self.counter += 1

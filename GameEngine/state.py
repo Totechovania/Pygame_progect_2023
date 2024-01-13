@@ -29,4 +29,4 @@ class State:
 
     def lose_game_state(self):
         for el in filter(lambda x: x.game_unit and isinstance(x.game_unit, Unit), self.tiles):
-            el.set_game_unit(Grave(2))
+            el.set_game_unit(Grave('grave32.png'))

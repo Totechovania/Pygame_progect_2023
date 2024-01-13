@@ -48,8 +48,8 @@ class Game:
             pass
 
     def remove_player(self, state):
-        del self.states[state.owner]
-        del self.states_names[self.states_names.index(state.owner)]
+        del self.states[state]
+        del self.states_names[self.states_names.index(state)]
         self.players -= 1
         if self.players == 1:
             return self.states['state']
@@ -82,7 +82,7 @@ class Game:
             for tile in self.current_player.tiles:
                 if isinstance(tile.game_unit, Unit):
                     self.grid.unit = None
-                    tile.set_game_unit(Grave(2))
+                    tile.set_game_unit(Grave('grave32.png'))
                     self.current_player.money = 0
         self.count_player_earnings()
         self.current_player.set_turn()
@@ -138,6 +138,7 @@ class Game:
             if isinstance(tile.game_unit, Guildhall):
                 self.states[self.current_player.owner]['captured_states'] += 1
                 self.states[tile.owner]['state'].lose_game_state()
+                print(tile.owner)
                 self.remove_player(tile.owner)
             tile.set_game_unit(unit)
             if tile.owner != self.current_player.owner:
