@@ -8,16 +8,15 @@ class Obstacles(GameUnit):
 
 
 class Tree(Obstacles):
-    def __init__(self, scale):
-        super().__init__('tree32.png', scale, power=0)
+    def __init__(self, path='tree32.png', scale=2):
+        super().__init__(path, scale, power=0)
 
 
 class Grave(Obstacles):
-    def __init__(self, scale):
-        super().__init__('grave32.png', scale, power=0)
+    def __init__(self, path='grave32.png', scale=2):
+        super().__init__(path, scale, power=0)
 
 
 class Rock(Obstacles):
-    def __init__(self, scale):
-        super().__init__('rock32.png', scale, power=2)
-
+    def __init__(self, path='rock32.png', scale=2):
+        super().__init__(path, scale, power=2)

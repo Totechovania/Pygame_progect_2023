@@ -26,7 +26,7 @@ class Bot:
         for i in range(self.state.money // 4 // 10):
             tiles = list(filter(lambda x: not x.game_unit or isinstance(x.game_unit, Tree), self.state.tiles))
             if tiles and self.state.earnings - 1 > 0:
-                self.game.new_unit(choice(tiles), Peasant(2))
+                self.game.new_unit(choice(tiles), Peasant('peasant32.png'))
         tiles = list(filter(lambda x: isinstance(x.game_unit, Peasant) and not x.game_unit.moved, self.state.tiles))
         for el in tiles:
             available_to_move_tiles = list(
@@ -45,7 +45,7 @@ class Bot:
                 tiles.append(el_2)
         for i in range(self.state.money // 2 // (12 + self.state.farms * 4)):
             if (self.state.money // 2 - (12 + self.state.farms * 4)) > 0 and tiles:
-                self.game.new_unit(choice(tiles), Farm(2))
+                self.game.new_unit(choice(tiles), Farm())
             else:
                 break
 
@@ -56,9 +56,9 @@ class Bot:
                 break
             tile = choice(tiles)
             if self.state.money > 120:
-                self.game.new_unit(tile, TowerSecond(2))
+                self.game.new_unit(tile, TowerSecond())
             elif self.state.money // 2 - 15 and tile_defense(self.game.grid, tile) < 2:
-                self.game.new_unit(tile, TowerFirst(2))
+                self.game.new_unit(tile, TowerFirst())
             else:
                 break
 

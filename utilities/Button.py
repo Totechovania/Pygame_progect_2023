@@ -3,10 +3,7 @@ from utilities.image import load_image
 
 
 class Button(pg.sprite.Sprite):
-    def __init__(self,
-                 rect: tuple or list or pg.Rect,
-                 image_path: str,
-                 *groups: pg.sprite.Group,
+    def __init__(self, rect: tuple or list or pg.Rect, image_path: str, *groups: pg.sprite.Group,
                  change_under_mouse: bool = True):
         super().__init__(*groups)
         self.func = None
@@ -36,4 +33,3 @@ class Button(pg.sprite.Sprite):
         else:
             self.image = self.main_image
             self.rect = self.main_rect
-

@@ -12,6 +12,7 @@ __all__ = (
     'fullscreen',
     'fullscreen_h',
     'fullscreen_w',
+    'animated_units'
 )
 
 FPS: int
@@ -24,3 +25,4 @@ music: bool
 fullscreen: bool
 fullscreen_w: int
 fullscreen_h: int
+animated_units: pg.sprite.Group

@@ -43,7 +43,7 @@ class FightFrame(IFrame):
                             if isinstance(self.choose, HexTile):
                                 self.game.move(self.choose, clicked)
                                 self.choose = None
-                            elif self.choose and self.game.new_unit(clicked, self.chosen_unit[2](2)):
+                            elif self.choose and self.game.new_unit(clicked, self.chosen_unit[2]()):
                                 self.chosen_unit = None
                                 self.choose = None
                         elif clicked.game_unit and self.game.states['Игрок']['state'].turn:
@@ -77,6 +77,7 @@ class FightFrame(IFrame):
                     i.draw_stroke(self.grid.surface)
             else:
                 self.chosen.draw_stroke(self.grid.surface)
+        shared.animated_units.update()
         self.grid.draw(shared.screen)
         self.buttons.update(events)
         self.buttons.draw(shared.screen)
@@ -167,37 +168,37 @@ class FightFrame(IFrame):
     def farm_house_chosen(self):
         self.chosen_unit = (pg.transform.scale(load_image('farm.png'), (self.w * 0.04, self.w * 0.04)),
                             str((self.game.current_player.farms * 4) + 12) + ' $', Farm)
-        self.choose = Farm(2)
+        self.choose = Farm()
 
     def tower_level_1_chosen(self):
         self.chosen_unit = (
             pg.transform.scale(load_image('towerfirst.png'), (self.w * 0.04, self.w * 0.04)), '15 $', TowerFirst)
-        self.choose = TowerFirst(2)
+        self.choose = TowerFirst()
 
     def tower_level_2_chosen(self):
         self.chosen_unit = (
             pg.transform.scale(load_image('towersecond.png'), (self.w * 0.04, self.w * 0.04)), '35 $', TowerSecond)
-        self.choose = TowerSecond(2)
+        self.choose = TowerSecond()
 
     def traveller_chosen(self):
         self.chosen_unit = (
             pg.transform.scale(load_image('peasant.png'), (self.w * 0.04, self.w * 0.04)), '10 $', Peasant)
-        self.choose = Peasant(2)
+        self.choose = Peasant('peasant32.png')
 
     def spearman_chosen(self):
         self.chosen_unit = (
             pg.transform.scale(load_image('spearman.png'), (self.w * 0.04, self.w * 0.04)), '20 $', Spearman)
-        self.choose = Spearman(2)
+        self.choose = Spearman('spearman32.png')
 
     def warrior_chosen(self):
         self.chosen_unit = (
             pg.transform.scale(load_image('warrior.png'), (self.w * 0.04, self.w * 0.04)), '30 $', Warrior)
-        self.choose = Warrior(2)
+        self.choose = Warrior('warrior32.png')
 
     def knight_chosen(self):
         self.chosen_unit = (
             pg.transform.scale(load_image('knight.png'), (self.w * 0.04, self.w * 0.04)), '40 $', Knight)
-        self.choose = Knight(2)
+        self.choose = Knight('knight32.png')
 
     def back(self):
         play_sound('button_press.mp3')

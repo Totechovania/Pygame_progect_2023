@@ -77,6 +77,7 @@ class Game:
         for i in self.current_player.tiles:
             if isinstance(i.game_unit, Unit):
                 i.game_unit.moved = False
+                i.game_unit.stop = False
         if self.current_player.money < 0:
             for tile in self.current_player.tiles:
                 if isinstance(tile.game_unit, Unit):
@@ -138,10 +139,10 @@ class Game:
                 self.states[self.current_player.owner]['captured_states'] += 1
                 self.states[tile.owner]['state'].lose_game_state()
                 self.remove_player(tile.owner)
-
             tile.set_game_unit(unit)
             if tile.owner != self.current_player.owner:
                 tile.game_unit.moved = True
+                tile.game_unit.stop = True
             if tile.owner and isinstance(tile.game_unit, Unit) and tile.game_unit.moved:
                 if tile.owner in self.states:
                     self.states[tile.owner]['state'].lose_tile(tile)
@@ -178,5 +179,6 @@ class Game:
                 tile_to.color = tile_from.color
                 tile_to.set_game_unit(unit)
                 tile_to.game_unit.moved = True
+                tile_to.game_unit.stop = True
                 self.states[tile_from.owner]['state'].new_tile(tile_to)
                 self.count_player_earnings()

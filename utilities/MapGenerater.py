@@ -46,7 +46,8 @@ def map_generator(scale, enemy, players, rect):
     while obstacles != 0:
         x, y = randint(0, width - 1), randint(0, height - 1)
         if not isinstance(grid[y, x], EmptyTile) and not grid[y, x].game_unit:
-            grid[y, x].set_game_unit(choice([Tree(2), Tree(2), Tree(2), Rock(2)]))
+            grid[y, x].set_game_unit(
+                choice([Tree('tree32.png'), Tree('tree32.png'), Tree('tree32.png'), Rock('rock32.png')]))
             obstacles -= 1
 
     while enemy != 0:
@@ -63,7 +64,10 @@ def map_generator(scale, enemy, players, rect):
                 continue
             grid[y, x].owner = owner
             grid[y, x].color = color
-            grid[y, x].set_game_unit(Guildhall(2))
+            if grid[y, x].owner == 'Игрок':
+                grid[y, x].set_game_unit(Guildhall())
+            else:
+                grid[y, x].set_game_unit(Guildhall('guildhall32.png'))
             enemy -= 1
             if scale == 1 and enemy > 7:
                 tiles = 3

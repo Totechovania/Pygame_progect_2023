@@ -38,6 +38,7 @@ def set_shared_variables():
             shared.screen = pg.display.set_mode((shared.WIDTH, shared.HEIGHT))
         shared.clock = pg.time.Clock()
         shared.FPS = 60
+        shared.animated_units = pg.sprite.Group()
         shared.operational_list = []
 
 
