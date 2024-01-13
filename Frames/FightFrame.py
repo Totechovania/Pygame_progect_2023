@@ -9,6 +9,7 @@ import pygame as pg
 from GameEngine.Tile import HexTile
 from utilities.Button import Button
 from utilities.image import draw_text, load_image
+from Frames.FinalWindow import FinalWindow
 
 
 class FightFrame(IFrame):
@@ -22,7 +23,9 @@ class FightFrame(IFrame):
         rect = pg.Rect(0, 0, self.w, self.h)  # todo переделать
         self.grid, self.game = map_generator(scale, enemy, players, rect)
         self.generate_buttons()
+        self.game.game_fight_frame = self
         self.flag = False
+        self.flag_draw = True
         self.chosen = None
         self.choose = None
         self.chosen_unit = None
@@ -43,9 +46,10 @@ class FightFrame(IFrame):
                             if isinstance(self.choose, HexTile):
                                 self.game.move(self.choose, clicked)
                                 self.choose = None
-                            elif self.choose and self.game.new_unit(clicked, self.chosen_unit[2]()):
-                                self.chosen_unit = None
-                                self.choose = None
+                            if self.game.draw_confirm:
+                                if self.choose and self.game.new_unit(clicked, self.chosen_unit[2]()):
+                                    self.chosen_unit = None
+                                    self.choose = None
                         elif clicked.game_unit and self.game.states['Игрок']['state'].turn:
                             self.choose = clicked
                             self.chosen_unit = None
@@ -68,7 +72,7 @@ class FightFrame(IFrame):
             self.flag = False
         self.chosen = self.grid.collide_point(*pg.mouse.get_pos())
         self.grid.draw_tiles()
-        if self.chosen is not None:
+        if self.chosen is not None and self.game.draw_confirm:
             list_of_your_state = []
             for i in self.game.states['Игрок']['state'].tiles:
                 list_of_your_state.append(i.indexes)
@@ -77,11 +81,18 @@ class FightFrame(IFrame):
                     i.draw_stroke(self.grid.surface)
             else:
                 self.chosen.draw_stroke(self.grid.surface)
+        self.update_all(events)
+
+    def update_all(self, events=None):
         shared.animated_units.update()
         self.grid.draw(shared.screen)
         self.buttons.update(events)
         self.buttons.draw(shared.screen)
-        self.draw()
+        if self.game.draw_confirm:
+            self.draw()
+        if not self.game.draw_confirm and self.flag_draw:
+            back_to_results_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'back.png', self.buttons)
+            back_to_results_button.connect(self.back_to_results)
 
     def draw(self):
         if self.chosen_unit:
@@ -119,10 +130,6 @@ class FightFrame(IFrame):
 
         settings_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'settings_button.png', self.buttons)
         settings_button.connect(self.back)
-
-        # back_move_button = Button((0, shared.HEIGHT * 0.9, int(0.04 * self.w), int(0.04 * self.w)), 'back_move.png',
-        #                           self.buttons)
-        # back_move_button.connect(self.back_move)
 
         next_move_button = Button((shared.WIDTH * 0.96, shared.HEIGHT * 0.9, int(0.04 * self.w), int(0.04 * self.w)),
                                   'next_move.png', self.buttons)
@@ -222,3 +229,9 @@ class FightFrame(IFrame):
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
         self.generate_buttons()
+
+    def back_to_results(self):
+        raise NewFrame(FinalWindow(shared.screen.copy(), self.game.states['Игрок']['spent_money'],
+                                   self.game.states['Игрок']['earned_money'],
+                                   self.game.states['Игрок']['captured_states'], self.game.current_player.owner,
+                                   self.game.time_start))

@@ -6,14 +6,23 @@ from GameEngine.available_tiles import available_tiles
 from GameEngine.tile_defense import tile_defense
 from GameEngine.state import State
 from GameEngine.Bot import Bot
+from Frames.FinalWindow import FinalWindow
+from Signals import NewFrame
+import shared
+from time import time
+
 
 
 class Game:
 
     def __init__(self, players, grid):
+        self.draw_confirm = True
+        self.game_fight_frame = None
         self.players = players
+        self.time_start = time()
         self.states = {}
         self.operational_list = []
+        self.results = []
         self.states_names = []
         self.grid = grid
         self.current_player = None
@@ -47,12 +56,26 @@ class Game:
         except Exception:
             pass
 
-    def remove_player(self, state):
-        del self.states[state.owner]
-        del self.states_names[self.states_names.index(state.owner)]
+    def remove_player(self, state, tile, unit):
+        if self.players == 2 or 'Игрок' == self.states_names[self.states_names.index(state)]:
+            tile.set_game_unit(unit)
+            tile.color = self.current_player.tiles[0].color
+            self.draw_confirm = False
+            self.game_fight_frame.update_all()
+            self.game_fight_frame.buttons.empty()
+            self.game_fight_frame.chosen_unit = None
+            for i in self.current_player.tiles:
+                if i.game_unit:
+                    i.game_unit.moved = True
+                    i.game_unit.stop = True
+            tile.game_unit.moved = True
+            tile.game_unit.stop = True
+            raise NewFrame(FinalWindow(shared.screen.copy(), self.states['Игрок']['spent_money'],
+                                       self.states['Игрок']['earned_money'], self.states['Игрок']['captured_states'],
+                                       self.current_player.owner, self.time_start))
+        del self.states[state]
+        del self.states_names[self.states_names.index(state)]
         self.players -= 1
-        if self.players == 1:
-            return self.states[self.states_names[0]]['state']
         return None
 
     def available_move(self, tile):
@@ -115,7 +138,7 @@ class Game:
             if tile.owner == self.current_player.owner:
                 return True
 
-    # def back_move(self):
+    # def back_move(self)
     #     print('Работает')
     #     try:
     #         grid, self.states = self.operational_list.pop(-1)
@@ -138,8 +161,7 @@ class Game:
             if isinstance(tile.game_unit, Guildhall):
                 self.states[self.current_player.owner]['captured_states'] += 1
                 self.states[tile.owner]['state'].lose_game_state()
-                self.remove_player(tile)
-
+                self.remove_player(tile.owner, tile, unit)
             tile.set_game_unit(unit)
             if tile.owner != self.current_player.owner:
                 tile.game_unit.moved = True
@@ -174,7 +196,7 @@ class Game:
                 if isinstance(tile_to.game_unit, Guildhall):
                     self.states[self.current_player.owner]['captured_states'] += 1
                     self.states[tile_to.owner]['state'].lose_game_state()
-                    self.remove_player(tile_to)
+                    self.remove_player(tile_to.owner, tile_to, tile_from.game_unit)
                 tile_from.game_unit = None
                 tile_to.owner = tile_from.owner
                 tile_to.color = tile_from.color

@@ -70,13 +70,13 @@ class Bot:
                 units = list(filter(lambda x: isinstance(x.game_unit, Unit), self.state.tiles))
                 if self.state.earnings - 30 > 10 and self.state.money - 40 > 0 and len(list(
                         filter(lambda x: isinstance(x.game_unit, Knight), units))) < 4:
-                    self.game.new_unit(choice(tiles), Knight(2))
+                    self.game.new_unit(choice(tiles), Knight('knight32.png'))
                 elif self.state.earnings - 15 > 10 and self.state.money - 30 > 0 and len(list(
                         filter(lambda x: isinstance(x.game_unit, Warrior), units))) < 8:
-                    self.game.new_unit(choice(tiles), Warrior(2))
+                    self.game.new_unit(choice(tiles), Warrior('warrior32.png'))
                 elif self.state.earnings - 5 > 10 and self.state.money - 15 > 0 and len(list(
                         filter(lambda x: isinstance(x.game_unit, Spearman), units))) < 4:
-                    self.game.new_unit(choice(tiles), Spearman(2))
+                    self.game.new_unit(choice(tiles), Spearman('spearman32.png'))
                 else:
                     break
 

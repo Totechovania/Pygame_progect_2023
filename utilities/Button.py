@@ -23,12 +23,13 @@ class Button(pg.sprite.Sprite):
         self.func = func
 
     def update(self, events):
-        for event in events:
-            if event.type == pg.MOUSEBUTTONDOWN:
-                if self.rect.collidepoint(event.pos):
-                    if self.func is not None:
-                        play_sound('button_press.mp3')
-                        self.func()
+        if events is not None:
+            for event in events:
+                if event.type == pg.MOUSEBUTTONDOWN:
+                    if self.rect.collidepoint(event.pos):
+                        if self.func is not None:
+                            play_sound('button_press.mp3')
+                            self.func()
         if self.change_under_mouse and self.rect.collidepoint(pg.mouse.get_pos()):
             self.image = self.under_mouse_image
             self.rect = self.under_mouse_rect
