@@ -1,7 +1,6 @@
 from Frames.IFrame import IFrame
 from utilities.Button import Button
 from utilities.image import blur_image, draw_text
-from utilities.music import play_sound
 import pygame as pg
 import shared
 from Signals import KillEntireApp, KillTopFrame, KillFewTopFrames
@@ -66,11 +65,9 @@ class PopUpWindow(IFrame):
         draw_text('Вернуться', self.w * 0.35, self.h * 0.6, '#000000', int(self.h * 0.07))
 
     def close_app(self):
-        play_sound('button_press.mp3')
         raise KillEntireApp
 
     def back(self):
-        play_sound('button_press.mp3')
         raise KillTopFrame
 
     def back_menu(self):

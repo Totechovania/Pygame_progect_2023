@@ -4,7 +4,7 @@ from utilities.Button import Button
 from utilities.change_settings import load_json_file, change_json_file, get_size
 from utilities.Particles import create_particles
 from utilities.image import draw_text, load_image
-from utilities.music import play_sound, play_background_music
+from utilities.music import play_background_music
 import pygame as pg
 import shared
 from Signals import *
@@ -199,7 +199,6 @@ class Settings(IFrame):
             draw_text('Сохранить настройки', self.w * 0.4, self.h * 0.7, '#000000', int(self.w * 0.03))
 
     def change_width(self):
-        play_sound('button_press.mp3')
         self.flag_width = True
         self.flag_height = False
         if str(self.height)[-1] == '|':
@@ -208,7 +207,6 @@ class Settings(IFrame):
             self.width = str(self.width) + '|'
 
     def change_height(self):
-        play_sound('button_press.mp3')
         self.flag_height = True
         self.flag_width = False
         if str(self.width)[-1] == '|':
@@ -227,23 +225,19 @@ class Settings(IFrame):
             self.width = str(self.width) + number
             self.width = str(self.width) + '|'
 
-
     def change_fullscreen_settings(self):
-        play_sound('button_press.mp3')
         if self.fullscreen:
             self.fullscreen = False
         else:
             self.fullscreen = True
 
     def change_volume_settings(self):
-        play_sound('button_press.mp3')
         if self.sound:
             self.sound = False
         else:
             self.sound = True
 
     def change_music_settings(self):
-        play_sound('button_press.mp3')
         if self.music:
             self.music = False
         else:
@@ -253,7 +247,6 @@ class Settings(IFrame):
         raise NewFrame(PopUpWindow(shared.screen.copy(), True))
 
     def set_new_settings(self):
-        play_sound('button_press.mp3')
         data = load_json_file('settings.json')
         if str(self.height)[-1] == '|':
             self.height = str(self.height)[:-1]
@@ -277,7 +270,6 @@ class Settings(IFrame):
         raise ApplySettings
 
     def set_default_settings(self):
-        play_sound('button_press.mp3')
         data = load_json_file('settings.json')
         data['SOUND'] = True
         data['MUSIC'] = True
@@ -298,9 +290,7 @@ class Settings(IFrame):
         raise ApplySettings
 
     def back(self):
-        play_sound('button_press.mp3')
         raise KillTopFrame
 
     def open_pop_up_window(self):
-        play_sound('button_press.mp3')
         raise NewFrame(PopUpWindow(shared.screen.copy()))

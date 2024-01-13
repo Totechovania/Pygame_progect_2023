@@ -2,7 +2,6 @@ from Frames.IFrame import IFrame
 from utilities.Button import Button
 from utilities.Particles import create_particles
 from utilities.image import draw_text, load_image
-from utilities.music import play_sound
 import pygame as pg
 import shared
 from Signals import *
@@ -51,15 +50,12 @@ class ChooseMode(IFrame):
         self.generate_buttons()
 
     def fight(self):
-        play_sound('button_press.mp3')
         raise NewFrame(FightMenuWindow())
 
     def redactor(self):
-        play_sound('button_press.mp3')
-        raise NewFrame(FightFrame(1, 0))
+        raise NewFrame(FightFrame(1, 0, 0))
 
     def campany(self):
-        play_sound('button_press.mp3')
         raise NewFrame(Campany())
 
     def generate_buttons(self):
@@ -89,11 +85,9 @@ class ChooseMode(IFrame):
         draw_text('Кампания', self.w * 0.425, self.h * 0.8, '#08E8DE', int(self.w * 0.045))
 
     def back(self):
-        play_sound('button_press.mp3')
         raise KillTopFrame
 
     def open_pop_up_window(self):
-        play_sound('button_press.mp3')
         self.draw_fon()
         self.buttons.draw(shared.screen)
         raise NewFrame(PopUpWindow(shared.screen.copy()))

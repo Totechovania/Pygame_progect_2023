@@ -3,7 +3,6 @@ from Frames.IFrame import IFrame
 from utilities.Button import Button
 from utilities.Particles import create_particles
 from utilities.image import draw_text, load_image
-from utilities.music import play_sound
 import pygame as pg
 import shared
 from Signals import *
@@ -109,11 +108,9 @@ class Campany(IFrame):
         draw_text('5', self.w * 0.911, self.h * 0.33, int(self.w * 0.06))
 
     def back(self):
-        play_sound('button_press.mp3')
         raise KillTopFrame
 
     def open_pop_up_window(self):
-        play_sound('button_press.mp3')
         self.draw_fon()
         self.buttons.draw(shared.screen)
         raise NewFrame(PopUpWindow(shared.screen.copy()))

@@ -1,5 +1,6 @@
 import pygame as pg
 from utilities.image import load_image
+from utilities.music import play_sound
 
 
 class Button(pg.sprite.Sprite):
@@ -26,6 +27,7 @@ class Button(pg.sprite.Sprite):
             if event.type == pg.MOUSEBUTTONDOWN:
                 if self.rect.collidepoint(event.pos):
                     if self.func is not None:
+                        play_sound('button_press.mp3')
                         self.func()
         if self.change_under_mouse and self.rect.collidepoint(pg.mouse.get_pos()):
             self.image = self.under_mouse_image

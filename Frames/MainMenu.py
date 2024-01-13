@@ -5,7 +5,6 @@ from Signals import *
 from utilities.Particles import create_particles
 from utilities.image import draw_text, load_image
 from utilities.Button import Button
-from utilities.music import play_sound
 from Frames.Settings import Settings
 from Frames.ChooseMode import ChooseMode
 # from AnimatedFon import AnimatedSprite
@@ -54,11 +53,9 @@ class MainMenu(IFrame):
         self.buttons.draw(shared.screen)
 
     def settings(self):
-        play_sound('button_press.mp3')
         raise NewFrame(Settings())
 
     def start_button(self):
-        play_sound('button_press.mp3')
         raise NewFrame(ChooseMode())
 
     def draw_fon(self):
@@ -79,15 +76,12 @@ class MainMenu(IFrame):
         game_start_button.connect(self.start_button)
 
     def close_app(self):
-        play_sound('button_press.mp3')
         raise KillEntireApp
 
     def back(self):
-        play_sound('button_press.mp3')
         raise KillTopFrame
 
     def open_pop_up_window(self):
-        play_sound('button_press.mp3')
         self.draw_fon()
         self.buttons.draw(shared.screen)
         raise NewFrame(PopUpWindow(shared.screen.copy()))

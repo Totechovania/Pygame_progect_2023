@@ -3,7 +3,6 @@ from Frames.IFrame import IFrame
 from utilities.Button import Button
 from utilities.Particles import create_particles
 from utilities.image import load_image, draw_text
-from utilities.music import play_sound
 from utilities.change_settings import load_json_file, change_json_file
 from Frames.FightFrame import FightFrame
 import pygame as pg
@@ -150,11 +149,9 @@ class FightMenuWindow(IFrame):
         change_json_file(data, 'fight_settings.json')
 
     def back(self):
-        play_sound('button_press.mp3')
         raise KillTopFrame
 
     def open_pop_up_window(self):
-        play_sound('button_press.mp3')
         self.draw_fon()
         self.buttons.draw(shared.screen)
         raise NewFrame(PopUpWindow(shared.screen.copy()))

@@ -2,7 +2,6 @@ from Frames.PopUpWindow import PopUpWindow
 from Frames.IFrame import IFrame
 from utilities.Button import Button
 from utilities.image import load_image
-from utilities.music import play_sound
 import pygame as pg
 import shared
 from Signals import *
@@ -53,9 +52,7 @@ class Redactor(IFrame):
         shared.screen.blit(self.image_fon, (0, 0))
 
     def back(self):
-        play_sound('button_press.mp3')
         raise KillTopFrame
 
     def open_pop_up_window(self):
-        play_sound('button_press.mp3')
         raise NewFrame(PopUpWindow(shared.screen.copy()))

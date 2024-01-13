@@ -8,7 +8,6 @@ from utilities.MapGenerater import map_generator
 import pygame as pg
 from GameEngine.Tile import HexTile
 from utilities.Button import Button
-from utilities.music import play_sound
 from utilities.image import draw_text, load_image
 
 
@@ -202,7 +201,6 @@ class FightFrame(IFrame):
 
     def back(self):
         from Frames.Settings import Settings
-        play_sound('button_press.mp3')
         raise NewFrame(Settings(True))
 
     # def back_move(self):
@@ -210,7 +208,6 @@ class FightFrame(IFrame):
 
     def open_pop_up_window(self):
         from Frames.PopUpWindow import PopUpWindow
-        play_sound('button_press.mp3')
         raise NewFrame(PopUpWindow(shared.screen.copy()))
 
     def apply_settings(self):
