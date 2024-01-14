@@ -13,7 +13,7 @@ from Frames.FinalWindow import FinalWindow
 
 
 class FightFrame(IFrame):
-    def __init__(self, scale, enemy, players, level):
+    def __init__(self, scale, enemy, players, level, campany_level=None):
         self.bot_types = ['defender', 'attacker', 'farmer']
         self.level = level
         self.w = shared.WIDTH
@@ -24,6 +24,8 @@ class FightFrame(IFrame):
         self.grid, self.game = map_generator(scale, enemy, players, rect)
         self.generate_buttons()
         self.game.game_fight_frame = self
+        self.game.campany_level = campany_level
+
         self.flag = False
         self.flag_draw = True
         self.chosen = None
@@ -234,4 +236,4 @@ class FightFrame(IFrame):
         raise NewFrame(FinalWindow(shared.screen.copy(), self.game.states['Игрок']['spent_money'],
                                    self.game.states['Игрок']['earned_money'],
                                    self.game.states['Игрок']['captured_states'], self.game.current_player.owner,
-                                   self.game.time_start))
+                                   self.game.time_start, self.game.campany_level))

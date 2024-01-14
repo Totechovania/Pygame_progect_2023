@@ -5,10 +5,11 @@ import pygame as pg
 import shared
 from Signals import KillEntireApp, KillTopFrame, KillFewTopFrames
 from time import time
+from utilities.change_settings import load_json_file, change_json_file
 
 
 class FinalWindow(IFrame):
-    def __init__(self, image, spent_money, earned_money, captured_states, winner, time_start):
+    def __init__(self, image, spent_money, earned_money, captured_states, winner, time_start, campany_level):
         self.spent_money = spent_money
         self.earned_money = earned_money
         self.captured_states = captured_states
@@ -17,7 +18,12 @@ class FinalWindow(IFrame):
         self.time_now = time() - self.time_start
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
+        self.campany_level = campany_level
         self.img = blur_image(image)
+        if self.winner == 'Игрок' and self.campany_level:
+            data = load_json_file('campany.json')
+            data[self.campany_level] = True
+            change_json_file(data, 'campany.json')
         self.buttons = pg.sprite.Group()
         self.generate_buttons()
 
@@ -61,7 +67,12 @@ class FinalWindow(IFrame):
             draw_text('Вы ПРОИГРАЛИ от рук бота ' + self.winner, self.w * 0.2, self.h * 0.15, '#000000',
                       int(self.h * 0.14))
         else:
-            draw_text('Вы ВЫИГРАЛИ', self.w * 0.35, self.h * 0.15, '#000000', int(self.h * 0.14))
+            if self.campany_level:
+                draw_text('Уровень ' + self.campany_level + ' завершен!', self.w * 0.35, self.h * 0.15, '#000000',
+                          int(self.h * 0.14))
+
+            else:
+                draw_text('Вы ВЫИГРАЛИ', self.w * 0.35, self.h * 0.15, '#000000', int(self.h * 0.14))
         draw_text('Потрачено денег: ' + str(self.spent_money), self.w * 0.35, self.h * 0.3, '#000000',
                   int(self.h * 0.07))
         draw_text('Заработано денег: ' + str(self.earned_money), self.w * 0.35, self.h * 0.45, '#000000',

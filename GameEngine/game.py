@@ -19,10 +19,10 @@ class Game:
         self.draw_confirm = True
         self.game_fight_frame = None
         self.players = players
+        self.campany_level = None
         self.time_start = time()
         self.states = {}
         self.operational_list = []
-        self.results = []
         self.states_names = []
         self.grid = grid
         self.current_player = None
@@ -72,7 +72,8 @@ class Game:
             tile.game_unit.stop = True
             raise NewFrame(FinalWindow(shared.screen.copy(), self.states['Игрок']['spent_money'],
                                        self.states['Игрок']['earned_money'], self.states['Игрок']['captured_states'],
-                                       self.current_player.owner, self.time_start))
+                                       self.current_player.owner, self.time_start, self.campany_level))
+
         del self.states[state]
         del self.states_names[self.states_names.index(state)]
         self.players -= 1
@@ -112,7 +113,8 @@ class Game:
         self.states[self.states_names[self.current_player_id - 1]]['state'].set_turn()
         if self.current_player.owner != 'Игрок':
             self.current_player.bot.do_move()
-            self.next_player()
+            if self.draw_confirm:
+                self.next_player()
         self.operational_list.clear()
 
     def check_defense(self, tile, unit):
@@ -162,6 +164,8 @@ class Game:
                 self.states[self.current_player.owner]['captured_states'] += 1
                 self.states[tile.owner]['state'].lose_game_state()
                 self.remove_player(tile.owner, tile, unit)
+                if not self.draw_confirm:
+                    return
             tile.set_game_unit(unit)
             if tile.owner != self.current_player.owner:
                 tile.game_unit.moved = True
@@ -169,8 +173,8 @@ class Game:
             if tile.owner and isinstance(tile.game_unit, Unit) and tile.game_unit.moved:
                 if tile.owner in self.states:
                     self.states[tile.owner]['state'].lose_tile(tile)
-            self.check_supply_line(tile)
             self.current_player.new_tile(tile)
+            self.check_supply_line(tile)
             if isinstance(unit, Farm):
                 self.current_player.farms += 1
             if isinstance(tile.game_unit, Guildhall):
@@ -180,7 +184,10 @@ class Game:
             tile.owner = self.current_player.owner
             if isinstance(unit, Unit):
                 self.current_player.earnings -= unit.pay
-            self.current_player.money -= unit.cost
+            if isinstance(unit, Farm):
+                self.current_player.money -= unit.cost + 4 * (self.current_player.farms - 1)
+            else:
+                self.current_player.money -= unit.cost
             self.count_player_earnings()
             return True
 
@@ -198,19 +205,21 @@ class Game:
                     self.states[self.current_player.owner]['captured_states'] += 1
                     self.states[tile_to.owner]['state'].lose_game_state()
                     self.remove_player(tile_to.owner, tile_to, tile_from.game_unit)
+                    if not self.draw_confirm:
+                        return
                 tile_from.game_unit = None
                 tile_to.owner = tile_from.owner
                 tile_to.color = tile_from.color
                 tile_to.set_game_unit(unit)
                 tile_to.game_unit.moved = True
                 tile_to.game_unit.stop = True
-                self.check_supply_line(tile_to)
                 self.states[tile_from.owner]['state'].new_tile(tile_to)
+                self.check_supply_line(tile_to)
                 self.count_player_earnings()
 
     def check_supply_line(self, tile):
-        if tile.owner:
-            separated_groups = find_separated_groups(self.grid, self.states[tile.owner]['state'].tiles)
+        if tile.owner and tile.owner in self.states_names:
+            separated_groups = find_separated_groups(self.grid, list(set(self.states[tile.owner]['state'].tiles)))
         else:
             return
         if len(separated_groups) == 1:
