@@ -11,6 +11,7 @@ from Signals import NewFrame
 import shared
 from time import time
 from GameEngine.find_separated_groups import find_separated_groups
+import copy
 
 
 class Game:
@@ -173,8 +174,9 @@ class Game:
             if tile.owner and isinstance(tile.game_unit, Unit) and tile.game_unit.moved:
                 if tile.owner in self.states:
                     self.states[tile.owner]['state'].lose_tile(tile)
+            owner = copy.copy(tile)
             self.current_player.new_tile(tile)
-            self.check_supply_line(tile)
+            self.check_supply_line(owner)
             if isinstance(unit, Farm):
                 self.current_player.farms += 1
             if isinstance(tile.game_unit, Guildhall):
@@ -208,13 +210,14 @@ class Game:
                     if not self.draw_confirm:
                         return
                 tile_from.game_unit = None
+                owner = copy.copy(tile_to)
                 tile_to.owner = tile_from.owner
                 tile_to.color = tile_from.color
                 tile_to.set_game_unit(unit)
                 tile_to.game_unit.moved = True
                 tile_to.game_unit.stop = True
                 self.states[tile_from.owner]['state'].new_tile(tile_to)
-                self.check_supply_line(tile_to)
+                self.check_supply_line(owner)
                 self.count_player_earnings()
 
     def check_supply_line(self, tile):
