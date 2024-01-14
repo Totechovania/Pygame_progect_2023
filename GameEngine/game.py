@@ -137,9 +137,22 @@ class Game:
 
     def check_near(self, check_tile):
         indexes = check_tile.indexes
+        check_1 = False
+        check_2 = False
         for tile in self.grid.get_adjacent_tiles((indexes[0], indexes[1])):
             if tile.owner == self.current_player.owner:
-                return True
+                check_1 = True
+        separated_groups = find_separated_groups(self.grid, self.current_player.tiles)
+        for i in separated_groups:
+            for j in i:
+                if isinstance(j.game_unit, Guildhall):
+                    for k in i:
+                        indexes = k.indexes
+                        if check_tile in self.grid.get_adjacent_tiles((indexes[0], indexes[1])):
+                            check_2 = True
+        if check_1 and check_2:
+            return True
+        return False
 
     # def back_move(self)
     #     print('Работает')
