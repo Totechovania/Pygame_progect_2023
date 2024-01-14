@@ -13,6 +13,7 @@ class Bot:
         self.game = None
 
     def do_move(self):
+        self.explorer()
         self.farmer()
         self.fighter()
         self.forgotten_units_to_move()

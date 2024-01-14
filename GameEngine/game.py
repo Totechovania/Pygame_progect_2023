@@ -121,16 +121,16 @@ class Game:
     def check_defense(self, tile, unit):
         if tile.owner is None and (not isinstance(tile.game_unit, Rock) or tile.game_unit is None):
             return True
-        elif tile.game_unit and not tile.game_unit.power < unit.power:
+        elif tile.game_unit and tile.game_unit.power >= unit.power and not isinstance(unit, Knight):
             return False
         indexes = tile.indexes
         if tile.owner == self.current_player.owner:
             return True
-        if tile_defense(self.grid, tile) >= unit.power:
+        if tile_defense(self.grid, tile) >= unit.power and not isinstance(unit, Knight):
             return False
         for tile in self.grid.get_adjacent_tiles((indexes[0], indexes[1])):
             if tile.game_unit:
-                if tile.game_unit.power > unit.power:
+                if tile.game_unit.power >= unit.power and not isinstance(tile.game_unit, Knight):
                     if tile.owner != self.current_player.owner and not isinstance(tile.game_unit, Rock):
                         return False
         return True
@@ -210,7 +210,7 @@ class Game:
         if self.available_move(tile_from) and isinstance(tile_from.game_unit, Unit):
             unit = tile_from.game_unit
             if (tile_to in available_tiles(self.grid, tile_from, unit.power, unit.steps,
-                                           tile_from.owner)) and not tile_from.game_unit.moved:
+                                           tile_from.owner, unit)) and not tile_from.game_unit.moved:
                 try:
                     if tile_to.owner:
                         self.states[tile_to.owner]['state'].lose_tile(tile_to)
