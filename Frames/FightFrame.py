@@ -10,6 +10,7 @@ from GameEngine.Tile import HexTile
 from utilities.Button import Button
 from utilities.image import draw_text, load_image
 from Frames.FinalWindow import FinalWindow
+from threading import Thread
 
 
 class FightFrame(IFrame):
@@ -22,6 +23,9 @@ class FightFrame(IFrame):
 
         rect = pg.Rect(0, 0, self.w, self.h)  # todo переделать
         self.grid, self.game = map_generator(scale, enemy, players, rect)
+        for state_name in self.game.states_names:
+            self.game.states[state_name]['state'].bot.level = self.game.states[state_name]['state'].bot.level[
+                str(self.level)]
         self.generate_buttons()
         self.game.game_fight_frame = self
         self.game.campany_level = campany_level
@@ -36,6 +40,12 @@ class FightFrame(IFrame):
     def update(self):
         shared.screen.fill((255, 255, 255))
         events = pg.event.get()
+        if self.game.draw_confirm and self.game.current_player.owner != 'Игрок':
+            if self.game.can_move:
+                self.game.next_player()
+            if not 'Игрок' in self.game.states_names:
+                th = Thread(target=self.game.sleep, args=())
+                th.start()
         for event in events:
             if event.type == pg.QUIT:
                 raise KillEntireApp
@@ -74,7 +84,7 @@ class FightFrame(IFrame):
             self.flag = False
         self.chosen = self.grid.collide_point(*pg.mouse.get_pos())
         self.grid.draw_tiles()
-        if self.chosen is not None and self.game.draw_confirm:
+        if self.chosen is not None and self.game.draw_confirm and 'Игрок' in self.game.states_names:
             list_of_your_state = []
             for i in self.game.states['Игрок']['state'].tiles:
                 list_of_your_state.append(i.indexes)
@@ -90,7 +100,7 @@ class FightFrame(IFrame):
         self.grid.draw(shared.screen)
         self.buttons.update(events)
         self.buttons.draw(shared.screen)
-        if self.game.draw_confirm:
+        if self.game.draw_confirm and 'Игрок' in self.game.states_names:
             self.draw()
         if not self.game.draw_confirm and self.flag_draw:
             back_to_results_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'back.png', self.buttons)
@@ -132,42 +142,44 @@ class FightFrame(IFrame):
 
         settings_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'settings_button.png', self.buttons)
         settings_button.connect(self.back)
+        if 'Игрок' in self.game.states_names:
+            next_move_button = Button(
+                (shared.WIDTH * 0.96, shared.HEIGHT * 0.9, int(0.04 * self.w), int(0.04 * self.w)),
+                'next_move.png', self.buttons)
+            next_move_button.connect(self.next_move)
 
-        next_move_button = Button((shared.WIDTH * 0.96, shared.HEIGHT * 0.9, int(0.04 * self.w), int(0.04 * self.w)),
-                                  'next_move.png', self.buttons)
-        next_move_button.connect(self.next_move)
+            farmhouse_button = Button(
+                (shared.WIDTH * 0.1, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
+                'farm.png', self.buttons)
+            farmhouse_button.connect(self.farm_house_chosen)
 
-        farmhouse_button = Button((shared.WIDTH * 0.1, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
-                                  'farm.png', self.buttons)
-        farmhouse_button.connect(self.farm_house_chosen)
+            tower_level_1 = Button((shared.WIDTH * 0.2, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
+                                   'towerfirst.png', self.buttons)
+            tower_level_1.connect(self.tower_level_1_chosen)
 
-        tower_level_1 = Button((shared.WIDTH * 0.2, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
-                               'towerfirst.png', self.buttons)
-        tower_level_1.connect(self.tower_level_1_chosen)
+            tower_level_2 = Button((shared.WIDTH * 0.3, shared.HEIGHT * 0.86, int(0.04 * self.w), int(0.04 * self.w)),
+                                   'towersecond.png', self.buttons)
+            tower_level_2.connect(self.tower_level_2_chosen)
 
-        tower_level_2 = Button((shared.WIDTH * 0.3, shared.HEIGHT * 0.86, int(0.04 * self.w), int(0.04 * self.w)),
-                               'towersecond.png', self.buttons)
-        tower_level_2.connect(self.tower_level_2_chosen)
+            traveller_summon_button = Button(
+                (shared.WIDTH * 0.6, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
+                'peasant.png', self.buttons)
+            traveller_summon_button.connect(self.traveller_chosen)
 
-        traveller_summon_button = Button(
-            (shared.WIDTH * 0.6, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
-            'peasant.png', self.buttons)
-        traveller_summon_button.connect(self.traveller_chosen)
+            spearman_summon_button = Button(
+                (shared.WIDTH * 0.7, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
+                'spearman.png', self.buttons)
+            spearman_summon_button.connect(self.spearman_chosen)
 
-        spearman_summon_button = Button(
-            (shared.WIDTH * 0.7, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
-            'spearman.png', self.buttons)
-        spearman_summon_button.connect(self.spearman_chosen)
+            warrior_summon_button = Button(
+                (shared.WIDTH * 0.8, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
+                'warrior.png', self.buttons)
+            warrior_summon_button.connect(self.warrior_chosen)
 
-        warrior_summon_button = Button(
-            (shared.WIDTH * 0.8, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
-            'warrior.png', self.buttons)
-        warrior_summon_button.connect(self.warrior_chosen)
-
-        knight_summon_button = Button(
-            (shared.WIDTH * 0.9, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
-            'knight.png', self.buttons)
-        knight_summon_button.connect(self.knight_chosen)
+            knight_summon_button = Button(
+                (shared.WIDTH * 0.9, shared.HEIGHT * 0.85, int(0.04 * self.w), int(0.04 * self.w)),
+                'knight.png', self.buttons)
+            knight_summon_button.connect(self.knight_chosen)
 
     def next_move(self):
         self.game.next_player()
@@ -233,7 +245,10 @@ class FightFrame(IFrame):
         self.generate_buttons()
 
     def back_to_results(self):
-        raise NewFrame(FinalWindow(shared.screen.copy(), self.game.states['Игрок']['spent_money'],
-                                   self.game.states['Игрок']['earned_money'],
-                                   self.game.states['Игрок']['captured_states'], self.game.current_player.owner,
-                                   self.game.time_start, self.game.campany_level))
+        if 'Игрок' in self.game.states_names:
+            raise NewFrame(FinalWindow(shared.screen.copy(), self.game.states['Игрок']['spent_money'],
+                                       self.game.states['Игрок']['earned_money'],
+                                       self.game.states['Игрок']['captured_states'], self.game.current_player.owner,
+                                       self.game.time_start, self.game.campany_level))
+        else:
+            raise KillTopFrame

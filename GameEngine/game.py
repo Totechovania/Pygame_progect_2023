@@ -12,6 +12,7 @@ import shared
 from time import time
 from GameEngine.find_separated_groups import find_separated_groups
 import copy
+from time import sleep
 
 
 class Game:
@@ -19,6 +20,7 @@ class Game:
     def __init__(self, players, grid):
         self.draw_confirm = True
         self.game_fight_frame = None
+        self.can_move = True
         self.players = players
         self.campany_level = None
         self.time_start = time()
@@ -46,16 +48,14 @@ class Game:
                     self.states[j.owner].append(j)
 
     def add_all_players(self):
-        try:
-            for i in self.states:
-                bot = Bot()
-                self.add_player(State(i, self.states[i], bot))
-                bot.state = self.states[i]['state']
-                bot.game = self
+        for i in self.states:
+            bot = Bot()
+            self.add_player(State(i, self.states[i], bot))
+            bot.state = self.states[i]['state']
+            bot.game = self
+        if 'Игрок' in self.states_names:
             self.states_names[self.states_names.index('Игрок')], self.states_names[0] = self.states_names[0], \
                 self.states_names[self.states_names.index('Игрок')]
-        except Exception:
-            pass
 
     def remove_player(self, state, tile, unit):
         if self.players == 2 or 'Игрок' == self.states_names[self.states_names.index(state)]:
@@ -114,9 +114,6 @@ class Game:
         self.states[self.states_names[self.current_player_id - 1]]['state'].set_turn()
         if self.current_player.owner != 'Игрок':
             self.current_player.bot.do_move()
-            if self.draw_confirm:
-                self.next_player()
-        self.operational_list.clear()
 
     def check_defense(self, tile, unit):
         if tile.owner is None and (not isinstance(tile.game_unit, Rock) or tile.game_unit is None):
@@ -153,6 +150,11 @@ class Game:
         if check_1 and check_2:
             return True
         return False
+
+    def sleep(self):
+        self.can_move = False
+        sleep(1)
+        self.can_move = True
 
     # def back_move(self)
     #     print('Работает')
