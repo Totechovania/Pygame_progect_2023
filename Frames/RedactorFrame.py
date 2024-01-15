@@ -27,10 +27,12 @@ class RedactorFrame(AbstractBaseFrame):
         self.chosen_button = None
 
         instruments = ['farm', 'towerfirst', 'towersecond', 'peasant', 'spearman', 'warrior', 'knight']
-        self.instruments_images = {}
-        for key in instruments:
-            self.instruments_images[key] = (pg.transform.scale(load_image(f'{key}.png'), (self.w * 0.04, self.w * 0.04)))
 
+        self.available_brush_parameters = [(None, (125, 125, 125)), (None, (255, 0, 0)), (None, (0, 255, 0)),]
+        self.brush_par_index = 0
+
+        self.builder_modes = [(125, 125, 125), (225, 225, 225)]
+        self.builder_mode = 0 # 0 - tile, 1 - empty
 
     def update(self):
         super().update()
@@ -67,8 +69,16 @@ class RedactorFrame(AbstractBaseFrame):
         if self.chosen_button is not None:
             x, y = self.chosen_button.rect.center
             rad = self.chosen_button.rect.height / 2 + round(self.w * 0.01)
+
+            if self.instrument == 'brush':
+                color = self.available_brush_parameters[self.brush_par_index][1]
+            elif self.instrument == 'builder':
+                color = self.builder_modes[self.builder_mode]
+            else:
+                color = (125, 125, 125)
+
             hexagon = hexagon_from_center(x, y, rad)
-            pg.draw.polygon(shared.screen, (125, 125, 125), hexagon)
+            pg.draw.polygon(shared.screen, color, hexagon)
             pg.draw.polygon(shared.screen, (0, 0, 0), hexagon, round(self.w * 0.003))
 
         self.buttons.draw(shared.screen)
@@ -76,38 +86,65 @@ class RedactorFrame(AbstractBaseFrame):
     def generate_buttons(self):
         super().generate_buttons()
         h = shared.HEIGHT * 0.90
-        farmhouse_button = Button((shared.WIDTH * 0.1, h, int(0.04 * self.w), int(0.04 * self.w)),
+        guildhall_button = Button((shared.WIDTH * 0.025, h, int(0.04 * self.w), int(0.04 * self.w)),
+                                  'guildhall.png', self.buttons)
+        guildhall_button.connect(lambda: self.set_instrument('guildhall', guildhall_button))
+
+        farmhouse_button = Button((shared.WIDTH * 0.125, h, int(0.04 * self.w), int(0.04 * self.w)),
                                   'farm.png', self.buttons)
         farmhouse_button.connect(lambda: self.set_instrument('farm', farmhouse_button))
 
-        tower_level_1 = Button((shared.WIDTH * 0.2, h, int(0.04 * self.w), int(0.04 * self.w)),
+        tower_level_1 = Button((shared.WIDTH * 0.225, h, int(0.04 * self.w), int(0.04 * self.w)),
                                'towerfirst.png', self.buttons)
         tower_level_1.connect(lambda: self.set_instrument('towerfirst', tower_level_1))
 
-        tower_level_2 = Button((shared.WIDTH * 0.3, h, int(0.04 * self.w), int(0.04 * self.w)),
+        tower_level_2 = Button((shared.WIDTH * 0.325, h, int(0.04 * self.w), int(0.04 * self.w)),
                                'towersecond.png', self.buttons)
         tower_level_2.connect(lambda: self.set_instrument('towersecond', tower_level_2))
 
         traveller_summon_button = Button(
-            (shared.WIDTH * 0.6, h, int(0.04 * self.w), int(0.04 * self.w)),
+            (shared.WIDTH * 0.625, h, int(0.04 * self.w), int(0.04 * self.w)),
             'peasant.png', self.buttons)
         traveller_summon_button.connect(lambda: self.set_instrument('peasant', traveller_summon_button))
 
         spearman_summon_button = Button(
-            (shared.WIDTH * 0.7, h, int(0.04 * self.w), int(0.04 * self.w)),
+            (shared.WIDTH * 0.725, h, int(0.04 * self.w), int(0.04 * self.w)),
             'spearman.png', self.buttons)
         spearman_summon_button.connect(lambda: self.set_instrument('spearman', spearman_summon_button))
 
         warrior_summon_button = Button(
-            (shared.WIDTH * 0.8, h, int(0.04 * self.w), int(0.04 * self.w)),
+            (shared.WIDTH * 0.825, h, int(0.04 * self.w), int(0.04 * self.w)),
             'warrior.png', self.buttons)
         warrior_summon_button.connect(lambda: self.set_instrument('warrior', warrior_summon_button))
 
         knight_summon_button = Button(
-            (shared.WIDTH * 0.9, h, int(0.04 * self.w), int(0.04 * self.w)),
+            (shared.WIDTH * 0.925, h, int(0.04 * self.w), int(0.04 * self.w)),
             'knight.png', self.buttons)
         knight_summon_button.connect(lambda: self.set_instrument('knight', knight_summon_button))
+
+        brush_button = Button(
+            (shared.WIDTH * 0.525, h, int(0.04 * self.w), int(0.04 * self.w)),
+            'brush.png', self.buttons)
+        brush_button.connect(lambda: self.set_brush(brush_button))
+
+        builder_button = Button(
+            (shared.WIDTH * 0.425, h, int(0.04 * self.w), int(0.04 * self.w)),
+            'builder.png', self.buttons)
+        builder_button.connect(lambda: self.set_builder(builder_button))
 
     def set_instrument(self, instrument, button):
         self.instrument = instrument
         self.chosen_button = button
+
+    def set_brush(self, button):
+        if self.instrument == 'brush':
+            self.brush_par_index = (self.brush_par_index + 1) % len(self.available_brush_parameters)
+        else:
+            self.set_instrument('brush', button)
+
+    def set_builder(self, button):
+        if self.instrument == 'builder':
+            self.builder_mode = (self.builder_mode + 1) % len(self.builder_modes)
+        else:
+            self.set_instrument('builder', button)
+
