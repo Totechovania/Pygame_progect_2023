@@ -7,6 +7,11 @@ from Frames.AbstractBaseFrame import AbstractBaseFrame
 from utilities.Button import Button
 from utilities.image import load_image
 from utilities.hexagons import hexagon_from_center
+from GameEngine.GameUnits.Units import Peasant, Warrior, Knight, Spearman
+from GameEngine.GameUnits.Obstacles import Tree, Grave, Rock
+from GameEngine.GameUnits.Buildings import Guildhall, Farm, TowerFirst, TowerSecond
+
+from GameEngine.Tile import HexTile
 
 
 class RedactorFrame(AbstractBaseFrame):
@@ -26,13 +31,30 @@ class RedactorFrame(AbstractBaseFrame):
         self.instrument = None
         self.chosen_button = None
 
-        instruments = ['farm', 'towerfirst', 'towersecond', 'peasant', 'spearman', 'warrior', 'knight']
+        set_unit_instruments = {'guildhall', 'farm', 'towerfirst', 'towersecond', 'peasant', 'spearman', 'warrior', 'knight'}
 
-        self.available_brush_parameters = [(None, (125, 125, 125)), (None, (255, 0, 0)), (None, (0, 255, 0)),]
+        self.available_brush_parameters = [(None, (125, 125, 125)), (None, (255, 0, 0)), (None, (0, 255, 0)),] # todo add more owners and colors
         self.brush_par_index = 0
 
         self.builder_modes = [(125, 125, 125), (225, 225, 225)]
         self.builder_mode = 0 # 0 - tile, 1 - empty
+
+        self.units_modes = [('peasant', 'peasant.png', Peasant),
+                            ('spearman', 'spearman.png', Spearman),
+                            ('warrior', 'warrior.png', Warrior),
+                            ('knight', 'knight.png', Knight)]
+        self.unit_mode = 0
+
+        self.buildings_modes = [('farm', 'farm.png', Farm),
+                                 ('towerfirst', 'towerfirst.png', TowerFirst),
+                                 ('towersecond', 'towersecond.png', TowerSecond),
+                                 ('guildhall', 'guildhall.png', Guildhall)]
+        self.building_mode = 0
+
+        self.obstacles_modes = [('tree', 'tree.png', Tree),
+                                ('grave', 'grave32.png', Grave), #todo add grave.png
+                                ('rock', 'rock.png', Rock)]
+        self.obstacle_mode = 0
 
     def update(self):
         super().update()
@@ -43,7 +65,7 @@ class RedactorFrame(AbstractBaseFrame):
                     self.grid.relative_scale(x, y, self.grid.scale * 0.9)
                 else:
                     self.grid.relative_scale(x, y, self.grid.scale * 1.1)
-            elif event.type == pg.MOUSEMOTION and pg.mouse.get_pressed()[1]:
+            if event.type == pg.MOUSEMOTION and pg.mouse.get_pressed()[1]:
                 dx, dy = pg.mouse.get_rel()
                 if self.grid_is_moving:
                     self.grid.move(dx, dy)
@@ -51,6 +73,11 @@ class RedactorFrame(AbstractBaseFrame):
                     self.grid_is_moving = True
             else:
                 self.grid_is_moving = False
+            if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+                if self.grid.rect.collidepoint(event.pos):
+                    chosen = self.grid.collide_point(*event.pos)
+                    if chosen is not None:
+                        self.use_instrument(chosen)
 
         self.buttons.update(self.events)
         pg.draw.rect(shared.screen, (255, 255, 255), self.grid_rect)
@@ -83,58 +110,82 @@ class RedactorFrame(AbstractBaseFrame):
 
         self.buttons.draw(shared.screen)
 
+    def use_instrument(self, tile):
+        if not isinstance(tile, HexTile):
+            return
+        if self.instrument == 'brush':
+            owner, color = self.available_brush_parameters[self.brush_par_index]
+            tile.set_owner(owner, color)
+        elif self.instrument == 'builder':
+            i, j = tile.indexes
+            if self.builder_mode == 0:
+                self.grid.set_tile(i, j)
+            else:
+                self.grid.set_empty(i, j)
+        elif self.instrument == 'units':
+            unit = self.units_modes[self.unit_mode][2](scale=2)
+            tile.set_game_unit(unit)
+
+        elif self.instrument == 'buildings':
+            building = self.buildings_modes[self.building_mode][2](scale=2)
+            tile.set_game_unit(building)
+        elif self.instrument == 'obstacles':
+            obstacle = self.obstacles_modes[self.obstacle_mode][2](scale=2)
+            tile.set_game_unit(obstacle)
+
     def generate_buttons(self):
         super().generate_buttons()
         h = shared.HEIGHT * 0.90
-        guildhall_button = Button((shared.WIDTH * 0.025, h, int(0.04 * self.w), int(0.04 * self.w)),
-                                  'guildhall.png', self.buttons)
-        guildhall_button.connect(lambda: self.set_instrument('guildhall', guildhall_button))
 
-        farmhouse_button = Button((shared.WIDTH * 0.125, h, int(0.04 * self.w), int(0.04 * self.w)),
-                                  'farm.png', self.buttons)
-        farmhouse_button.connect(lambda: self.set_instrument('farm', farmhouse_button))
+        buildings_button = Button(
+            (shared.WIDTH * 0.325, h, int(0.04 * self.w), int(0.04 * self.w)),
+            'farm.png', self.buttons)
+        buildings_button.connect(lambda: self.set_building(buildings_button))
 
-        tower_level_1 = Button((shared.WIDTH * 0.225, h, int(0.04 * self.w), int(0.04 * self.w)),
-                               'towerfirst.png', self.buttons)
-        tower_level_1.connect(lambda: self.set_instrument('towerfirst', tower_level_1))
+        obstacles_button = Button(
+            (shared.WIDTH * 0.225, h, int(0.04 * self.w), int(0.04 * self.w)),
+            'tree.png', self.buttons)
+        obstacles_button.connect(lambda: self.set_obstacle(obstacles_button))
 
-        tower_level_2 = Button((shared.WIDTH * 0.325, h, int(0.04 * self.w), int(0.04 * self.w)),
-                               'towersecond.png', self.buttons)
-        tower_level_2.connect(lambda: self.set_instrument('towersecond', tower_level_2))
-
-        traveller_summon_button = Button(
-            (shared.WIDTH * 0.625, h, int(0.04 * self.w), int(0.04 * self.w)),
+        units_button = Button(
+            (shared.WIDTH * 0.425, h, int(0.04 * self.w), int(0.04 * self.w)),
             'peasant.png', self.buttons)
-        traveller_summon_button.connect(lambda: self.set_instrument('peasant', traveller_summon_button))
-
-        spearman_summon_button = Button(
-            (shared.WIDTH * 0.725, h, int(0.04 * self.w), int(0.04 * self.w)),
-            'spearman.png', self.buttons)
-        spearman_summon_button.connect(lambda: self.set_instrument('spearman', spearman_summon_button))
-
-        warrior_summon_button = Button(
-            (shared.WIDTH * 0.825, h, int(0.04 * self.w), int(0.04 * self.w)),
-            'warrior.png', self.buttons)
-        warrior_summon_button.connect(lambda: self.set_instrument('warrior', warrior_summon_button))
-
-        knight_summon_button = Button(
-            (shared.WIDTH * 0.925, h, int(0.04 * self.w), int(0.04 * self.w)),
-            'knight.png', self.buttons)
-        knight_summon_button.connect(lambda: self.set_instrument('knight', knight_summon_button))
+        units_button.connect(lambda: self.set_unit(units_button))
 
         brush_button = Button(
-            (shared.WIDTH * 0.525, h, int(0.04 * self.w), int(0.04 * self.w)),
+            (shared.WIDTH * 0.125, h, int(0.04 * self.w), int(0.04 * self.w)),
             'brush.png', self.buttons)
         brush_button.connect(lambda: self.set_brush(brush_button))
 
         builder_button = Button(
-            (shared.WIDTH * 0.425, h, int(0.04 * self.w), int(0.04 * self.w)),
+            (shared.WIDTH * 0.025, h, int(0.04 * self.w), int(0.04 * self.w)),
             'builder.png', self.buttons)
         builder_button.connect(lambda: self.set_builder(builder_button))
 
     def set_instrument(self, instrument, button):
         self.instrument = instrument
         self.chosen_button = button
+
+    def set_unit(self, button):
+        if self.instrument == 'units':
+            self.unit_mode = (self.unit_mode + 1) % len(self.units_modes)
+            button.set_image(self.units_modes[self.unit_mode][1])
+        else:
+            self.set_instrument('units', button)
+
+    def set_building(self, button):
+        if self.instrument == 'buildings':
+            self.building_mode = (self.building_mode + 1) % len(self.buildings_modes)
+            button.set_image(self.buildings_modes[self.building_mode][1])
+        else:
+            self.set_instrument('buildings', button)
+
+    def set_obstacle(self, button):
+        if self.instrument == 'obstacles':
+            self.obstacle_mode = (self.obstacle_mode + 1) % len(self.obstacles_modes)
+            button.set_image(self.obstacles_modes[self.obstacle_mode][1])
+        else:
+            self.set_instrument('obstacles', button)
 
     def set_brush(self, button):
         if self.instrument == 'brush':
