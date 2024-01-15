@@ -156,6 +156,70 @@ class Game:
         sleep(1)
         self.can_move = True
 
+    def merge_units(self, tile, chosen_unit):
+        old_unit = copy.copy(tile)
+        if isinstance(tile.game_unit, Peasant) and chosen_unit == Peasant:
+            if self.current_player.money >= 10:
+                self.current_player.money -= 10
+                tile.set_game_unit(Spearman('spearman_animation.png'))
+                self.game_fight_frame.chosen_unit = None
+                self.game_fight_frame.choose = tile
+                if old_unit.game_unit.moved:
+                    tile.game_unit.moved = True
+                    tile.game_unit.stop = True
+        elif isinstance(tile.game_unit, Spearman) and chosen_unit == Spearman:
+            if self.current_player.money >= 20:
+                self.current_player.money -= 20
+                tile.set_game_unit(Warrior('warrior_animation.png'))
+                self.game_fight_frame.chosen_unit = None
+                self.game_fight_frame.choose = tile
+                if not old_unit.game_unit.moved:
+                    tile.game_unit.moved = True
+                    tile.game_unit.stop = True
+        elif isinstance(tile.game_unit, Warrior) and chosen_unit == Warrior:
+            if self.current_player.money >= 30:
+                self.current_player.money -= 30
+                tile.set_game_unit(Knight('knight_animation.png'))
+                self.game_fight_frame.chosen_unit = None
+                self.game_fight_frame.choose = tile
+                if not old_unit.game_unit.moved:
+                    tile.game_unit.moved = True
+                    tile.game_unit.stop = True
+        elif isinstance(tile.game_unit, TowerFirst) and chosen_unit == TowerFirst:
+            if self.current_player.money >= 15:
+                self.current_player.money -= 15
+                tile.set_game_unit(TowerSecond('towersecond32.png'))
+                self.game_fight_frame.chosen_unit = None
+                self.game_fight_frame.choose = tile
+        self.count_player_earnings()
+
+    def merge_units_move(self, tile_from, tile_to):
+        if isinstance(tile_from.game_unit, Peasant) and isinstance(tile_to.game_unit, Peasant):
+            tile_from.game_unit = None
+            tile_to.game_unit = None
+            tile_to.set_game_unit(Spearman('spearman_animation.png'))
+            self.game_fight_frame.chosen_unit = None
+            self.game_fight_frame.choose = tile_to
+            tile_to.game_unit.moved = True
+            tile_to.game_unit.stop = True
+        elif isinstance(tile_to.game_unit, Spearman) and isinstance(tile_to.game_unit, Spearman):
+            tile_from.game_unit = None
+            tile_to.game_unit = None
+            tile_to.set_game_unit(Spearman('warrior_animation.png'))
+            self.game_fight_frame.chosen_unit = None
+            self.game_fight_frame.choose = tile_to
+            tile_to.game_unit.moved = True
+            tile_to.game_unit.stop = True
+        elif isinstance(tile_to.game_unit, Warrior) and isinstance(tile_to.game_unit, Warrior):
+            tile_from.game_unit = None
+            tile_to.game_unit = None
+            tile_to.set_game_unit(Spearman('knight_animation.png'))
+            self.game_fight_frame.chosen_unit = None
+            self.game_fight_frame.choose = tile_to
+            tile_to.game_unit.moved = True
+            tile_to.game_unit.stop = True
+        self.count_player_earnings()
+
     # def back_move(self)
     #     print('Работает')
     #     try:

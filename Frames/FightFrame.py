@@ -43,7 +43,7 @@ class FightFrame(IFrame):
         if self.game.draw_confirm and self.game.current_player.owner != 'Игрок':
             if self.game.can_move:
                 self.game.next_player()
-            if not 'Игрок' in self.game.states_names:
+            if 'Игрок' not in self.game.states_names:
                 th = Thread(target=self.game.sleep, args=())
                 th.start()
         for event in events:
@@ -62,9 +62,20 @@ class FightFrame(IFrame):
                                 if self.choose and self.game.new_unit(clicked, self.chosen_unit[2]()):
                                     self.chosen_unit = None
                                     self.choose = None
+                        elif clicked.game_unit and clicked.owner == self.game.current_player.owner and self.chosen_unit:
+                            self.game.merge_units(clicked, self.chosen_unit[2])
+                        elif clicked.game_unit and clicked.owner == self.game.current_player.owner and self.choose and \
+                                self.choose.game_unit and clicked != self.choose:
+                            if type(self.choose.game_unit) == type(
+                                    clicked.game_unit) and not self.choose.game_unit.moved:
+                                self.game.merge_units_move(self.choose, clicked)
+                            self.choose = clicked
                         elif clicked.game_unit and self.game.states['Игрок']['state'].turn:
                             self.choose = clicked
                             self.chosen_unit = None
+                    if event.button == 3:
+                        self.chosen_unit = None
+                        self.choose = None
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     raise KillTopFrame
