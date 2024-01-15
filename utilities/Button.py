@@ -36,3 +36,7 @@ class Button(pg.sprite.Sprite):
         else:
             self.image = self.main_image
             self.rect = self.main_rect
+
+    def set_image(self, image_path: str):
+        self.main_image = pg.transform.scale(load_image(image_path), (self.main_rect[2], self.main_rect[3]))
+        self.under_mouse_image = pg.transform.scale(load_image(image_path), (self.main_rect[2] * 1.2, self.main_rect[3] * 1.2))
