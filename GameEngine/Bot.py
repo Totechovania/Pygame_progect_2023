@@ -8,13 +8,22 @@ from random import choice
 
 class Bot:
     def __init__(self):
+        self.level = {
+            '1': [self.fighter, self.defender, self.defender, self.farmer, self.farmer],
+            '2': [self.fighter, self.fighter, self.defender, self.farmer],
+            '3': [self.fighter, self.fighter, self.defender, self.farmer, self.farmer],
+            '4': [self.fighter, self.fighter, self.fighter, self.defender, self.farmer],
+            '5': [self.fighter, self.fighter, self.fighter, self.defender, self.defender, self.farmer, self.farmer],
+        }
         self.steps = 0
         self.state = None
         self.game = None
 
     def do_move(self):
-        self.farmer()
-        self.fighter()
+        if self.steps < 10:
+            self.explorer()
+        else:
+            choice(self.level)()
         self.forgotten_units_to_move()
         self.steps += 1
 
@@ -47,7 +56,11 @@ class Bot:
 
     def defender(self):
         for i in range(self.state.money // 2 // 15):
-            tiles = list(filter(lambda x: not x.game_unit and tile_defense(self.game.grid, x) < 3, self.state.tiles))
+            tile_tower = list(filter(lambda x: isinstance(x.game_unit, TowerFirst), self.state.tiles))
+            if tile_tower and self.state.money > 120:
+                tiles = tile_tower
+            else:
+                tiles = list(filter(lambda x: not x.game_unit and tile_defense(self.game.grid, x) < 3, self.state.tiles))
             if not tiles:
                 break
             tile = choice(tiles)

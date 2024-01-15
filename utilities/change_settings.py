@@ -9,6 +9,7 @@ def set_shared_variables():
     info = pg.display.Info()
     shared.fullscreen_w = info.current_w
     shared.fullscreen_h = info.current_h
+
     if not os.path.exists('settings.json'):
         with open('settings.json', 'w') as f:
             json.dump(
@@ -18,6 +19,10 @@ def set_shared_variables():
     if not os.path.exists('fight_settings.json'):
         with open('fight_settings.json', 'w') as f:
             json.dump({"DIFFICULTY": 0, "MAP_SIZE": 0, "PLAYERS": 0, "COLORS": 3}, f)
+
+    if not os.path.exists('campany.json'):
+        with open('campany.json', 'w') as f:
+            json.dump({"1": False, "2": False, "3": False, "4": False, '5': False}, f)
 
     with open('settings.json', 'r') as f:
         f_data = json.load(f)

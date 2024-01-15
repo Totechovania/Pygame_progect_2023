@@ -69,8 +69,8 @@ def map_generator(scale, enemy, players, rect):
             else:
                 grid[y, x].set_game_unit(Guildhall('guildhall32.png'))
             enemy -= 1
-            if scale == 1 and enemy > 7:
-                tiles = 3
+            if scale == 1 and start_enemy > 7:
+                tiles = 2
             else:
                 tiles = 4
 

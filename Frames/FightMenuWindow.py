@@ -137,7 +137,7 @@ class FightMenuWindow(IFrame):
             self.colors = 1
 
     def start_game(self):
-        raise NewFrame(FightFrame(self.map_size + 1, self.colors + 1, self.players, self.difficulty))
+        raise NewFrame(FightFrame(self.map_size + 1, self.colors + 1, self.players, self.difficulty + 1))
 
     def save_settings(self):
         self.saved = True

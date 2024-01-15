@@ -2,11 +2,13 @@ from GameEngine.HexGrid import HexGrid
 from GameEngine.Tile import HexTile
 from GameEngine.tile_defense import tile_defense
 from GameEngine.GameUnits.Obstacles import Obstacles
-from GameEngine.GameUnits.Units import Unit
+from GameEngine.GameUnits.Units import Unit, Knight
 from GameEngine.GameUnits.Buildings import Building
 
 
-def available_tiles(grid: HexGrid, cur_tile: HexTile or tuple[int, int], power=None, step: int = None, owner=None):
+def available_tiles(grid: HexGrid, cur_tile: HexTile or tuple[int, int], power=None, step: int = None, owner=None, unit=None):
+    if not isinstance(cur_tile, HexTile):
+        cur_tile = grid[cur_tile]
     if power is None:
         if cur_tile.game_unit is not None:
             power = tile_defense(grid, cur_tile)
@@ -17,10 +19,11 @@ def available_tiles(grid: HexGrid, cur_tile: HexTile or tuple[int, int], power=N
             step = cur_tile.game_unit.range
         else:
             step = 0
+    if unit is None:
+        unit = cur_tile.game_unit
     if owner is None:
         owner = cur_tile.owner
-    if not isinstance(cur_tile, HexTile):
-        cur_tile = grid[cur_tile]
+
     unchecked = {cur_tile.indexes: step}
     to_check = {}
     checked = {}
@@ -41,7 +44,7 @@ def available_tiles(grid: HexGrid, cur_tile: HexTile or tuple[int, int], power=N
                 if isinstance(tile.game_unit, Obstacles):
                     go_further = False
                     tile_power = max(tile_power, tile.game_unit.power)
-                if power > tile_power:
+                if power > tile_power or isinstance(cur_tile.game_unit, Knight):
                     res.append(tile)
                     if go_further:
                         to_check[tile.indexes] = step

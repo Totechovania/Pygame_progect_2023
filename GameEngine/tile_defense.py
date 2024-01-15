@@ -19,5 +19,4 @@ def tile_defense(grid, cur_tile: tuple[int, int] or HexTile) -> int:
                 and owner == tile.owner)
 
     adjacent_tiles = list(filter(tile_defends, adjacent_tiles))
-
     return max(map(lambda tile: tile.game_unit.power, adjacent_tiles), default=0)

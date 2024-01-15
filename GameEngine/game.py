@@ -11,6 +11,8 @@ from Signals import NewFrame
 import shared
 from time import time
 from GameEngine.find_separated_groups import find_separated_groups
+import copy
+from time import sleep
 
 
 class Game:
@@ -18,11 +20,12 @@ class Game:
     def __init__(self, players, grid):
         self.draw_confirm = True
         self.game_fight_frame = None
+        self.can_move = True
         self.players = players
+        self.campany_level = None
         self.time_start = time()
         self.states = {}
         self.operational_list = []
-        self.results = []
         self.states_names = []
         self.grid = grid
         self.current_player = None
@@ -45,16 +48,14 @@ class Game:
                     self.states[j.owner].append(j)
 
     def add_all_players(self):
-        try:
-            for i in self.states:
-                bot = Bot()
-                self.add_player(State(i, self.states[i], bot))
-                bot.state = self.states[i]['state']
-                bot.game = self
+        for i in self.states:
+            bot = Bot()
+            self.add_player(State(i, self.states[i], bot))
+            bot.state = self.states[i]['state']
+            bot.game = self
+        if 'Игрок' in self.states_names:
             self.states_names[self.states_names.index('Игрок')], self.states_names[0] = self.states_names[0], \
                 self.states_names[self.states_names.index('Игрок')]
-        except Exception:
-            pass
 
     def remove_player(self, state, tile, unit):
         if self.players == 2 or 'Игрок' == self.states_names[self.states_names.index(state)]:
@@ -72,7 +73,8 @@ class Game:
             tile.game_unit.stop = True
             raise NewFrame(FinalWindow(shared.screen.copy(), self.states['Игрок']['spent_money'],
                                        self.states['Игрок']['earned_money'], self.states['Игрок']['captured_states'],
-                                       self.current_player.owner, self.time_start))
+                                       self.current_player.owner, self.time_start, self.campany_level))
+
         del self.states[state]
         del self.states_names[self.states_names.index(state)]
         self.players -= 1
@@ -112,31 +114,47 @@ class Game:
         self.states[self.states_names[self.current_player_id - 1]]['state'].set_turn()
         if self.current_player.owner != 'Игрок':
             self.current_player.bot.do_move()
-            self.next_player()
-        self.operational_list.clear()
 
     def check_defense(self, tile, unit):
         if tile.owner is None and (not isinstance(tile.game_unit, Rock) or tile.game_unit is None):
             return True
-        elif tile.game_unit and not tile.game_unit.power < unit.power:
+        elif tile.game_unit and tile.game_unit.power >= unit.power and not isinstance(unit, Knight):
             return False
         indexes = tile.indexes
         if tile.owner == self.current_player.owner:
             return True
-        if tile_defense(self.grid, tile) >= unit.power:
+        if tile_defense(self.grid, tile) >= unit.power and not isinstance(unit, Knight):
             return False
         for tile in self.grid.get_adjacent_tiles((indexes[0], indexes[1])):
             if tile.game_unit:
-                if tile.game_unit.power > unit.power:
+                if tile.game_unit.power >= unit.power and not isinstance(tile.game_unit, Knight):
                     if tile.owner != self.current_player.owner and not isinstance(tile.game_unit, Rock):
                         return False
         return True
 
     def check_near(self, check_tile):
         indexes = check_tile.indexes
+        check_1 = False
+        check_2 = False
         for tile in self.grid.get_adjacent_tiles((indexes[0], indexes[1])):
             if tile.owner == self.current_player.owner:
-                return True
+                check_1 = True
+        separated_groups = find_separated_groups(self.grid, self.current_player.tiles)
+        for i in separated_groups:
+            for j in i:
+                if isinstance(j.game_unit, Guildhall):
+                    for k in i:
+                        indexes = k.indexes
+                        if check_tile in self.grid.get_adjacent_tiles((indexes[0], indexes[1])):
+                            check_2 = True
+        if check_1 and check_2:
+            return True
+        return False
+
+    def sleep(self):
+        self.can_move = False
+        sleep(1)
+        self.can_move = True
 
     # def back_move(self)
     #     print('Работает')
@@ -162,6 +180,8 @@ class Game:
                 self.states[self.current_player.owner]['captured_states'] += 1
                 self.states[tile.owner]['state'].lose_game_state()
                 self.remove_player(tile.owner, tile, unit)
+                if not self.draw_confirm:
+                    return
             tile.set_game_unit(unit)
             if tile.owner != self.current_player.owner:
                 tile.game_unit.moved = True
@@ -169,8 +189,9 @@ class Game:
             if tile.owner and isinstance(tile.game_unit, Unit) and tile.game_unit.moved:
                 if tile.owner in self.states:
                     self.states[tile.owner]['state'].lose_tile(tile)
-            self.check_supply_line(tile)
+            owner = copy.copy(tile)
             self.current_player.new_tile(tile)
+            self.check_supply_line(owner)
             if isinstance(unit, Farm):
                 self.current_player.farms += 1
             if isinstance(tile.game_unit, Guildhall):
@@ -180,7 +201,10 @@ class Game:
             tile.owner = self.current_player.owner
             if isinstance(unit, Unit):
                 self.current_player.earnings -= unit.pay
-            self.current_player.money -= unit.cost
+            if isinstance(unit, Farm):
+                self.current_player.money -= unit.cost + 4 * (self.current_player.farms - 1)
+            else:
+                self.current_player.money -= unit.cost
             self.count_player_earnings()
             return True
 
@@ -188,7 +212,7 @@ class Game:
         if self.available_move(tile_from) and isinstance(tile_from.game_unit, Unit):
             unit = tile_from.game_unit
             if (tile_to in available_tiles(self.grid, tile_from, unit.power, unit.steps,
-                                           tile_from.owner)) and not tile_from.game_unit.moved:
+                                           tile_from.owner, unit)) and not tile_from.game_unit.moved:
                 try:
                     if tile_to.owner:
                         self.states[tile_to.owner]['state'].lose_tile(tile_to)
@@ -198,19 +222,22 @@ class Game:
                     self.states[self.current_player.owner]['captured_states'] += 1
                     self.states[tile_to.owner]['state'].lose_game_state()
                     self.remove_player(tile_to.owner, tile_to, tile_from.game_unit)
+                    if not self.draw_confirm:
+                        return
                 tile_from.game_unit = None
+                owner = copy.copy(tile_to)
                 tile_to.owner = tile_from.owner
                 tile_to.color = tile_from.color
                 tile_to.set_game_unit(unit)
                 tile_to.game_unit.moved = True
                 tile_to.game_unit.stop = True
-                self.check_supply_line(tile_to)
                 self.states[tile_from.owner]['state'].new_tile(tile_to)
+                self.check_supply_line(owner)
                 self.count_player_earnings()
 
     def check_supply_line(self, tile):
-        if tile.owner:
-            separated_groups = find_separated_groups(self.grid, self.states[tile.owner]['state'].tiles)
+        if tile.owner and tile.owner in self.states_names:
+            separated_groups = find_separated_groups(self.grid, list(set(self.states[tile.owner]['state'].tiles)))
         else:
             return
         if len(separated_groups) == 1:
