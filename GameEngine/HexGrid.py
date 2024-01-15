@@ -31,7 +31,7 @@ class HexGrid:
         self.MAX_DELTA_Y = surf_h
 
         self.MAX_SCALE = min(self.rect.size) / (3 * radius)
-        self.MIN_SCALE = min(self.rect.bottom / (surf_h * 1.1), self.rect.right / (surf_w * 1.1))
+        self.MIN_SCALE = min(self.rect.bottom / (surf_h * 1.5), self.rect.right / (surf_w * 1.5))
 
     def resize(self, rect: tuple[int, int, int, int] or pg.Rect):
         self.rect = pg.Rect(rect)

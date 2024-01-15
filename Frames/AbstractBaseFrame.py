@@ -7,7 +7,7 @@ import shared
 from Signals import *
 
 
-class Redactor(IFrame):
+class AbstractBaseFrame(IFrame):
     def __init__(self):
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
@@ -23,16 +23,14 @@ class Redactor(IFrame):
         self.generate_buttons()
 
     def update(self):
-        events = pg.event.get()
-        for event in events:
+        self.events = pg.event.get()
+        for event in self.events:
             if event.type == pg.QUIT:
                 raise KillEntireApp
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     raise KillTopFrame
         self.draw_fon()
-        self.buttons.update(events)
-        self.buttons.draw(shared.screen)
 
     def generate_buttons(self):
         exit_button = Button(
