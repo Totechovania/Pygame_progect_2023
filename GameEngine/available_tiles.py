@@ -2,9 +2,23 @@ from GameEngine.HexGrid import HexGrid
 from GameEngine.Tile import HexTile
 from GameEngine.tile_defense import tile_defense
 from GameEngine.GameUnits.Obstacles import Obstacles
+from GameEngine.GameUnits.Units import Unit
+from GameEngine.GameUnits.Buildings import Building
 
 
-def available_tiles(grid: HexGrid, cur_tile: HexTile or tuple[int, int], power, step: int, owner):
+def available_tiles(grid: HexGrid, cur_tile: HexTile or tuple[int, int], power=None, step: int = None, owner=None):
+    if power is None:
+        if cur_tile.game_unit is not None:
+            power = tile_defense(grid, cur_tile)
+        else:
+            power = 0
+    if step is None:
+        if cur_tile.game_unit is not None:
+            step = cur_tile.game_unit.range
+        else:
+            step = 0
+    if owner is None:
+        owner = cur_tile.owner
     if not isinstance(cur_tile, HexTile):
         cur_tile = grid[cur_tile]
     unchecked = {cur_tile.indexes: step}
@@ -27,8 +41,6 @@ def available_tiles(grid: HexGrid, cur_tile: HexTile or tuple[int, int], power, 
                 if isinstance(tile.game_unit, Obstacles):
                     go_further = False
                     tile_power = max(tile_power, tile.game_unit.power)
-                elif tile.game_unit is not None and tile.owner == owner:
-                    continue
                 if power > tile_power:
                     res.append(tile)
                     if go_further:
@@ -36,5 +48,8 @@ def available_tiles(grid: HexGrid, cur_tile: HexTile or tuple[int, int], power, 
         unchecked = to_check
         to_check = {}
         step -= 1
+
+    res = list(filter(
+        lambda t: not (t.owner == owner and (isinstance(t.game_unit, Unit) or isinstance(t.game_unit, Building))), res))
 
     return res
