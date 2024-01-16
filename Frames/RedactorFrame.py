@@ -61,10 +61,11 @@ class RedactorFrame(AbstractBaseFrame):
         for event in self.events:
             if event.type == pg.MOUSEWHEEL:
                 x, y = pg.mouse.get_pos()
-                if event.y < 0:
-                    self.grid.relative_scale(x, y, self.grid.scale * 0.9)
-                else:
-                    self.grid.relative_scale(x, y, self.grid.scale * 1.1)
+                if self.grid.rect.collidepoint(x, y):
+                    if event.y < 0:
+                        self.grid.relative_scale(x, y, self.grid.scale * 0.9)
+                    else:
+                        self.grid.relative_scale(x, y, self.grid.scale * 1.1)
             if event.type == pg.MOUSEMOTION and pg.mouse.get_pressed()[1]:
                 dx, dy = pg.mouse.get_rel()
                 if self.grid_is_moving:
