@@ -41,3 +41,27 @@ class Button(pg.sprite.Sprite):
     def set_image(self, image_path: str):
         self.main_image = pg.transform.scale(load_image(image_path), (self.main_rect[2], self.main_rect[3]))
         self.under_mouse_image = pg.transform.scale(load_image(image_path), (self.main_rect[2] * 1.2, self.main_rect[3] * 1.2))
+
+
+class ScrollWheelButton(Button):
+    def __init__(self, rect: tuple or list or pg.Rect, image_path: str, *groups: pg.sprite.Group):
+        super().__init__(rect, image_path, *groups)
+        self.up_func = None
+        self.down_func = None
+
+    def connect_up(self, func: callable):
+        self.up_func = func
+
+    def connect_down(self, func: callable):
+        self.down_func = func
+
+    def update(self, events):
+        if events is not None:
+            for event in events:
+                if event.type == pg.MOUSEWHEEL:
+                    if event.y > 0:
+                        if self.up_func is not None:
+                            self.up_func()
+                    else:
+                        if self.down_func is not None:
+                            self.down_func()
