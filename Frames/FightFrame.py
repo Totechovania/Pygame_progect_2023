@@ -11,6 +11,8 @@ from utilities.Button import Button
 from utilities.image import draw_text, load_image
 from Frames.FinalWindow import FinalWindow
 from threading import Thread
+from GameEngine.available_tiles import available_tiles
+from GameEngine.available_tiles_to_set_new_unit import available_tiles_to_set_new_unit
 
 
 class FightFrame(IFrame):
@@ -32,9 +34,11 @@ class FightFrame(IFrame):
 
         self.flag = False
         self.flag_draw = True
+        self.flag_draw_gray = False
         self.chosen = None
         self.choose = None
         self.chosen_unit = None
+        self.clicked_tile = None
         self.game.count_player_earnings()
 
     def update(self):
@@ -58,24 +62,32 @@ class FightFrame(IFrame):
                             if isinstance(self.choose, HexTile):
                                 self.game.move(self.choose, clicked)
                                 self.choose = None
+                                self.clicked_tile = None
                             if self.game.draw_confirm:
                                 if self.choose and self.game.new_unit(clicked, self.chosen_unit[2]()):
                                     self.chosen_unit = None
                                     self.choose = None
                         elif clicked.game_unit and clicked.owner == self.game.current_player.owner and self.chosen_unit:
                             self.game.merge_units(clicked, self.chosen_unit[2])
+                            self.flag_draw_gray = False
                         elif clicked.game_unit and clicked.owner == self.game.current_player.owner and self.choose and \
                                 self.choose.game_unit and clicked != self.choose:
                             if type(self.choose.game_unit) == type(
                                     clicked.game_unit) and not self.choose.game_unit.moved:
                                 self.game.merge_units_move(self.choose, clicked)
+                                self.flag_draw_gray = False
                             self.choose = clicked
                         elif clicked.game_unit and self.game.states['Игрок']['state'].turn:
                             self.choose = clicked
                             self.chosen_unit = None
+                            if isinstance(self.choose.game_unit, Unit) and not self.choose.game_unit.moved:
+                                self.flag_draw_gray = True
+                                self.clicked_tile = clicked
                     if event.button == 3:
                         self.chosen_unit = None
                         self.choose = None
+                        self.clicked_tile = None
+                        self.flag_draw_gray = False
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     raise KillTopFrame
@@ -95,6 +107,15 @@ class FightFrame(IFrame):
             self.flag = False
         self.chosen = self.grid.collide_point(*pg.mouse.get_pos())
         self.grid.draw_tiles()
+
+        if self.flag_draw_gray and self.clicked_tile:
+            self.grid.draw_gray(available_tiles(self.grid, self.clicked_tile))
+
+        if self.chosen_unit:
+            self.grid.draw_gray(
+                available_tiles_to_set_new_unit(self.grid, self.game.current_player.tiles, self.game.current_player,
+                                                self.chosen_unit[2]))
+
         if self.chosen is not None and self.game.draw_confirm and 'Игрок' in self.game.states_names:
             list_of_your_state = []
             for i in self.game.states['Игрок']['state'].tiles:

@@ -28,4 +28,4 @@ class Warrior(Unit):
 
 class Knight(Unit):
     def __init__(self, path='knight_animation.png', scale=2):
-        super().__init__(path, scale, power=4, steps=6, cost=40, pay=30)
+        super().__init__(path, scale, power=4, steps=6, cost=40, pay=25)

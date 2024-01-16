@@ -81,7 +81,7 @@ class Bot:
                 tiles = list(filter(lambda x: not x.game_unit, self.state.tiles))
             if tiles:
                 units = list(filter(lambda x: isinstance(x.game_unit, Unit), self.state.tiles))
-                if self.state.earnings - 30 > 10 and self.state.money - 40 > 0 and len(list(
+                if self.state.earnings - 30 > 0 and self.state.money - 40 > 0 and len(list(
                         filter(lambda x: isinstance(x.game_unit, Knight), units))) < 4:
                     self.game.new_unit(choice(tiles), Knight('knight32.png'))
                 elif self.state.earnings - 15 > 10 and self.state.money - 30 > 0 and len(list(

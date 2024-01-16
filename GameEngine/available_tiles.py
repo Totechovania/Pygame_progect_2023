@@ -6,7 +6,8 @@ from GameEngine.GameUnits.Units import Unit, Knight
 from GameEngine.GameUnits.Buildings import Building
 
 
-def available_tiles(grid: HexGrid, cur_tile: HexTile or tuple[int, int], power=None, step: int = None, owner=None, unit=None):
+def available_tiles(grid: HexGrid, cur_tile: HexTile or tuple[int, int], power=None, step: int = None, owner=None,
+                    unit=None):
     if not isinstance(cur_tile, HexTile):
         cur_tile = grid[cur_tile]
     if power is None:
@@ -16,7 +17,7 @@ def available_tiles(grid: HexGrid, cur_tile: HexTile or tuple[int, int], power=N
             power = 0
     if step is None:
         if cur_tile.game_unit is not None:
-            step = cur_tile.game_unit.range
+            step = cur_tile.game_unit.steps
         else:
             step = 0
     if unit is None:
