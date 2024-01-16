@@ -33,6 +33,17 @@ class HexGrid:
         self.MAX_SCALE = min(self.rect.size) / (3 * radius)
         self.MIN_SCALE = min(self.rect.bottom / (surf_h * 1.1), self.rect.right / (surf_w * 1.1))
 
+    def resize(self, rect: tuple[int, int, int, int] or pg.Rect):
+        self.rect = pg.Rect(rect)
+        self.scale = 1
+        self.delta_pos = [0, 0]
+
+        self.MAX_SCALE = min(self.rect.size) / (3 * self.radius)
+        surf_w, surf_h = self.surface.get_size()
+        self.MIN_SCALE = min(self.rect.bottom / (surf_h * 1.1), self.rect.right / (surf_w * 1.1))
+
+        self.image = pg.Surface(self.rect.size, pg.SRCALPHA)
+
     def draw(self, surface: pg.Surface):
         self.surface.blit(self.gray_surface, (0, 0))
 

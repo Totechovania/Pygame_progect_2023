@@ -32,14 +32,6 @@ class Settings(IFrame):
     def apply_settings(self):
         self.buttons.empty()
         self.fullscreen = shared.fullscreen
-
-        if shared.fullscreen:
-            shared.screen = pg.display.set_mode((shared.fullscreen_w, shared.fullscreen_h), pg.FULLSCREEN)
-            shared.WIDTH = shared.fullscreen_w
-            shared.HEIGHT = shared.fullscreen_h
-        else:
-            shared.screen = pg.display.set_mode((shared.WIDTH, shared.HEIGHT))
-
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
         self.image_fon = pg.transform.scale(load_image('fon_menu.png'), (self.w, self.h))
@@ -272,6 +264,12 @@ class Settings(IFrame):
         shared.music = self.music
         shared.sound = self.sound
         shared.fullscreen = self.fullscreen
+        if shared.fullscreen:
+            shared.screen = pg.display.set_mode((shared.fullscreen_w, shared.fullscreen_h), pg.FULLSCREEN)
+            shared.WIDTH = shared.fullscreen_w
+            shared.HEIGHT = shared.fullscreen_h
+        else:
+            shared.screen = pg.display.set_mode((shared.WIDTH, shared.HEIGHT))
         raise ApplySettings
 
     def set_default_settings(self):
@@ -292,6 +290,13 @@ class Settings(IFrame):
         self.fullscreen = True
         self.width = int(shared.fullscreen_w * 0.581)
         self.height = int(shared.fullscreen_h * 0.55)
+
+        if shared.fullscreen:
+            shared.screen = pg.display.set_mode((shared.fullscreen_w, shared.fullscreen_h), pg.FULLSCREEN)
+            shared.WIDTH = shared.fullscreen_w
+            shared.HEIGHT = shared.fullscreen_h
+        else:
+            shared.screen = pg.display.set_mode((shared.WIDTH, shared.HEIGHT))
         raise ApplySettings
 
     def back(self):
