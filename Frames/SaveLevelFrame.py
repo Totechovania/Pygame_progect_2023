@@ -3,6 +3,7 @@ import shared
 from utilities.image import draw_text
 from utilities.Button import Button
 import pygame as pg
+from utilities.level_saving import save_level
 
 
 class SaveLevelFrame(AbstractBaseFrame):
@@ -85,4 +86,5 @@ class SaveLevelFrame(AbstractBaseFrame):
         players = {}
         for i in range(len(self.colors)):
             players[self.owners[i]] = (self.available_players[self.players[i]], self.colors[i])
-        print(players)
+        save_level('data/levels/redactor', self.level_name, players, self.grid.tiles_to_string())
+

@@ -33,6 +33,23 @@ class HexGrid:
         self.MAX_SCALE = min(self.rect.size) / (3 * radius)
         self.MIN_SCALE = min(self.rect.bottom / (surf_h * 1.5), self.rect.right / (surf_w * 1.5))
 
+    def resize_grid(self, w: int, h: int):
+        self.w = w
+        self.h = h
+
+        surf_w = round((w + (0.5 if h != 1 else 0)) * self.radius * 3 ** 0.5)
+        surf_h = round((1.5 * h + 0.5) * self.radius)
+        self.surface = pg.Surface((surf_w, surf_h), pg.SRCALPHA)
+        self.gray_surface = pg.Surface((surf_w, surf_h), pg.SRCALPHA)
+
+        self.MAX_DELTA_X = surf_w
+        self.MAX_DELTA_Y = surf_h
+
+        self.MAX_SCALE = min(self.rect.size) / (3 * self.radius)
+        self.MIN_SCALE = min(self.rect.bottom / (surf_h * 1.5), self.rect.right / (surf_w * 1.5))
+
+        self.grid = [[[None] * w] for _ in range(h)]
+
     def resize(self, rect: tuple[int, int, int, int] or pg.Rect):
         self.rect = pg.Rect(rect)
         self.scale = 1
@@ -146,6 +163,9 @@ class HexGrid:
 
     def tiles_from_string(self, string):
         lst = list((raw.split() for raw in string.split('\n')))
+        h, w = len(lst), len(lst[0])
+        if h != self.h or w != self.w:
+            self.resize_grid(h, w)
         for i in range(self.h):
             for j in range(self.w):
                 tile, owner, color, unit = lst[i][j].split('/')
