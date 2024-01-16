@@ -1,0 +1,7 @@
+EmptyTile/None/0,0,0/None HexTile/1/255,0,0/Guildhall HexTile/1/255,0,0/None EmptyTile/None/0,0,0/None EmptyTile/None/0,0,0/None EmptyTile/None/0,0,0/None EmptyTile/None/0,0,0/None
+HexTile/1/255,0,0/None HexTile/1/255,0,0/None HexTile/None/125,125,125/None EmptyTile/None/0,0,0/None EmptyTile/None/0,0,0/None EmptyTile/None/0,0,0/None EmptyTile/None/0,0,0/None
+HexTile/1/255,0,0/None HexTile/None/125,125,125/None HexTile/None/125,125,125/None HexTile/None/125,125,125/None HexTile/None/125,125,125/None HexTile/None/125,125,125/None HexTile/None/125,125,125/None
+HexTile/None/125,125,125/None HexTile/None/125,125,125/None HexTile/None/125,125,125/None HexTile/None/125,125,125/None HexTile/None/125,125,125/None HexTile/None/125,125,125/None HexTile/None/125,125,125/None
+HexTile/None/125,125,125/None EmptyTile/None/0,0,0/None EmptyTile/None/0,0,0/None EmptyTile/None/0,0,0/None EmptyTile/None/0,0,0/None HexTile/None/125,125,125/None HexTile/2/0,255,0/None
+EmptyTile/None/0,0,0/None EmptyTile/None/0,0,0/None EmptyTile/None/0,0,0/None HexTile/None/125,125,125/None HexTile/2/0,255,0/None HexTile/2/0,255,0/Guildhall HexTile/2/0,255,0/None
+EmptyTile/None/0,0,0/None EmptyTile/None/0,0,0/None EmptyTile/None/0,0,0/None EmptyTile/None/0,0,0/None HexTile/2/0,255,0/None EmptyTile/None/0,0,0/None EmptyTile/None/0,0,0/None

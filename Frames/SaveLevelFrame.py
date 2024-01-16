@@ -4,6 +4,7 @@ from utilities.image import draw_text
 from utilities.Button import Button
 import pygame as pg
 from utilities.level_saving import save_level
+from Signals import *
 
 
 class SaveLevelFrame(AbstractBaseFrame):
@@ -87,4 +88,4 @@ class SaveLevelFrame(AbstractBaseFrame):
         for i in range(len(self.colors)):
             players[self.owners[i]] = (self.available_players[self.players[i]], self.colors[i])
         save_level('data/levels/redactor', self.level_name, players, self.grid.tiles_to_string())
-
+        raise KillFewTopFrames(2)
