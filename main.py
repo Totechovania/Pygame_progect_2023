@@ -3,7 +3,6 @@ from utilities.change_settings import set_shared_variables
 from utilities.system import terminate, apply_global_settings
 from utilities.music import play_background_music
 from Frames.MainMenu import MainMenu
-#from Frames.TileTestFrame import TileTestFrame
 
 if __name__ == '__main__':
     apply_global_settings()
