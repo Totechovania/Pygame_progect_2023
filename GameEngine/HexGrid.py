@@ -72,8 +72,7 @@ class HexGrid:
         self.delta_pos[0] += dx
         self.delta_pos[1] += dy
 
-        self.delta_pos[0] = min(max(self.delta_pos[0], -self.MAX_DELTA_X), self.MAX_DELTA_X)
-        self.delta_pos[1] = min(max(self.delta_pos[1], -self.MAX_DELTA_Y), self.MAX_DELTA_Y)
+
 
     def relative_scale(self, x, y, scale):
         x_old, y_old = self.relative_pos(x, y)
