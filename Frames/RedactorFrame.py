@@ -83,6 +83,7 @@ class RedactorFrame(AbstractBaseFrame):
         self.buttons.update(self.events)
         pg.draw.rect(shared.screen, (255, 255, 255), self.grid_rect)
 
+
         self.grid.draw_tiles()
 
         x, y = pg.mouse.get_pos()
@@ -93,6 +94,7 @@ class RedactorFrame(AbstractBaseFrame):
             self.grid.draw_tile_stroke(self.chosen, (255, 255, 255), 4)
 
         self.grid.draw(shared.screen)
+        pg.draw.rect(shared.screen, (0, 0, 0), self.grid_rect, round(self.h * 0.005))
 
         if self.chosen_button is not None:
             x, y = self.chosen_button.rect.center
