@@ -23,7 +23,7 @@ class FightFrame(IFrame):
         self.h = shared.HEIGHT
         self.buttons = pg.sprite.Group()
 
-        rect = pg.Rect(0, 0, self.w, self.h * 0.85)
+        rect = pg.Rect(0, 0, self.w, self.h)
         self.grid, self.game = map_generator(scale, enemy, players, rect)
         for state_name in self.game.states_names:
             self.game.states[state_name]['state'].bot.level = self.game.states[state_name]['state'].bot.level[
@@ -148,7 +148,7 @@ class FightFrame(IFrame):
 
         shared.screen.blit(pg.transform.scale(load_image('money.png'), (self.w * 0.02, self.w * 0.02)),
                            (self.w * 0.425, self.h * 0.01))
-        draw_text(str((self.game.current_player.farms * 4) + 12) + ' $', self.w * 0.11, self.h * 0.96,
+        draw_text(str((self.game.states['Игрок']['state'].farms * 4) + 12) + ' $', self.w * 0.11, self.h * 0.96,
                   int(self.h * 0.9))
         draw_text('15 $', self.w * 0.21, self.h * 0.96, int(self.h * 0.9))
         draw_text('35 $', self.w * 0.31, self.h * 0.96, int(self.h * 0.9))
@@ -159,13 +159,14 @@ class FightFrame(IFrame):
         draw_text('40 $', self.w * 0.91, self.h * 0.96, int(self.h * 0.9))
 
         draw_text(':  ', self.w * 0.45, self.h * 0.01, int(self.h * 0.9))
-        draw_text(str(self.game.states['Игрок']['state'].money), self.w * 0.46, self.h * 0.016, int(self.h * 0.9))
 
         if self.game.states['Игрок']['state'].earnings > 0:
-            draw_text(f"(+{str(self.game.states['Игрок']['state'].earnings)})", self.w * 0.5, self.h * 0.01,
+            draw_text(f"{str(self.game.states['Игрок']['state'].money)}   " +
+                      f"(+{str(self.game.states['Игрок']['state'].earnings)})", self.w * 0.46, self.h * 0.015,
                       int(self.h * 0.9))
         else:
-            draw_text(f"({str(self.game.states['Игрок']['state'].earnings)})", self.w * 0.5, self.h * 0.01,
+            draw_text(f"{str(self.game.states['Игрок']['state'].money)}   " +
+                      f"({str(self.game.states['Игрок']['state'].earnings)})", self.w * 0.46, self.h * 0.015,
                       int(self.h * 0.9))
 
     def generate_buttons(self):

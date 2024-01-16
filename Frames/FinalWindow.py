@@ -58,7 +58,7 @@ class FinalWindow(IFrame):
         shared.screen.blit(self.img, (0, 0))
         draw_text('Результаты:', self.w * 0.38, self.h * 0.02, '#000000', int(self.h * 0.14))
         if self.winner != 'Игрок':
-            draw_text('Вы ПРОИГРАЛИ от рук бота ' + self.winner, self.w * 0.2, self.h * 0.15, '#000000',
+            draw_text('Вы ПРОИГРАЛИ от рук бота ' + self.winner, self.w * 0.19, self.h * 0.15, '#000000',
                       int(self.h * 0.14))
         else:
             if self.campany_level:
