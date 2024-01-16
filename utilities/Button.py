@@ -58,10 +58,16 @@ class ScrollWheelButton(Button):
     def update(self, events):
         if events is not None:
             for event in events:
-                if event.type == pg.MOUSEWHEEL:
+                if event.type == pg.MOUSEWHEEL and self.rect.collidepoint(pg.mouse.get_pos()):
                     if event.y > 0:
                         if self.up_func is not None:
                             self.up_func()
                     else:
                         if self.down_func is not None:
                             self.down_func()
+        if self.change_under_mouse and self.rect.collidepoint(pg.mouse.get_pos()):
+            self.image = self.under_mouse_image
+            self.rect = self.under_mouse_rect
+        else:
+            self.image = self.main_image
+            self.rect = self.main_rect

@@ -4,8 +4,8 @@ from Signals import *
 import shared
 from GameEngine.HexGrid import HexGrid
 from Frames.AbstractBaseFrame import AbstractBaseFrame
-from utilities.Button import Button
-from utilities.image import load_image
+from utilities.Button import Button, ScrollWheelButton
+from utilities.image import draw_text
 from utilities.hexagons import hexagon_from_center
 from GameEngine.GameUnits.Units import Peasant, Warrior, Knight, Spearman
 from GameEngine.GameUnits.Obstacles import Tree, Grave, Rock
@@ -22,7 +22,10 @@ class RedactorFrame(AbstractBaseFrame):
         self.h = shared.HEIGHT
         self.grid_rect = pg.Rect(0, round(self.w * 0.05), self.w, round(shared.HEIGHT * 0.8))
 
-        self.grid = HexGrid.filled(10, 10, 40, self.grid_rect)
+        self.grid_h = 10
+        self.grid_w = 10
+
+        self.grid = HexGrid.filled(self.grid_w, self.grid_h, 40, self.grid_rect)
 
         self.grid_is_moving = False
 
@@ -55,6 +58,13 @@ class RedactorFrame(AbstractBaseFrame):
                                 ('grave', 'grave32.png', Grave), #todo add grave.png
                                 ('rock', 'rock.png', Rock)]
         self.obstacle_mode = 0
+
+    def set_grid_size(self, w, h):
+        self.grid_h = min(max(5, h), 60)
+        self.grid_w = min(max(5, w), 60)
+
+    def apply_grid_size(self):
+        self.grid = HexGrid.filled(self.grid_w, self.grid_h, 40, self.grid_rect)
 
     def update(self):
         super().update()
@@ -111,6 +121,8 @@ class RedactorFrame(AbstractBaseFrame):
             pg.draw.polygon(shared.screen, color, hexagon)
             pg.draw.polygon(shared.screen, (0, 0, 0), hexagon, round(self.w * 0.003))
 
+        draw_text(f'w: {self.grid_w}', self.w * 0.653, self.w * 0.013, 'black', round(self.w * 0.032))
+        draw_text(f'h: {self.grid_h}', self.w * 0.723, self.w * 0.013, 'black', round(self.w * 0.032))
         self.buttons.draw(shared.screen)
 
     def use_instrument(self, tile):
@@ -164,6 +176,27 @@ class RedactorFrame(AbstractBaseFrame):
             (shared.WIDTH * 0.025, h, int(0.04 * self.w), int(0.04 * self.w)),
             'builder.png', self.buttons)
         builder_button.connect(lambda: self.set_builder(builder_button))
+
+        change_grid_width = ScrollWheelButton(
+            (self.w * 0.65, self.w * 0.005, int(0.06 * self.w), int(0.04 * self.w)),
+            'square.png', self.buttons
+        )
+        change_grid_width.connect_up(lambda: self.set_grid_size(self.grid_w + 1, self.grid_h))
+        change_grid_width.connect_down(lambda: self.set_grid_size(self.grid_w - 1, self.grid_h))
+
+        change_grid_height = ScrollWheelButton(
+            (self.w * 0.72, self.w * 0.005, int(0.06 * self.w), int(0.04 * self.w)),
+            'square.png', self.buttons
+        )
+        change_grid_height.connect_up(lambda: self.set_grid_size(self.grid_w, self.grid_h + 1))
+        change_grid_height.connect_down(lambda: self.set_grid_size(self.grid_w, self.grid_h - 1))
+
+        apply_grid_size_button = Button(
+            (self.w * 0.8, self.w * 0.005, int(0.04 * self.w), int(0.04 * self.w)),
+            'check.png', self.buttons
+        )
+        apply_grid_size_button.connect(self.apply_grid_size)
+
 
     def set_instrument(self, instrument, button):
         self.instrument = instrument
