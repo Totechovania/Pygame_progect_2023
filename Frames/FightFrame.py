@@ -23,7 +23,7 @@ class FightFrame(IFrame):
         self.h = shared.HEIGHT
         self.buttons = pg.sprite.Group()
 
-        rect = pg.Rect(0, 0, self.w, self.h)  # todo переделать
+        rect = pg.Rect(0, 0, self.w, self.h * 0.85)
         self.grid, self.game = map_generator(scale, enemy, players, rect)
         for state_name in self.game.states_names:
             self.game.states[state_name]['state'].bot.level = self.game.states[state_name]['state'].bot.level[
@@ -31,6 +31,7 @@ class FightFrame(IFrame):
         self.generate_buttons()
         self.game.game_fight_frame = self
         self.game.campany_level = campany_level
+        self.fon_fight = pg.transform.scale(load_image('fon_fight.png'), (shared.WIDTH, shared.HEIGHT))
 
         self.flag = False
         self.flag_draw = True
@@ -42,7 +43,7 @@ class FightFrame(IFrame):
         self.game.count_player_earnings()
 
     def update(self):
-        shared.screen.fill((255, 255, 255))
+        shared.screen.blit(self.fon_fight, (0, 0))
         events = pg.event.get()
         if self.game.draw_confirm and self.game.current_player.owner != 'Игрок':
             if self.game.can_move:
@@ -266,12 +267,6 @@ class FightFrame(IFrame):
 
     def apply_settings(self):
         self.buttons.empty()
-        if shared.fullscreen:
-            shared.screen = pg.display.set_mode((shared.fullscreen_w, shared.fullscreen_h), pg.FULLSCREEN)
-            shared.WIDTH = shared.fullscreen_w
-            shared.HEIGHT = shared.fullscreen_h
-        else:
-            shared.screen = pg.display.set_mode((shared.WIDTH, shared.HEIGHT))
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
         self.generate_buttons()

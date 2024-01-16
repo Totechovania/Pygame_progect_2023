@@ -174,9 +174,13 @@ class Settings(IFrame):
             pg.draw.rect(shared.screen, pg.Color('#F0FFF0'),
                          (self.w * 0.28, self.h * 0.1, self.w * 0.42, self.h * 0.88), 0)
             draw_text('Вернуться в меню', self.w * 0.4, self.h * 0.9, '#000000', int(self.w * 0.03))
+            pg.draw.rect(shared.screen, pg.Color('#000000'),
+                         (self.w * 0.28, self.h * 0.1, self.w * 0.42, self.h * 0.88), 3)
         else:
             pg.draw.rect(shared.screen, pg.Color('#F0FFF0'), (self.w * 0.28, self.h * 0.1, self.w * 0.42, self.h * 0.8),
                          0)
+            pg.draw.rect(shared.screen, pg.Color('#000000'), (self.w * 0.28, self.h * 0.1, self.w * 0.42, self.h * 0.8),
+                         3)
 
         draw_text('Звук', self.w * 0.3, self.h * 0.175, '#000000', int(self.w * 0.03))
         draw_text('Музыка', self.w * 0.3, self.h * 0.275, '#000000', int(self.w * 0.03))
@@ -187,6 +191,7 @@ class Settings(IFrame):
         draw_text('Сохранить настройки', self.w * 0.4, self.h * 0.7, '#000000', int(self.w * 0.03))
         draw_text(str(self.width), self.w * 0.49, self.h * 0.475, '#000000', int(self.w * 0.03))
         draw_text(str(self.height), self.w * 0.49, self.h * 0.575, '#000000', int(self.w * 0.03))
+
         if self.sound:
             shared.screen.blit(self.image_check, (self.w * 0.6549, self.h * 0.18))
         if self.music:
