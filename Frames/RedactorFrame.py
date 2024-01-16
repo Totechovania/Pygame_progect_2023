@@ -13,6 +13,8 @@ from GameEngine.GameUnits.Buildings import Guildhall, Farm, TowerFirst, TowerSec
 
 from GameEngine.Tile import HexTile
 
+from Frames.SaveLevelFrame import SaveLevelFrame
+
 
 class RedactorFrame(AbstractBaseFrame):
     def __init__(self):
@@ -34,9 +36,7 @@ class RedactorFrame(AbstractBaseFrame):
         self.instrument = None
         self.chosen_button = None
 
-        set_unit_instruments = {'guildhall', 'farm', 'towerfirst', 'towersecond', 'peasant', 'spearman', 'warrior', 'knight'}
-
-        self.available_brush_parameters = [(None, (125, 125, 125)), (None, (255, 0, 0)), (None, (0, 255, 0)),] # todo add more owners and colors
+        self.available_brush_parameters = [(None, (125, 125, 125)), ('1', (255, 0, 0)), ('2', (0, 255, 0)),] # todo add more owners and colors
         self.brush_par_index = 0
 
         self.builder_modes = [(125, 125, 125), (225, 225, 225)]
@@ -55,7 +55,7 @@ class RedactorFrame(AbstractBaseFrame):
         self.building_mode = 0
 
         self.obstacles_modes = [('tree', 'tree.png', Tree),
-                                ('grave', 'grave32.png', Grave), #todo add grave.png
+                                ('grave', 'grave32.png', Grave),
                                 ('rock', 'rock.png', Rock)]
         self.obstacle_mode = 0
 
@@ -123,6 +123,7 @@ class RedactorFrame(AbstractBaseFrame):
 
         draw_text(f'w: {self.grid_w}', self.w * 0.653, self.w * 0.013, 'black', round(self.w * 0.032))
         draw_text(f'h: {self.grid_h}', self.w * 0.723, self.w * 0.013, 'black', round(self.w * 0.032))
+        draw_text('сохранить', self.w * 0.825, self.h * 0.92, 'black', round(self.w * 0.032))
         self.buttons.draw(shared.screen)
 
     def use_instrument(self, tile):
@@ -197,6 +198,14 @@ class RedactorFrame(AbstractBaseFrame):
         )
         apply_grid_size_button.connect(self.apply_grid_size)
 
+        save_level_button = Button(
+            (self.w * 0.78, h + self.h * 0.01, int(0.2 * self.w), int(0.04 * self.w)),
+            'square.png', self.buttons
+        )
+        save_level_button.connect(self.open_save_level_frame)
+
+    def open_save_level_frame(self):
+        raise NewFrame(SaveLevelFrame(self.grid))
 
     def set_instrument(self, instrument, button):
         self.instrument = instrument
