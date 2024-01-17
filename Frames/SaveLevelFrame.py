@@ -86,6 +86,10 @@ class SaveLevelFrame(AbstractBaseFrame):
     def save_level(self):
         players = {}
         for i in range(len(self.colors)):
-            players[self.owners[i]] = (self.available_players[self.players[i]], self.colors[i])
+            if self.available_players[self.players[i]] == 'Игрок':
+                for tile in self.grid:
+                    if tile.owner == self.owners[i]:
+                        tile.set_owner('Игрок', color=tile.color)
         save_level('data/levels/redactor', self.level_name, players, self.grid.tiles_to_string())
         raise KillFewTopFrames(2)
+
