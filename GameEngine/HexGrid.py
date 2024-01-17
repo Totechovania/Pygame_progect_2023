@@ -181,7 +181,6 @@ class HexGrid:
                     if isinstance(cur_tile.game_unit, Guildhall) and cur_tile.owner != 'Игрок':
                         cur_tile.set_game_unit(Guildhall(path='guildhall32.png', scale=2))
 
-
     @classmethod
     def empty(cls, w, h, radius, rect):
         grid = []

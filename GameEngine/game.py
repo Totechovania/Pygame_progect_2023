@@ -13,6 +13,8 @@ from time import time
 from GameEngine.find_separated_groups import find_separated_groups
 import copy
 from time import sleep
+import pygame as pg
+from utilities.image import load_image
 
 
 class Game:
@@ -71,6 +73,10 @@ class Game:
                     i.game_unit.stop = True
             tile.game_unit.moved = True
             tile.game_unit.stop = True
+            self.game_fight_frame.fon_fight = pg.transform.scale(load_image('fon_fight.png'),
+                                                                 (shared.WIDTH, shared.HEIGHT))
+            rect = pg.Rect(0, 0, shared.WIDTH, shared.HEIGHT)
+            self.grid.resize(rect)
             raise NewFrame(FinalWindow(shared.screen.copy(), self.states['Игрок']['spent_money'],
                                        self.states['Игрок']['earned_money'], self.states['Игрок']['captured_states'],
                                        self.current_player.owner, self.time_start, self.campany_level))
