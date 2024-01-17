@@ -20,7 +20,9 @@ class Bot:
         self.game = None
 
     def do_move(self):
-        if self.steps < 10:
+        if self.steps == 1:
+            self.farmer()
+        elif self.steps < 10:
             self.explorer()
         else:
             choice(self.level)()

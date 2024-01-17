@@ -25,10 +25,10 @@ class FightFrame(IFrame):
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
         self.buttons = pg.sprite.Group()
-
+        self.grid = None
         rect = pg.Rect(0, self.h * 0.08, self.w, self.h * 0.775)
-        self.grid, self.game = map_generator(scale, enemy, players, rect)
-
+        while not self.grid:
+            self.grid, self.game = map_generator(scale, enemy, players, rect)
         for state_name in self.game.states_names:
             self.game.states[state_name]['state'].bot.level = self.game.states[state_name]['state'].bot.level[
                 str(self.level)]
@@ -180,8 +180,6 @@ class FightFrame(IFrame):
             draw_text(f"{str(self.game.states['Игрок']['state'].money)}   " +
                       f"({str(self.game.states['Игрок']['state'].earnings)})", self.w * 0.46, self.h * 0.015,
                       int(self.h * 0.9))
-
-
 
     def generate_buttons(self):
         exit_button = Button(

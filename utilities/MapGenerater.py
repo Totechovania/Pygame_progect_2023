@@ -7,6 +7,7 @@ from perlin_noise import PerlinNoise
 from random import randint, choice, shuffle
 from numpy import floor
 from GameEngine.available_tiles import available_tiles
+from GameEngine.find_separated_groups import find_separated_groups
 
 
 def perlin_noise(size):
@@ -39,17 +40,25 @@ def map_generator(scale, enemy, players, rect):
     obstacles = randint(5, 10) * scale
     grid = HexGrid.filled(width, height, 40, rect)
     noise = perlin_noise(max(width, height))
+    empty = 0
     for i in range(width):
         for j in range(height):
             if not noise[i][j]:
                 grid.set_empty(j, i)
+                empty += 1
+    tiles = []
+    for i in range(width):
+        for j in range(height):
+            if not isinstance(grid[j, i], EmptyTile):
+                tiles.append(grid[j, i])
+    if len(find_separated_groups(grid, tiles)) - 1:
+        return None, None
     while obstacles != 0:
         x, y = randint(0, width - 1), randint(0, height - 1)
         if not isinstance(grid[y, x], EmptyTile) and not grid[y, x].game_unit:
             grid[y, x].set_game_unit(
                 choice([Tree('tree32.png'), Tree('tree32.png'), Tree('tree32.png'), Rock('rock32.png')]))
             obstacles -= 1
-
     while enemy != 0:
         flag = False
         x, y = randint(0, width - 1), randint(0, height - 1)
