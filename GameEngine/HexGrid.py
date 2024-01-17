@@ -171,6 +171,8 @@ class HexGrid:
         for i in range(self.h):
             for j in range(self.w):
                 tile, owner, color, unit = lst[i][j].split('/')
+                if owner == 'None':
+                    owner = None
                 color = tuple(int(color) for color in color.split(','))
                 if tile == 'EmptyTile':
                     self.set_empty(i, j)
