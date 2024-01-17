@@ -50,4 +50,4 @@ class ChooseLevelFrame(AbstractBaseFrame):
         if self.chosen is None:
             return
         players, grid_string = load_level('data/levels/redactor', self.levels[self.chosen])
-        raise
+        raise NotImplementedError

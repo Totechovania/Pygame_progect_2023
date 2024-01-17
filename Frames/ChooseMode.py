@@ -9,6 +9,7 @@ from Frames.FightMenuWindow import FightMenuWindow
 from Frames.PopUpWindow import PopUpWindow
 from Frames.Campany import Campany
 from Frames.RedactorFrame import RedactorFrame
+from Frames.ChooseLevelFrame import ChooseLevelFrame
 # from Frames.FightFrame import FightFrame
 
 
@@ -67,19 +68,27 @@ class ChooseMode(IFrame):
                               self.buttons)
         fight_button.connect(self.fight)
 
-        redactor_button = Button((self.w * 0.4, self.h * 0.44, int(self.w * 0.2), int(self.h * 0.19)), 'rectangle.png',
+        redactor_button = Button((self.w * 0.4, self.h * 0.34, int(self.w * 0.2), int(self.h * 0.19)), 'rectangle.png',
                                  self.buttons)
         redactor_button.connect(self.redactor)
 
-        campany_button = Button((self.w * 0.4, self.h * 0.74, int(self.w * 0.2), int(self.h * 0.19)), 'rectangle.png',
+        campany_button = Button((self.w * 0.4, self.h * 0.54, int(self.w * 0.2), int(self.h * 0.19)), 'rectangle.png',
                                 self.buttons)
         campany_button.connect(self.campany)
+
+        load_button = Button((self.w * 0.4, self.h * 0.74, int(self.w * 0.2), int(self.h * 0.19)), 'rectangle.png',
+                             self.buttons)
+        load_button.connect(self.load_level)
+
+    def load_level(self):
+        raise NewFrame(ChooseLevelFrame())
 
     def draw_fon(self):
         shared.screen.blit(self.image_fon, (0, 0))
         draw_text('Сражение', self.w * 0.425, self.h * 0.2, '#08E8DE', int(self.w * 0.045))
-        draw_text('Редактор', self.w * 0.425, self.h * 0.5, '#08E8DE', int(self.w * 0.045))
-        draw_text('Кампания', self.w * 0.425, self.h * 0.8, '#08E8DE', int(self.w * 0.045))
+        draw_text('Редактор', self.w * 0.425, self.h * 0.4, '#08E8DE', int(self.w * 0.045))
+        draw_text('Кампания', self.w * 0.425, self.h * 0.6, '#08E8DE', int(self.w * 0.045))
+        draw_text('Загрузить', self.w * 0.425, self.h * 0.8, '#08E8DE', int(self.w * 0.045))
 
     def back(self):
         raise KillTopFrame
