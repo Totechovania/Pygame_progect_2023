@@ -203,6 +203,10 @@ class RedactorFrame(AbstractBaseFrame):
             'square.png', self.buttons
         )
         save_level_button.connect(self.open_save_level_frame)
+    def apply_settings(self):
+        super().apply_settings()
+        self.grid_rect = pg.Rect(0, round(self.w * 0.05), self.w, round(shared.HEIGHT * 0.8))
+        self.grid.resize(self.grid_rect)
 
     def open_save_level_frame(self):
         raise NewFrame(SaveLevelFrame(self.grid))

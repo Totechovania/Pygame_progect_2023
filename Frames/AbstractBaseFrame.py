@@ -5,6 +5,7 @@ from utilities.image import load_image
 import pygame as pg
 import shared
 from Signals import *
+from Frames.Settings import Settings
 
 
 class AbstractBaseFrame(IFrame):
@@ -39,6 +40,12 @@ class AbstractBaseFrame(IFrame):
 
         back_button = Button((0, 0, int(0.04 * self.w), int(0.04 * self.w)), 'back.png', self.buttons)
         back_button.connect(self.back)
+
+        settings_button = Button((self.w * 0.05, 0, int(0.04 * self.w), int(0.04 * self.w)), 'settings_button.png', self.buttons)
+        settings_button.connect(self.settings)
+
+    def settings(self):
+        raise NewFrame(Settings())
 
     def draw_fon(self):
         shared.screen.blit(self.image_fon, (0, 0))
