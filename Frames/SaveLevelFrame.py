@@ -93,5 +93,6 @@ class SaveLevelFrame(AbstractBaseFrame):
                 for tile in self.grid:
                     if tile.owner == owner:
                         tile.set_owner('Игрок', param[1])
+
         save_level('data/levels/redactor', self.level_name, players, self.grid.tiles_to_string())
         raise KillFewTopFrames(2)

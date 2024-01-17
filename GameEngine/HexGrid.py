@@ -3,6 +3,7 @@ from GameEngine.Tile import HexTile, EmptyTile
 from GameEngine.GameUnits.GameUnit import GameUnit
 from GameEngine.GameUnits.conversions import unit_from_string
 from utilities.hexagons import get_tile_coords
+from GameEngine.GameUnits.Buildings import Guildhall
 
 
 class HexGrid:
@@ -178,6 +179,10 @@ class HexGrid:
                     self.set_empty(i, j)
                 else:
                     self.set_tile(i, j, owner=owner, game_unit=unit_from_string(unit, scale=2), color=color)
+                    cur_tile: HexTile = self.grid[i][j]
+                    if isinstance(cur_tile.game_unit, Guildhall) and cur_tile.owner != 'Игрок':
+                        cur_tile.set_game_unit(Guildhall(path='guildhall32.png', scale=2))
+
 
     @classmethod
     def empty(cls, w, h, radius, rect):
