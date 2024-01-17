@@ -4,6 +4,9 @@ import pygame as pg
 import os
 from utilities.image import draw_text
 from utilities.Button import Button
+from utilities.level_saving import load_level
+from Frames.FightFrame import FightFrame
+from Signals import NewFrame
 
 
 class ChooseLevelFrame(AbstractBaseFrame):
@@ -46,4 +49,5 @@ class ChooseLevelFrame(AbstractBaseFrame):
     def open_level(self):
         if self.chosen is None:
             return
-        # todo
+        players, grid_string = load_level('data/levels/redactor', self.levels[self.chosen])
+        raise

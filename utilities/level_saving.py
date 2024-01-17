@@ -12,11 +12,10 @@ def save_level(save_dir, level_name, players, grid_str):
         f.write(grid_str)
 
 
-def load_level(save_dir, level_name, grid):
+def load_level(save_dir, level_name):
     level_dir = str(os.path.join(save_dir, level_name))
     with open(os.path.join(level_dir, 'players.json')) as f:
         players = json.load(f)
     with open(os.path.join(level_dir, 'grid.txt')) as f:
         grid_str = f.read()
-    grid.tiles_from_string(grid_str)
-    return players, grid
+    return players, grid_str

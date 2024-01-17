@@ -23,7 +23,7 @@ UNIT_FROM_STRING = dict((v, k) for k, v in UNIT_TO_STRING.items())
 def unit_from_string(string: str, scale: float):
     if string == 'None':
         return None
-    return UNIT_FROM_STRING[string](scale)
+    return UNIT_FROM_STRING[string](scale=scale)
 
 
 def unit_to_string(unit):

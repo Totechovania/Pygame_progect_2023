@@ -48,7 +48,7 @@ class HexGrid:
         self.MAX_SCALE = min(self.rect.size) / (3 * self.radius)
         self.MIN_SCALE = min(self.rect.bottom / (surf_h * 1.5), self.rect.right / (surf_w * 1.5))
 
-        self.grid = [[[None] * w] for _ in range(h)]
+        self.grid = [[None] * w for _ in range(h)]
 
     def resize(self, rect: tuple[int, int, int, int] or pg.Rect):
         self.rect = pg.Rect(rect)
@@ -162,10 +162,12 @@ class HexGrid:
         return '\n'.join(' '.join(tile.to_string() for tile in row) for row in self.grid) + '\n'
 
     def tiles_from_string(self, string):
-        lst = list((raw.split() for raw in string.split('\n')))
+        lst = list((raw.split() for raw in string.split('\n')))[:-1]
         h, w = len(lst), len(lst[0])
+        print(lst)
         if h != self.h or w != self.w:
-            self.resize_grid(h, w)
+            self.resize_grid(w, h)
+        print(self.h, self.w, len(self.grid), len(self.grid[0]))
         for i in range(self.h):
             for j in range(self.w):
                 tile, owner, color, unit = lst[i][j].split('/')
@@ -173,7 +175,7 @@ class HexGrid:
                 if tile == 'EmptyTile':
                     self.set_empty(i, j)
                 else:
-                    self.set_tile(i, j, owner=owner, game_unit=unit_from_string(unit, 2), color=color)
+                    self.set_tile(i, j, owner=owner, game_unit=unit_from_string(unit, scale=2), color=color)
 
     @classmethod
     def empty(cls, w, h, radius, rect):
