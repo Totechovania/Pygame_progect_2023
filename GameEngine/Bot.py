@@ -13,7 +13,8 @@ class Bot:
             '2': [self.fighter, self.fighter, self.defender, self.farmer],
             '3': [self.fighter, self.fighter, self.defender, self.farmer, self.farmer],
             '4': [self.fighter, self.fighter, self.fighter, self.defender, self.farmer],
-            '5': [self.fighter, self.fighter, self.fighter, self.defender, self.defender, self.farmer, self.farmer],
+            '5': [self.fighter, self.fighter, self.fighter, self.fighter, self.defender, self.defender, self.farmer,
+                  self.farmer],
         }
         self.steps = 0
         self.state = None
@@ -62,7 +63,8 @@ class Bot:
             if tile_tower and self.state.money > 120:
                 tiles = tile_tower
             else:
-                tiles = list(filter(lambda x: not x.game_unit and tile_defense(self.game.grid, x) < 3, self.state.tiles))
+                tiles = list(
+                    filter(lambda x: not x.game_unit and tile_defense(self.game.grid, x) < 3, self.state.tiles))
             if not tiles:
                 break
             tile = choice(tiles)

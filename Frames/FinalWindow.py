@@ -64,7 +64,6 @@ class FinalWindow(IFrame):
             if self.campany_level:
                 draw_text('Уровень ' + self.campany_level + ' завершен!', self.w * 0.35, self.h * 0.15, '#000000',
                           int(self.h * 0.14))
-
             else:
                 draw_text('Вы ВЫИГРАЛИ', self.w * 0.35, self.h * 0.15, '#000000', int(self.h * 0.14))
         draw_text('Потрачено денег: ' + str(self.spent_money), self.w * 0.35, self.h * 0.3, '#000000',

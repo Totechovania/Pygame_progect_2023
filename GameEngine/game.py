@@ -205,7 +205,7 @@ class Game:
         elif isinstance(tile_to.game_unit, Spearman) and isinstance(tile_to.game_unit, Spearman):
             tile_from.game_unit = None
             tile_to.game_unit = None
-            tile_to.set_game_unit(Spearman('warrior_animation.png'))
+            tile_to.set_game_unit(Warrior('warrior_animation.png'))
             self.game_fight_frame.chosen_unit = None
             self.game_fight_frame.choose = tile_to
             tile_to.game_unit.moved = True
@@ -213,7 +213,7 @@ class Game:
         elif isinstance(tile_to.game_unit, Warrior) and isinstance(tile_to.game_unit, Warrior):
             tile_from.game_unit = None
             tile_to.game_unit = None
-            tile_to.set_game_unit(Spearman('knight_animation.png'))
+            tile_to.set_game_unit(Knight('knight_animation.png'))
             self.game_fight_frame.chosen_unit = None
             self.game_fight_frame.choose = tile_to
             tile_to.game_unit.moved = True

@@ -8,7 +8,7 @@ def save_level(save_dir, level_name, players, grid_str):
         os.mkdir(level_dir)
     with open(os.path.join(level_dir, 'players.json'), 'w', encoding='utf-8') as f:
         json.dump(players, f, ensure_ascii=False)
-    with open(os.path.join(level_dir, 'grid.txt',), 'w', encoding='utf-8') as f:
+    with open(os.path.join(level_dir, 'grid.txt'), 'w', encoding='utf-8') as f:
         f.write(grid_str)
 
 

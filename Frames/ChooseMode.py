@@ -10,8 +10,9 @@ from Frames.PopUpWindow import PopUpWindow
 from Frames.Campany import Campany
 from Frames.RedactorFrame import RedactorFrame
 from Frames.ChooseLevelFrame import ChooseLevelFrame
-# from Frames.FightFrame import FightFrame
 
+
+# from Frames.FightFrame import FightFrame
 
 
 class ChooseMode(IFrame):
@@ -33,11 +34,11 @@ class ChooseMode(IFrame):
                     raise KillTopFrame
             if event.type == pg.MOUSEBUTTONDOWN:
                 create_particles(pg.mouse.get_pos(), self.particles, 'coin.png')
-        self.particles.update()
         self.draw_fon()
-        self.particles.draw(shared.screen)
         self.buttons.update(events)
         self.buttons.draw(shared.screen)
+        self.particles.update()
+        self.particles.draw(shared.screen)
 
     def apply_settings(self):
         self.buttons.empty()
@@ -51,7 +52,6 @@ class ChooseMode(IFrame):
 
     def redactor(self):
         raise NewFrame(RedactorFrame())
-        # raise NewFrame(FightFrame(1, 0, 0))
 
     def campany(self):
         raise NewFrame(Campany())

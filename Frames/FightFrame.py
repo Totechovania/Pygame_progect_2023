@@ -19,19 +19,23 @@ from GameEngine.game import Game
 
 
 class FightFrame(IFrame):
-    def __init__(self, scale, enemy, players, level, campany_level=None):
+    def __init__(self, scale, enemy, players, level, campany_level=None, redactor_level=False, enemies=False):
         self.bot_types = ['defender', 'attacker', 'farmer']
         self.level = level
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
-        self.buttons = pg.sprite.Group()
         self.grid = None
-        rect = pg.Rect(0, self.h * 0.08, self.w, self.h * 0.775)
-        while not self.grid:
-            self.grid, self.game = map_generator(scale, enemy, players, rect)
-        for state_name in self.game.states_names:
-            self.game.states[state_name]['state'].bot.level = self.game.states[state_name]['state'].bot.level[
-                str(self.level)]
+        self.buttons = pg.sprite.Group()
+
+        if redactor_level and enemies:
+            self.generate_redactor_level(redactor_level, enemies)
+        else:
+            rect = pg.Rect(0, self.h * 0.08, self.w, self.h * 0.775)
+            while not self.grid:
+                self.grid, self.game = map_generator(scale, enemy, players, rect)
+            for state_name in self.game.states_names:
+                self.game.states[state_name]['state'].bot.level = self.game.states[state_name]['state'].bot.level[
+                    str(self.level)]
         self.generate_buttons()
         self.game.game_fight_frame = self
         self.game.campany_level = campany_level
@@ -296,3 +300,12 @@ class FightFrame(IFrame):
                                        self.game.time_start, self.game.campany_level))
         else:
             raise KillTopFrame
+
+    def generate_redactor_level(self, redactor_level, enemies):
+        rect = pg.Rect(0, self.h * 0.08, self.w, self.h * 0.775)
+        self.grid = HexGrid.filled(0, 0, 40, rect)
+        self.grid.tiles_from_string(redactor_level)
+        self.game = Game(len(enemies), self.grid)
+        for state_name in self.game.states_names:
+            self.game.states[state_name]['state'].bot.level = self.game.states[state_name]['state'].bot.level[
+                str(self.level)]
