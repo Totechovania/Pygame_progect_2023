@@ -78,8 +78,8 @@ class SaveLevelFrame(AbstractBaseFrame):
         save_level_button.connect(self.save_level)
 
     def change_player(self, index):
-        self.players[index] = (self.players[index] + 1) % len(self.available_players)
-
+        self.players = [1] * len(self.players)
+        self.players[index] = 0
     def set_changing_name(self, value):
         self.changing_name = value
 
