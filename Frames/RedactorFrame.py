@@ -36,7 +36,15 @@ class RedactorFrame(AbstractBaseFrame):
         self.instrument = None
         self.chosen_button = None
 
-        self.available_brush_parameters = [(None, (125, 125, 125)), ('1', (255, 0, 0)), ('2', (0, 255, 0)),] # todo add more owners and colors
+        self.available_brush_parameters = [(None, (125, 125, 125)),
+                                           ('owner_1', '#7FFF00'),
+                                           ('owner_2', '#FFFF00'),
+                                           ('owner_3', '#FFD700'),
+                                           ('owner_4', '#FF8C00'),
+                                           ('owner_5', '#FF4500'),
+                                           ('owner_6', '#FF0000'),
+                                           ('owner_7', '#8B0000'),
+                                           ('owner_8', '#800080')]
         self.brush_par_index = 0
 
         self.builder_modes = [(125, 125, 125), (225, 225, 225)]
