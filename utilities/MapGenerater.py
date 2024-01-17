@@ -106,5 +106,4 @@ def map_generator(scale, enemy, players, rect):
                     if k > 100:
                         break
     game = Game(start_enemy, grid)
-    print(grid, game)
     return grid, game

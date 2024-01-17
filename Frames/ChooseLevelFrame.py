@@ -51,9 +51,6 @@ class ChooseLevelFrame(AbstractBaseFrame):
         if self.chosen is None:
             return
         players, grid_string = load_level('data/levels/redactor', self.levels[self.chosen])
-        print(grid_string)
-        print()
-        print(players)
         raise NewFrame(
             FightFrame(2, len(players), len([i for i in players if players[i][0] == 'Игрок']), randint(1, 5),
                        campany_level=None, redactor_level=grid_string, enemies=players))

@@ -165,10 +165,8 @@ class HexGrid:
     def tiles_from_string(self, string):
         lst = list((raw.split() for raw in string.split('\n')))[:-1]
         h, w = len(lst), len(lst[0])
-        print(lst)
         if h != self.h or w != self.w:
             self.resize_grid(w, h)
-        print(self.h, self.w, len(self.grid), len(self.grid[0]))
         for i in range(self.h):
             for j in range(self.w):
                 tile, owner, color, unit = lst[i][j].split('/')
@@ -205,5 +203,4 @@ class HexGrid:
                 x, y = get_tile_coords(i, j, radius)
                 tile = HexTile(x, y, radius, (i, j))
                 grid[i].append(tile)
-
         return cls(w, h, radius, rect, grid)
