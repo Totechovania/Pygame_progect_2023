@@ -20,9 +20,9 @@ class SaveLevelFrame(AbstractBaseFrame):
         self.grid = grid
         self.level_name = 'new_level'
         self.changing_name = False
-        self.available_players = ['Игрок', 'defender', 'attacker', 'farmer']
+        self.available_players = ['Игрок', 'бот']
 
-        self.players = [3] * len(self.colors)
+        self.players = [1] * len(self.colors)
 
     def update(self):
         super().update()
