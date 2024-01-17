@@ -38,9 +38,7 @@ class ChooseLevelFrame(AbstractBaseFrame):
         self.chosen = level
 
     def draw(self):
-        draw_text('Выбранный уровень:', 0, self.w * 0.05, (0, 0, 0), round(self.h * 0.05))
-        if self.chosen is not None:
-            draw_text(self.levels[self.chosen], self.w * 0.25, self.w * 0.05, (0, 0, 0), round(self.h * 0.05))
+        draw_text(f'Выбранный уровень: {self.levels[self.chosen] if self.chosen is not None else ""}', 0, self.w * 0.05, (0, 0, 0), round(self.h * 0.05))
         for i in range(len(self.levels)):
             draw_text(self.levels[i], self.w * 0.05 + (i // 10) * self.w * 0.4, self.w * 0.075 + self.w * 0.04 * (i % 10), (0, 0, 0),
                       round(self.h * 0.05))
