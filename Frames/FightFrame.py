@@ -19,7 +19,7 @@ from GameEngine.game import Game
 
 
 class FightFrame(IFrame):
-    def __init__(self, scale, enemy, players, level, campany_level=None, redactor_level=False, enemies=False):
+    def __init__(self, scale, enemy, players, level, campany_level=None, redactor_level=False):
         self.bot_types = ['defender', 'attacker', 'farmer']
         self.level = level
         self.w = shared.WIDTH
@@ -27,8 +27,8 @@ class FightFrame(IFrame):
         self.grid = None
         self.buttons = pg.sprite.Group()
 
-        if redactor_level and enemies:
-            self.generate_redactor_level(redactor_level, enemies)
+        if redactor_level and (enemy + players):
+            self.generate_redactor_level(redactor_level, enemy + players)
         else:
             rect = pg.Rect(0, self.h * 0.08, self.w, self.h * 0.775)
             while not self.grid:
@@ -305,7 +305,7 @@ class FightFrame(IFrame):
         rect = pg.Rect(0, self.h * 0.08, self.w, self.h * 0.775)
         self.grid = HexGrid.filled(0, 0, 40, rect)
         self.grid.tiles_from_string(redactor_level)
-        self.game = Game(len(enemies), self.grid)
+        self.game = Game(enemies, self.grid)
         for state_name in self.game.states_names:
             self.game.states[state_name]['state'].bot.level = self.game.states[state_name]['state'].bot.level[
                 str(self.level)]

@@ -20,9 +20,9 @@ class SaveLevelFrame(AbstractBaseFrame):
         self.grid = grid
         self.level_name = 'new_level'
         self.changing_name = False
-        self.available_players = ['Игрок', 'бот']
+        self.level = 0
 
-        self.players = [1] * len(self.colors)
+        self.players = ['бот'] * len(self.colors)
 
     def update(self):
         super().update()
@@ -47,13 +47,14 @@ class SaveLevelFrame(AbstractBaseFrame):
         self.draw_fon()
         draw_text(f'Название: {self.level_name}{"|" if self.changing_name else ""}', self.w * 0.046, self.h * 0.1,
                   'black', round(self.w * 0.04))
-        draw_text('Игроки:', 0, self.h * 0.17, 'black', round(self.w * 0.04))
+        draw_text(f'Сложность: {self.level + 1}', self.w * 0.046, self.h * 0.17, 'black', round(self.w * 0.04))
+        draw_text('Игроки:', 0, self.h * 0.24, 'black', round(self.w * 0.04))
         for i in range(len(self.colors)):
             pg.draw.rect(shared.screen, self.colors[i], (
-                self.w * 0.001 + (i // 7) * 0.4 * self.w, self.h * 0.23 + (i % 7) * 0.1 * self.h, int(0.04 * self.w),
+                self.w * 0.001 + (i // 6) * 0.4 * self.w, self.h * 0.3 + (i % 6) * 0.1 * self.h, int(0.04 * self.w),
                 int(0.04 * self.w)))
-            draw_text(self.available_players[self.players[i]], self.w * 0.045 + (i // 7) * 0.4 * self.w,
-                      self.h * 0.25 + (i % 7) * 0.1 * self.h, (0, 0, 0), round(self.w * 0.04))
+            draw_text(self.players[i], self.w * 0.045 + (i // 6) * 0.4 * self.w,
+                      self.h * 0.32 + (i % 6) * 0.1 * self.h, (0, 0, 0), round(self.w * 0.04))
         draw_text('сохранить', self.w * 0.825, self.h * 0.92, 'black', round(self.w * 0.032))
 
     def generate_buttons(self):
@@ -63,9 +64,14 @@ class SaveLevelFrame(AbstractBaseFrame):
             'change_name.png', self.buttons
         )
         change_name_button.connect(lambda: self.set_changing_name(True))
+        change_level_button = Button(
+            (self.w * 0.006, self.h * 0.17, int(0.035 * self.w), int(0.035 * self.w)),
+            'square.png', self.buttons
+        )
+        change_level_button.connect(self.change_level)
         for i in range(len(self.colors)):
             button = Button(
-                (self.w * 0.001 + (i // 7) * 0.4 * self.w, self.h * 0.23 + (i % 7) * 0.1 * self.h, int(0.04 * self.w),
+                (self.w * 0.001 + (i // 6) * 0.4 * self.w, self.h * 0.30 + (i % 6) * 0.1 * self.h, int(0.04 * self.w),
                  int(0.04 * self.w)),
                 f'square.png', self.buttons
             )
@@ -78,21 +84,29 @@ class SaveLevelFrame(AbstractBaseFrame):
         save_level_button.connect(self.save_level)
 
     def change_player(self, index):
-        self.players = [1] * len(self.players)
-        self.players[index] = 0
+        if self.players[index] == 'Игрок':
+            self.players[index] = 'бот'
+        else:
+            self.players = ['бот'] * len(self.players)
+            self.players[index] = 'Игрок'
+
     def set_changing_name(self, value):
         self.changing_name = value
 
-    def save_level(self):
-        players = {}
-        for i in range(len(self.colors)):
-            players[self.owners[i]] = (self.available_players[self.players[i]], self.colors[i])
-        for owner, param in players.items():
-            player_type = param[0]
-            if player_type == 'Игрок':
-                for tile in self.grid:
-                    if tile.owner == owner:
-                        tile.set_owner('Игрок', param[1])
+    def change_level(self):
+        self.level += 1
+        self.level %= 5
 
-        save_level('data/levels/redactor', self.level_name, players, self.grid.tiles_to_string())
+    def save_level(self):
+        info = {'players': 0, 'enemies': 0, 'level': 0}
+        if 'Игрок' in self.players:
+            info['players'] = 1
+            owner = self.owners[self.players.index('Игрок')]
+            for tile in self.grid:
+                if tile.owner == owner:
+                    tile.set_owner('Игрок', tile.color)
+        info['enemies'] = len(self.players) - info['players']
+        info['level'] = self.level + 1
+
+        save_level('data/levels/redactor', self.level_name, info, self.grid.tiles_to_string())
         raise KillFewTopFrames(2)

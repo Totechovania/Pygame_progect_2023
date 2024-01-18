@@ -50,7 +50,7 @@ class ChooseLevelFrame(AbstractBaseFrame):
     def open_level(self):
         if self.chosen is None:
             return
-        players, grid_string = load_level('data/levels/redactor', self.levels[self.chosen])
+        info, grid_string = load_level('data/levels/redactor', self.levels[self.chosen])
         raise NewFrame(
-            FightFrame(2, len(players), len([i for i in players if players[i][0] == 'Игрок']), randint(1, 5),
-                       campany_level=None, redactor_level=grid_string, enemies=players))
+            FightFrame(2, info['enemies'], info['players'],  info['level'],
+                       campany_level=None, redactor_level=grid_string))
