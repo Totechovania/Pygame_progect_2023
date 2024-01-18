@@ -29,7 +29,7 @@ class FightFrame(IFrame):
         self.buttons = pg.sprite.Group()
 
         if redactor_level and (enemy + players):
-            self.generate_redactor_level(redactor_level, enemy + players)
+            self.generate_redactor_level(redactor_level, enemy + players, players)
         else:
             if not players:
                 self.draw_fon_flag = False
@@ -317,8 +317,10 @@ class FightFrame(IFrame):
     def generate_redactor_level(self, redactor_level, enemies, players):
         if not players:
             rect = pg.Rect(0, 0, self.w, self.h)
+            self.draw_fon_flag = False
         else:
             rect = pg.Rect(0, self.h * 0.08, self.w, self.h * 0.775)
+
         self.grid = HexGrid.filled(0, 0, 40, rect)
         self.grid.tiles_from_string(redactor_level)
         self.game = Game(enemies, self.grid)
