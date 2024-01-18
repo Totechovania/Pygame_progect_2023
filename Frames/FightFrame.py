@@ -25,12 +25,17 @@ class FightFrame(IFrame):
         self.w = shared.WIDTH
         self.h = shared.HEIGHT
         self.grid = None
+        self.draw_fon_flag = True
         self.buttons = pg.sprite.Group()
 
         if redactor_level and (enemy + players):
             self.generate_redactor_level(redactor_level, enemy + players)
         else:
-            rect = pg.Rect(0, self.h * 0.08, self.w, self.h * 0.775)
+            if not players:
+                self.draw_fon_flag = False
+                rect = pg.Rect(0, 0, self.w, self.h)
+            else:
+                rect = pg.Rect(0, self.h * 0.08, self.w, self.h * 0.775)
             while not self.grid:
                 self.grid, self.game = map_generator(scale, enemy, players, rect)
             for state_name in self.game.states_names:
@@ -39,7 +44,10 @@ class FightFrame(IFrame):
         self.generate_buttons()
         self.game.game_fight_frame = self
         self.game.campany_level = campany_level
-        self.fon_fight = pg.transform.scale(load_image('fon_fight.png'), (shared.WIDTH, shared.HEIGHT * 0.775))
+        if self.draw_fon_flag:
+            self.fon_fight = pg.transform.scale(load_image('fon_fight.png'), (shared.WIDTH, shared.HEIGHT * 0.775))
+        else:
+            self.fon_fight = pg.transform.scale(load_image('fon_fight.png'), (shared.WIDTH, shared.HEIGHT))
         self.image_fon = pg.transform.scale(load_image('fon_menu.png'), (self.w, self.h))
 
         self.flag = False
@@ -52,8 +60,11 @@ class FightFrame(IFrame):
         self.game.count_player_earnings()
 
     def update(self):
-        shared.screen.blit(self.image_fon, (0, 0))
-        shared.screen.blit(self.fon_fight, (0, self.h * 0.08))
+        if self.draw_fon_flag and self.game.draw_confirm:
+            shared.screen.blit(self.image_fon, (0, 0))
+            shared.screen.blit(self.fon_fight, (0, self.h * 0.08))
+        else:
+            shared.screen.blit(self.fon_fight, (0, 0))
         events = pg.event.get()
         if self.game.draw_confirm and self.game.current_player.owner != 'Игрок':
             if self.game.can_move:
@@ -143,11 +154,13 @@ class FightFrame(IFrame):
         shared.animated_units.update()
         self.grid.draw(shared.screen)
         pg.draw.rect(shared.screen, pg.Color('black'), self.grid.rect, round(self.h * 0.005))
+
         self.buttons.update(events)
         self.buttons.draw(shared.screen)
         hexagon = hexagon_from_center(self.w * 0.48, self.h * 0.89, self.h * 0.12)
-        pg.draw.polygon(shared.screen, (202, 116, 252), hexagon)
-        pg.draw.polygon(shared.screen, pg.Color('black'), hexagon, round(self.h * 0.007))
+        if self.draw_fon_flag and self.game.draw_confirm:
+            pg.draw.polygon(shared.screen, (202, 116, 252), hexagon)
+            pg.draw.polygon(shared.screen, pg.Color('black'), hexagon, round(self.h * 0.007))
 
         if self.game.draw_confirm and 'Игрок' in self.game.states_names:
             self.draw()
@@ -301,8 +314,11 @@ class FightFrame(IFrame):
         else:
             raise KillTopFrame
 
-    def generate_redactor_level(self, redactor_level, enemies):
-        rect = pg.Rect(0, self.h * 0.08, self.w, self.h * 0.775)
+    def generate_redactor_level(self, redactor_level, enemies, players):
+        if not players:
+            rect = pg.Rect(0, 0, self.w, self.h)
+        else:
+            rect = pg.Rect(0, self.h * 0.08, self.w, self.h * 0.775)
         self.grid = HexGrid.filled(0, 0, 40, rect)
         self.grid.tiles_from_string(redactor_level)
         self.game = Game(enemies, self.grid)
