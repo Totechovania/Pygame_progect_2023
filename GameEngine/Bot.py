@@ -77,8 +77,7 @@ class Bot:
 
     def fighter(self):
         for i in range(self.state.money // 15):
-            tiles_obstacles = list(
-                filter(lambda x: isinstance(x.game_unit, Obstacles), self.state.tiles))
+            tiles_obstacles = list(filter(lambda x: isinstance(x.game_unit, Obstacles), self.state.tiles))
             if tiles_obstacles:
                 tiles = tiles_obstacles
             else:

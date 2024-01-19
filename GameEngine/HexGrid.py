@@ -190,7 +190,6 @@ class HexGrid:
                 x, y = get_tile_coords(i, j, radius)
                 tile = EmptyTile(x, y, radius, (i, j))
                 grid[i].append(tile)
-
         return cls(w, h, radius, rect, grid)
 
     @classmethod
