@@ -15,16 +15,18 @@ import copy
 from time import sleep
 import pygame as pg
 from utilities.image import load_image
+from Frames.IncorrectRedactor import IncorrectRedactor
 
 
 class Game:
 
-    def __init__(self, players, grid):
+    def __init__(self, players, grid, redactor_level=None):
         self.draw_confirm = True
         self.game_fight_frame = None
         self.can_move = True
         self.players = players
         self.campany_level = None
+        self.redactor_level = redactor_level
         self.time_start = time()
         self.states = {}
         self.operational_list = []
@@ -99,27 +101,30 @@ class Game:
                 self.current_player.earnings -= i.game_unit.pay
 
     def next_player(self):
-        self.current_player_id = (self.current_player_id + 1) % self.players
-        self.current_player = self.states[self.states_names[self.current_player_id]]['state']
-        self.count_player_earnings()
-        self.current_player.money += self.current_player.earnings
-        if 'Игрок' in self.states_names:
-            self.states[self.current_player.owner]['earned_money'] += self.states['Игрок']['state'].earnings
-        for i in self.current_player.tiles:
-            if isinstance(i.game_unit, Unit):
-                i.game_unit.moved = False
-                i.game_unit.stop = False
-        if self.current_player.money < 0:
-            for tile in self.current_player.tiles:
-                if isinstance(tile.game_unit, Unit):
-                    self.grid.unit = None
-                    tile.set_game_unit(Grave('grave32.png'))
-                    self.current_player.money = 0
-        self.count_player_earnings()
-        self.current_player.set_turn()
-        self.states[self.states_names[self.current_player_id - 1]]['state'].set_turn()
-        if self.current_player.owner != 'Игрок':
-            self.current_player.bot.do_move()
+        try:
+            self.current_player_id = (self.current_player_id + 1) % self.players
+            self.current_player = self.states[self.states_names[self.current_player_id]]['state']
+            self.count_player_earnings()
+            self.current_player.money += self.current_player.earnings
+            if 'Игрок' in self.states_names:
+                self.states[self.current_player.owner]['earned_money'] += self.states['Игрок']['state'].earnings
+            for i in self.current_player.tiles:
+                if isinstance(i.game_unit, Unit):
+                    i.game_unit.moved = False
+                    i.game_unit.stop = False
+            if self.current_player.money < 0:
+                for tile in self.current_player.tiles:
+                    if isinstance(tile.game_unit, Unit):
+                        self.grid.unit = None
+                        tile.set_game_unit(Grave('grave32.png'))
+                        self.current_player.money = 0
+            self.count_player_earnings()
+            self.current_player.set_turn()
+            self.states[self.states_names[self.current_player_id - 1]]['state'].set_turn()
+            if self.current_player.owner != 'Игрок':
+                self.current_player.bot.do_move()
+        except Exception:
+            raise NewFrame(IncorrectRedactor(self.redactor_level))
 
     def check_defense(self, tile, unit):
         if tile.owner is None and (not isinstance(tile.game_unit, Rock) or tile.game_unit is None):

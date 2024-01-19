@@ -1,18 +1,17 @@
 from Frames.AbstractBaseFrame import AbstractBaseFrame
 import shared
-import pygame as pg
 import os
 from utilities.image import draw_text
 from utilities.Button import Button
 from utilities.level_saving import load_level
 from Frames.FightFrame import FightFrame
 from Signals import NewFrame
-from random import randint
 
 
 class ChooseLevelFrame(AbstractBaseFrame):
     def __init__(self, load_dir='data/levels/redactor'):
         self.levels = os.listdir(load_dir)
+        self.load_dir = load_dir
         super().__init__()
         self.chosen = None
 
@@ -50,7 +49,13 @@ class ChooseLevelFrame(AbstractBaseFrame):
     def open_level(self):
         if self.chosen is None:
             return
+        path = 'data/levels/redactor', self.levels[self.chosen]
         info, grid_string = load_level('data/levels/redactor', self.levels[self.chosen])
-        raise NewFrame(
-            FightFrame(2, info['enemies'], info['players'],  info['level'],
-                       campany_level=None, redactor_level=grid_string))
+        raise NewFrame(FightFrame(2, info['enemies'], info['players'], info['level'],
+                       campany_level=None, redactor_level=grid_string, path=(path)))
+
+    def resume(self):
+        self.levels = os.listdir(self.load_dir)
+        self.chosen = None
+        self.buttons.empty()
+        self.generate_buttons()

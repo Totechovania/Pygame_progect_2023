@@ -20,9 +20,9 @@ class Guildhall(Building):
 
 class TowerFirst(Building):
     def __init__(self, path="towerfirst32.png", scale=2):
-        super().__init__(path, scale, power=2, cost=15)
+        super().__init__(path, scale, power=1, cost=15)
 
 
 class TowerSecond(Building):
     def __init__(self, path="towersecond32.png", scale=2):
-        super().__init__(path, scale, power=3, cost=35)
+        super().__init__(path, scale, power=2, cost=35)

@@ -23,7 +23,7 @@ class Bot:
     def do_move(self):
         if self.steps == 1:
             self.farmer()
-        elif self.steps < 10:
+        elif self.steps < 3:
             self.explorer()
         else:
             choice(self.level)()

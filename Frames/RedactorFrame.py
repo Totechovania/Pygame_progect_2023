@@ -48,7 +48,7 @@ class RedactorFrame(AbstractBaseFrame):
         self.brush_par_index = 0
 
         self.builder_modes = [(125, 125, 125), (225, 225, 225)]
-        self.builder_mode = 0 # 0 - tile, 1 - empty
+        self.builder_mode = 0  # 0 - tile, 1 - empty
 
         self.units_modes = [('peasant', 'peasant.png', Peasant),
                             ('spearman', 'spearman.png', Spearman),
@@ -57,9 +57,9 @@ class RedactorFrame(AbstractBaseFrame):
         self.unit_mode = 0
 
         self.buildings_modes = [('farm', 'farm.png', Farm),
-                                 ('towerfirst', 'towerfirst.png', TowerFirst),
-                                 ('towersecond', 'towersecond.png', TowerSecond),
-                                 ('guildhall', 'guildhall.png', Guildhall)]
+                                ('towerfirst', 'towerfirst.png', TowerFirst),
+                                ('towersecond', 'towersecond.png', TowerSecond),
+                                ('guildhall', 'guildhall.png', Guildhall)]
         self.building_mode = 0
 
         self.obstacles_modes = [('tree', 'tree.png', Tree),
@@ -100,7 +100,6 @@ class RedactorFrame(AbstractBaseFrame):
 
         self.buttons.update(self.events)
         pg.draw.rect(shared.screen, (255, 255, 255), self.grid_rect)
-
 
         self.grid.draw_tiles()
 
@@ -211,6 +210,7 @@ class RedactorFrame(AbstractBaseFrame):
             'square.png', self.buttons
         )
         save_level_button.connect(self.open_save_level_frame)
+
     def apply_settings(self):
         super().apply_settings()
         self.grid_rect = pg.Rect(0, round(self.w * 0.05), self.w, round(shared.HEIGHT * 0.8))
@@ -255,4 +255,3 @@ class RedactorFrame(AbstractBaseFrame):
             self.builder_mode = (self.builder_mode + 1) % len(self.builder_modes)
         else:
             self.set_instrument('builder', button)
-

@@ -32,6 +32,7 @@ class FrameController:
         elif isinstance(signal, KillFewTopFrames):
             self.handle_kill_few_top_frames(signal.quantity)
 
+
     def handle_new_frame(self, frame: IFrame):
         self.frames[-1].pause()
         self.frames.append(frame)
@@ -58,4 +59,3 @@ class FrameController:
             self.frames.pop()
             if self.frames:
                 self.frames[-1].resume()
-
