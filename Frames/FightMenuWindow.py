@@ -46,6 +46,8 @@ class FightMenuWindow(IFrame):
                 create_particles(pg.mouse.get_pos(), self.particles, 'coin.png')
         self.draw_fon()
         self.buttons.update(events)
+        self.particles.update()
+        self.particles.draw(shared.screen)
         self.buttons.draw(shared.screen)
 
     def generate_buttons(self):
